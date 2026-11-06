@@ -71,7 +71,7 @@ export function Quiz({ make, length = 10, label }: Props) {
   useEffect(start, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (round?.picked) nextRef.current?.querySelector<HTMLButtonElement>(".btn:last-child")?.focus();
+    if (round?.picked) nextRef.current?.querySelector<HTMLButtonElement>(".yj-btn:last-child")?.focus();
   }, [round?.picked]);
 
   if (!round) return null;
@@ -90,8 +90,8 @@ export function Quiz({ make, length = 10, label }: Props) {
 
   const ok = picked?.text === q.answer;
   return (
-    <div className="box">
-      <div className="score">
+    <div className="yj-box">
+      <div className="yj-score">
         <span>
           문제 Question <b>{done + (picked ? 0 : 1)} / {length}</b>
         </span>
@@ -99,26 +99,26 @@ export function Quiz({ make, length = 10, label }: Props) {
           맞힌 개수 Score <b>{score}</b>
         </span>
       </div>
-      <div className="q-label">
+      <div className="yj-qlabel">
         <span className="ko">{label.ko}</span>
         {label.en}
       </div>
       {q.prompt}
-      <div className="opts">
+      <div className="yj-opts">
         {choices.map((c) => {
           const isAnswer = c.text === q.answer;
-          const cls = picked ? (isAnswer ? "right" : c === picked ? "wrong" : "") : "";
+          const cls = picked ? (isAnswer ? "is-right" : c === picked ? "is-wrong" : "") : "";
           return (
-            <button key={c.text} className={`opt ${cls}`} type="button" disabled={!!picked} onClick={() => pick(c)}>
+            <button key={c.text} className={`yj-opt ${cls}`} type="button" disabled={!!picked} onClick={() => pick(c)}>
               {/* 색만으로 알리지 않는다 */}
-              {cls === "right" && <span aria-hidden="true">✓ </span>}
-              {cls === "wrong" && <span aria-hidden="true">✗ </span>}
+              {cls === "is-right" && <span aria-hidden="true">✓ </span>}
+              {cls === "is-wrong" && <span aria-hidden="true">✗ </span>}
               {c.text}
             </button>
           );
         })}
       </div>
-      <div className="feedback" aria-live="polite">
+      <div className="yj-feedback" aria-live="polite">
         {picked &&
           (ok ? (
             <>
@@ -131,7 +131,7 @@ export function Quiz({ make, length = 10, label }: Props) {
               <span className="en">Not quite — the answer is ‘{q.answer}’.</span>
               {picked.why && (
                 <>
-                  <span className="why">{picked.why.ko}</span>
+                  <span className="yj-why">{picked.why.ko}</span>
                   <span className="en">{picked.why.en}</span>
                 </>
               )}
@@ -165,24 +165,24 @@ function Result({ score, length, missed, onRestart }: { score: number; length: n
   const again = useRef<HTMLDivElement>(null);
   useEffect(() => again.current?.querySelector("button")?.focus(), []);
   return (
-    <div className="box result" aria-live="polite">
-      <div className="q-label">
+    <div className="yj-box yj-result" aria-live="polite">
+      <div className="yj-qlabel">
         <span className="ko">결과</span>Result
       </div>
-      <div className="result-mascot">
+      <div className="yj-result-mascot">
         <Ieung mood={mood} />
       </div>
-      <div className="result-score">
+      <div className="yj-result-score">
         {score} / {length}
       </div>
-      <div className="result-msg">
+      <div className="yj-result-msg">
         <span className="ko">{ko}</span>
         <span className="en">{en}</span>
       </div>
       {missed.length > 0 && (
         <>
-          <p className="missed-title">틀린 문제 다시 보기 · Review</p>
-          <ul className="missed">
+          <p className="yj-missed-title">틀린 문제 다시 보기 · Review</p>
+          <ul className="yj-missed">
             {missed.map((q) => (
               <li key={q.id}>
                 <span>{q.review}</span>

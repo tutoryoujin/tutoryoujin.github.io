@@ -37,6 +37,7 @@ apps/
   index.html, home.tsx
   <slug>/            index.html · main.tsx · App.tsx · <slug>.css
 scripts/             build-tokens.mjs · new-app.mjs
+tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
 
@@ -72,6 +73,14 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 - **한국어가 먼저, 영어는 바로 아래 더 작게 `muted`.** 외국인 학습자용이라 설명·피드백에 영어가 빠지면 안 됩니다. 컴포넌트가 `ko` / `en` 을 따로 받는 이유입니다. 해요체. 한자 쓰지 않음.
 - 꼬리말은 `<하는 일>, 매일 조금씩.` — "매일 조금씩" 은 바꾸지 않습니다.
 - 누를 수 있는 것은 최소 44px.
+
+## 앱별 메모
+
+- **한국어 카드** — 덱은 `apps/korean-cards/decks/*.ts`, 새 덱은 `decks/index.ts` 에 한 줄. 그림은 `public/korean-cards/img/<덱>/<카드>.webp`.
+  그림·출처는 `tools/korean-cards/images.json` 에 적고 `build_images.py` 를 돌린다 (출처 화면 데이터 `credits-data.json` 도 같이 생성 — 직접 고치지 말 것). 공유 이미지는 `build_og.py`.
+  Python 은 `python -m venv .venv` 후 `.venv/Scripts/pip install Pillow svglib`. 진행 저장 열쇠 `kcards:*` 는 바꾸지 않는다 — 학생들 기록이 날아간다.
+- **한국어 달력** — 공휴일은 양력 고정만. 6월·10월(유월·시월)은 퀴즈에 꼭 한 번씩 나온다.
+- **한국어 시계** — 시 = orange(고유어), 분 = lavender(한자어) 별칭.
 
 ## 작업 규칙
 

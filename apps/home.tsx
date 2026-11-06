@@ -6,7 +6,7 @@ import "./home.css";
 function Home() {
   return (
     <>
-      <main className="app home">
+      <main className="yj-main home">
         <div className="home-hero">
           <div className="home-mascot">
             <Ieung mood="yay" />

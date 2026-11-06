@@ -5,11 +5,6 @@
    여기 있는 클래스는 shared/ui 컴포넌트가 쓴다. 앱 CSS 에서
    덮어쓰지 말고, 다르게 보여야 하면 컴포넌트에 옵션을 더한다.
    ============================================================ */
-:root {
-  /* 본문 폭. 앱마다 다르면 <Page width> 로 바꾼다 */
-  --shell-width: 480px;
-}
-
 *,
 *::before,
 *::after {
@@ -42,23 +37,19 @@ button {
   font: inherit;
   color: inherit;
 }
-.jua {
-  font-family: var(--font-display);
-  font-weight: 400;
-}
 
-.app {
+.yj-main {
   flex: 1 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 14px;
   padding: 16px 16px 0;
-  max-width: var(--shell-width);
+  max-width: var(--shell-width); /* 기본 640 (shell.css). 앱 CSS 의 :root 에서 바꾼다 */
   margin: 0 auto;
 }
 
-.tabs {
+.yj-tabs {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr; /* 탭 개수에 맞춰 나눈다 */
@@ -67,7 +58,7 @@ button {
   border-radius: 999px;
   padding: 4px;
 }
-.tab {
+.yj-tab {
   border: 0;
   background: none;
   cursor: pointer;
@@ -80,75 +71,68 @@ button {
   justify-content: center;
   line-height: 1.1;
 }
-.tab .ko {
+.yj-tab .ko {
   font-family: var(--font-display);
   font-size: 1rem;
 }
-.tab .en {
+.yj-tab .en {
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--muted);
 }
-.tab[aria-selected="true"] {
+.yj-tab[aria-selected="true"] {
   background: var(--primary);
   color: var(--primary-ink);
 }
-.tab[aria-selected="true"] .en {
+.yj-tab[aria-selected="true"] .en {
   color: inherit;
   opacity: 0.8;
 }
-.tab:focus-visible,
-.btn:focus-visible,
-.opt:focus-visible,
-.pill-btn:focus-visible {
+.yj-tab:focus-visible,
+.yj-btn:focus-visible,
+.yj-opt:focus-visible,
+.yj-pill-btn:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* 탭 안의 상자끼리 띄운다 */
-section {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.box {
+.yj-box {
   background: var(--surface);
   border-radius: 24px;
   box-shadow: var(--shadow-card);
   padding: 16px;
 }
 
-.segments {
+.yj-segs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
 }
-.seg {
+.yj-seg {
   border-radius: 16px;
   padding: 8px 12px;
   text-align: center;
   line-height: 1.15;
   min-width: 64px;
 }
-.seg small {
+.yj-seg small {
   display: block;
   font-size: 0.72rem;
   font-weight: 800;
   opacity: 0.75;
 }
-.seg span {
+.yj-seg span {
   font-family: var(--font-display);
   font-size: 1.35rem;
 }
-.panel-en {
+.yj-en-line {
   text-align: center;
   font-weight: 700;
   color: var(--muted);
   margin: 12px 0 0;
 }
-.note {
+.yj-note {
   margin: 12px 0 0;
   padding: 10px 12px;
   border-radius: 14px;
@@ -157,13 +141,13 @@ section {
   font-size: 0.92rem;
   line-height: 1.5;
 }
-.note .ko {
+.yj-note .ko {
   font-family: var(--font-display);
   font-size: 1rem;
   display: block;
 }
 
-.btn {
+.yj-btn {
   width: 100%;
   min-height: 56px;
   margin-top: 14px;
@@ -179,26 +163,26 @@ section {
   gap: 2px;
   line-height: 1.2;
 }
-.btn .ko {
+.yj-btn .ko {
   font-family: var(--font-display);
   font-size: 1.1rem;
 }
-.btn .en {
+.yj-btn .en {
   font-size: 0.75rem;
   font-weight: 700;
   opacity: 0.8;
 }
-.btn.ghost {
+.yj-btn.yj-ghost {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--line);
 }
-.btn:active {
+.yj-btn:active {
   transform: scale(0.98);
 }
 
 /* Quiz */
-.score {
+.yj-score {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -207,29 +191,29 @@ section {
   font-size: 0.85rem;
   margin-bottom: 10px;
 }
-.score b {
+.yj-score b {
   font-family: var(--font-display);
   font-weight: 400;
   color: var(--ink);
   font-size: 1rem;
 }
-.q-label {
+.yj-qlabel {
   text-align: center;
   font-weight: 700;
   color: var(--muted);
   font-size: 0.85rem;
 }
-.q-label .ko {
+.yj-qlabel .ko {
   font-family: var(--font-display);
   font-size: 1rem;
   color: var(--ink);
   display: block;
 }
-.opts {
+.yj-opts {
   display: grid;
   gap: 8px;
 }
-.opt {
+.yj-opt {
   min-height: 56px;
   border-radius: 16px;
   border: 2px solid var(--line);
@@ -239,59 +223,59 @@ section {
   cursor: pointer;
   padding: 8px;
 }
-.opt:disabled {
+.yj-opt:disabled {
   cursor: default;
 }
-.opt.right {
+.yj-opt.is-right {
   background: var(--ok-bg);
   color: var(--ok-ink);
   border-color: var(--ok-ink);
 }
-.opt.wrong {
+.yj-opt.is-wrong {
   background: var(--bad-bg);
   color: var(--bad-ink);
   border-color: var(--bad-ink);
 }
-.feedback {
+.yj-feedback {
   text-align: center;
   margin-top: 12px;
   line-height: 1.4;
 }
-.feedback .ko {
+.yj-feedback .ko {
   font-family: var(--font-display);
   font-size: 1.2rem;
   display: block;
 }
-.feedback .en,
-.note .en {
+.yj-feedback .en,
+.yj-note .en {
   display: block;
 }
-.note .en {
+.yj-note .en {
   color: var(--muted);
   font-size: 0.85rem;
   font-weight: 700;
 }
-.note .ex {
+.yj-note .ex {
   display: block;
   margin-top: 6px;
   font-family: var(--font-display);
 }
 /* 파스텔 위라 muted 대신 ink 계열 그대로, 크기로만 누른다 */
-.seg em {
+.yj-seg em {
   display: block;
   font-style: normal;
   font-size: 0.68rem;
   font-weight: 800;
   margin-top: 2px;
 }
-.feedback .en {
+.yj-feedback .en {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--muted);
 }
 
 /* 퀴즈 피드백 — 왜 틀렸는지 */
-.feedback .why {
+.yj-feedback .yj-why {
   font-family: var(--font-display);
   display: block;
   margin-top: 4px;
@@ -302,35 +286,35 @@ section {
 }
 
 /* Quiz result */
-.result {
+.yj-result {
   text-align: center;
 }
-.result-mascot {
+.yj-result-mascot {
   width: 120px;
   margin: 8px auto 0;
 }
-.result-mascot svg {
+.yj-result-mascot svg {
   display: block;
   width: 100%;
   height: auto;
 }
-.result-score {
+.yj-result-score {
   font-family: var(--font-display);
   font-size: 3rem;
   line-height: 1.1;
   margin: 8px 0 4px;
 }
-.result-msg .ko {
+.yj-result-msg .ko {
   font-family: var(--font-display);
   font-size: 1.3rem;
   display: block;
 }
-.result-msg .en {
+.yj-result-msg .en {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--muted);
 }
-.missed {
+.yj-missed {
   list-style: none;
   padding: 0;
   margin: 16px 0 0;
@@ -338,7 +322,7 @@ section {
   gap: 6px;
   text-align: left;
 }
-.missed li {
+.yj-missed li {
   display: flex;
   justify-content: space-between;
   gap: 8px;
@@ -347,12 +331,12 @@ section {
   background: var(--bg);
   font-weight: 700;
 }
-.missed li b {
+.yj-missed li b {
   font-family: var(--font-display);
   font-weight: 400;
   color: var(--ok-ink);
 }
-.missed-title {
+.yj-missed-title {
   margin: 16px 0 0;
   font-weight: 700;
   color: var(--muted);

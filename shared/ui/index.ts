@@ -4,7 +4,7 @@ import "../tokens/tokens.css";
 import "./shell.css";
 import "./base.css";
 
-export { Page } from "./Page";
+export { Page, type NavLink } from "./Page";
 export { Ieung, type Mood } from "./Ieung";
 export { Quiz, type Question, type Choice } from "./Quiz";
 export { Box, Btn, ListenBtn, Seg, Segments, Note, Tabs, useHashTab, type TabDef, type Accent, type Tone } from "./parts";

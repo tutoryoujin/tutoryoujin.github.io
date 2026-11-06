@@ -3,6 +3,9 @@
    공통 스타일(탭·상자·버튼·퀴즈)은 shared/ui/base.css 에 있다.
    ============================================================ */
 :root {
+  /* 본문이 480px 이라 헤더 안쪽도 같은 폭으로 맞춘다 */
+  --shell-width: 480px;
+
   /* 뜻 이름은 악센트 8쌍의 별칭이다. 여기에 hex 를 다시 적지 말 것.
      다크 값은 원본 쌍이 tokens.css 의 세 블록에서 바뀌므로 따라온다. */
   --clk-hour-bg: var(--orange-bg); /* 시 · 고유어 */
@@ -345,7 +348,7 @@ section {
   .face .knob {
     transition: none;
   }
-  .btn:active,
+  .yj-btn:active,
   .step:active {
     transform: none;
   }

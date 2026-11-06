@@ -17,7 +17,7 @@ export type Tone = Accent | (string & {});
 const toneStyle = (t: Tone): CSSProperties => ({ background: `var(--${t}-bg)`, color: `var(--${t}-ink)` });
 
 export const Box = ({ children, className = "", ...rest }: { children: ReactNode; className?: string } & Record<string, unknown>) => (
-  <div className={`box ${className}`} {...rest}>
+  <div className={`yj-box ${className}`} {...rest}>
     {children}
   </div>
 );
@@ -25,7 +25,7 @@ export const Box = ({ children, className = "", ...rest }: { children: ReactNode
 /** 큰 버튼. variant="ghost" 는 흰 바탕 */
 export function Btn(props: { ko: ReactNode; en: ReactNode; onClick?: () => void; variant?: "ghost"; id?: string }) {
   return (
-    <button id={props.id} className={`btn ${props.variant ?? ""}`} type="button" onClick={props.onClick}>
+    <button id={props.id} className={`yj-btn ${props.variant ? "yj-" + props.variant : ""}`} type="button" onClick={props.onClick}>
       <span className="ko">{props.ko}</span>
       <span className="en">{props.en}</span>
     </button>
@@ -42,22 +42,23 @@ export function ListenBtn({ text, variant }: { text: string; variant?: "ghost" }
  * 색 알약 — 문장을 쪼개 뜻마다 색을 입힌다.
  * 파스텔 8색은 명도가 거의 같아서 caption 과 en 으로 늘 글자를 같이 둔다.
  */
-export function Seg({ tone, caption, en, children }: { tone: Tone; caption: ReactNode; en?: ReactNode; children: ReactNode }) {
+export function Seg({ tone, caption, en, children, className = "" }: { tone: Tone; caption: ReactNode; en?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <div className="seg" style={toneStyle(tone)}>
+    <div className={`yj-seg ${className}`} style={toneStyle(tone)}>
       <small>{caption}</small>
       <span>{children}</span>
       {en && <em>{en}</em>}
     </div>
   );
 }
-export const Segments = ({ children }: { children: ReactNode }) => <div className="segments">{children}</div>;
+export const Segments = ({ children }: { children: ReactNode }) => <div className="yj-segs">{children}</div>;
 
 /** ✨ 알아 두기. ex 는 예시 한 줄 */
-export function Note({ ko, en, ex, tone }: { ko: ReactNode; en: ReactNode; ex?: ReactNode; tone?: Tone }) {
+/** className 으로 앱 CSS 에서 --note-accent 를 줄 수도 있다 (악센트 쌍이 아닌 색일 때) */
+export function Note({ ko, en, ex, tone, className = "" }: { ko: ReactNode; en: ReactNode; ex?: ReactNode; tone?: Tone; className?: string }) {
   const style = tone ? ({ "--note-accent": `var(--${tone}-ink)` } as CSSProperties) : undefined;
   return (
-    <div className="note" style={style}>
+    <div className={`yj-note ${className}`} style={style}>
       <span className="ko">✨ {ko}</span>
       <span className="en">{en}</span>
       {ex && <span className="ex">{ex}</span>}
@@ -92,9 +93,9 @@ export function useHashTab<K extends string>(tabs: TabDef<K>[]): [K, (k: K) => v
 
 export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef<K>[]; value: K; onChange: (k: K) => void }) {
   return (
-    <div className="tabs" role="tablist">
+    <div className="yj-tabs" role="tablist">
       {tabs.map((t) => (
-        <button key={t.key} className="tab" role="tab" type="button" aria-selected={t.key === value} onClick={() => onChange(t.key)}>
+        <button key={t.key} className="yj-tab" role="tab" type="button" aria-selected={t.key === value} onClick={() => onChange(t.key)}>
           <span className="ko">{t.ko}</span>
           <span className="en">{t.en}</span>
         </button>

@@ -15,9 +15,14 @@ type Props = {
   legal?: ReactNode;
   /** 워드마크를 <h1> 로 쌀지. 화면에 다른 <h1> 이 없을 때만 */
   h1?: boolean;
-  /** 본문 폭(px). 기본 480 */
+  /** 본문 폭(px). 기본 640. CSS 의 :root { --shell-width } 로 정해도 된다 */
   width?: number;
+  /** 이 앱 안의 메뉴 항목 (예: 이미지 출처). 형제 앱 목록 뒤에 붙는다 */
+  links?: NavLink[];
+  /** <main> 의 클래스. 앱이 레이아웃을 통째로 직접 잡을 때만 바꾼다 */
+  mainClass?: string;
 };
+export type NavLink = { href: string; ko: string; en: string; active?: boolean };
 
 const MARK = (
   <svg>
@@ -25,7 +30,7 @@ const MARK = (
   </svg>
 );
 
-export function Page({ app, children, legal, h1 = true, width }: Props) {
+export function Page({ app, children, legal, h1 = true, width, links = [], mainClass = "yj-main" }: Props) {
   const me = appBySlug(app);
   useEffect(() => {
     if (width) document.documentElement.style.setProperty("--shell-width", width + "px");
@@ -33,8 +38,8 @@ export function Page({ app, children, legal, h1 = true, width }: Props) {
 
   return (
     <>
-      <Header slug={app} h1={h1} />
-      <main className="app">{children}</main>
+      <Header slug={app} h1={h1} links={links} />
+      <main className={mainClass}>{children}</main>
       <footer className="site-footer">
         <div className="site-inner">
           <div className="foot-brand">
@@ -60,11 +65,11 @@ export function Page({ app, children, legal, h1 = true, width }: Props) {
   );
 }
 
-function Header({ slug, h1 }: { slug: string; h1: boolean }) {
+function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink[] }) {
+  const inner = links.some((l) => l.active);
   const me = appBySlug(slug);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
-  const navRef = useRef<HTMLElement>(null);
   const Tag = h1 ? "h1" : "span";
 
   useEffect(() => {
@@ -111,16 +116,22 @@ function Header({ slug, h1 }: { slug: string; h1: boolean }) {
           >
             <span className="bars" aria-hidden="true"></span>
           </button>
-          <nav ref={navRef} className="site-nav" id="siteNav" aria-label="메뉴 / Menu" hidden={!open}>
+          <nav className="site-nav" id="siteNav" aria-label="메뉴 / Menu" hidden={!open}>
             {/* 형제 앱을 모두 건다. 한쪽만 걸려 있으면 묶음이 아니라 외딴 페이지로 보인다 */}
             {APPS.map((a) => (
               <a
                 key={a.slug}
                 href={`/${a.slug}/`}
-                {...(a.slug === slug ? { className: "active", "aria-current": "page" as const } : {})}
+                {...(a.slug === slug && !inner ? { className: "active", "aria-current": "page" as const } : {})}
               >
                 {a.ko}
                 <small>{a.en}</small>
+              </a>
+            ))}
+            {links.map((l) => (
+              <a key={l.href} href={l.href} {...(l.active ? { className: "active", "aria-current": "page" as const } : {})}>
+                {l.ko}
+                <small>{l.en}</small>
               </a>
             ))}
             <a href="/">

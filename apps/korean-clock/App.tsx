@@ -97,7 +97,7 @@ function ClockTab() {
             </Seg>
           )}
         </Segments>
-        <p className="panel-en">
+        <p className="yj-en-line">
           {h}:{pad(m)} {pm ? "PM" : "AM"}
           {m ? "" : " · o’clock"}
         </p>
