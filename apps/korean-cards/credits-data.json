@@ -784,27 +784,27 @@
   "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cloud%20with%20lightning%20and%20rain"
  },
  {
-  "key": "weather/usan",
-  "title": "Closed umbrella",
+  "key": "weather/angae",
+  "title": "Foggy",
   "author": "Microsoft Fluent Emoji",
   "license": "MIT",
   "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Closed%20umbrella"
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Foggy"
  },
  {
-  "key": "weather/paeding",
-  "title": "Moncler jacket (recolored)",
-  "author": "Delapouite (game-icons.net)",
-  "license": "CC BY 3.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
-  "source": "https://game-icons.net/1x1/delapouite/moncler-jacket.html"
- },
- {
-  "key": "weather/seonkeurim",
-  "title": "Lotion bottle",
+  "key": "weather/seonseonhaeyo",
+  "title": "Wind face",
   "author": "Microsoft Fluent Emoji",
   "license": "MIT",
   "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Lotion%20bottle"
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Wind%20face"
+ },
+ {
+  "key": "weather/geonjohaeyo",
+  "title": "Cactus",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cactus"
  }
 ]

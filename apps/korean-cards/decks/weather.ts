@@ -14,7 +14,6 @@ const deck: Deck = {
     sky: { ko: "하늘", en: "Sky", color: "blue" },
     temp: { ko: "기온", en: "Temperature", color: "coral" },
     korea: { ko: "한국 날씨", en: "Korean weather", color: "lavender" },
-    pack: { ko: "챙길 것", en: "What to bring", color: "mint" },
   },
   cards: [
     {
@@ -81,6 +80,15 @@ const deck: Deck = {
       note: "Wind “blows” (불다), just like in English.",
       ex: { ko: "바람이 많이 불어요. 모자 조심하세요.", en: "It’s very windy. Watch your hat." },
     },
+    {
+      id: "angae",
+      emoji: "🌁",
+      ko: "안개",
+      en: "fog",
+      group: "sky",
+      note: "Fog “settles in” (끼다): 안개가 끼다 → 안개가 꼈어요. Thick fog is 짙은 안개.",
+      ex: { ko: "아침에 안개가 꼈어요.", en: "It was foggy this morning." },
+    },
 
     {
       id: "deowoyo",
@@ -128,6 +136,15 @@ const deck: Deck = {
       ex: { ko: "아침저녁으로 쌀쌀해요.", en: "It’s chilly in the mornings and evenings." },
     },
     {
+      id: "seonseonhaeyo",
+      emoji: "🌬️",
+      ko: "선선해요",
+      en: "it’s pleasantly cool",
+      group: "temp",
+      note: "From 선선하다. Fresh, comfortable coolness — the feel of early autumn. Nicer than 쌀쌀해요.",
+      ex: { ko: "가을이 되니까 바람이 선선해요.", en: "Now that it’s autumn, the breeze is cool and fresh." },
+    },
+    {
       id: "seuphaeyo",
       emoji: "💧",
       ko: "습해요",
@@ -135,6 +152,15 @@ const deck: Deck = {
       group: "temp",
       note: "Korean summers are very humid. The opposite is 건조해요 (dry).",
       ex: { ko: "습해서 빨래가 잘 안 말라요.", en: "It’s so humid that the laundry won’t dry." },
+    },
+    {
+      id: "geonjohaeyo",
+      emoji: "🌵",
+      ko: "건조해요",
+      en: "it’s dry",
+      group: "temp",
+      note: "From 건조하다. Korean winters are dry — the opposite of 습해요.",
+      ex: { ko: "날씨가 건조해서 물을 많이 마셔요.", en: "The air is dry, so I drink a lot of water." },
     },
 
     {
@@ -172,34 +198,6 @@ const deck: Deck = {
       group: "korea",
       note: "A short, heavy summer rain that stops as fast as it starts.",
       ex: { ko: "갑자기 소나기가 내렸어요.", en: "A sudden shower poured down." },
-    },
-
-    {
-      id: "usan",
-      emoji: "🌂",
-      ko: "우산",
-      en: "umbrella",
-      group: "pack",
-      note: "To use an umbrella is 우산을 쓰다 — the same 쓰다 as wearing a hat (모자를 쓰다).",
-      ex: { ko: "우산 챙기세요. 오후에 비 온대요.", en: "Take an umbrella. They say it’ll rain this afternoon." },
-    },
-    {
-      id: "paeding",
-      emoji: "🧥",
-      ko: "패딩",
-      en: "puffer jacket",
-      group: "pack",
-      note: "Konglish from “padding”. Long ones are called 롱패딩.",
-      ex: { ko: "날씨가 추워져서 패딩을 꺼냈어요.", en: "It got cold, so I took out my puffer jacket." },
-    },
-    {
-      id: "seonkeurim",
-      emoji: "🧴",
-      ko: "선크림",
-      en: "sunscreen",
-      group: "pack",
-      note: "Konglish from “sun cream”. You 바르다 (put on) it.",
-      ex: { ko: "햇빛이 강하니까 선크림 바르세요.", en: "The sun is strong, so put on sunscreen." },
     },
   ],
 };
