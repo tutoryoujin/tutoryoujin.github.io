@@ -1,0 +1,5 @@
+# 줄끝은 LF 로 고정한다. 카드 앱과 공통 파일을 복사해 쓰므로
+# 한쪽이 CRLF 면 복사할 때마다 파일 전체가 바뀐 것으로 잡힌다.
+* text=auto eol=lf
+*.png binary
+*.webp binary

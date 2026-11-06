@@ -1,0 +1,198 @@
+/* 한국어 with Youjin — 디자인 시스템 토큰.
+
+   shared/tokens/tokens.json 에서 scripts/build-tokens.mjs 가 생성한다. 직접 고치지 말 것.
+   값을 바꾸려면 디자인 시스템 아티팩트에서 고치고 tokens.json 을 교체한 뒤
+   npm run tokens 를 돌린다.
+   https://claude.ai/artifact/CEpgfyaaxJuP8MysgFHWbH
+
+   다크는 세 상태를 전부 정의한다. @media 안에만 있는 색이 하나라도 있으면
+   사용자가 테마를 직접 고른 순간 그 색만 빠진다. */
+:root {
+  /* 바탕과 글자 */
+  --bg: #f5f8ff;
+  --surface: #ffffff;
+  --ink: #1e2742;
+  --muted: #56618a;
+  --line: #c9d5f2;
+  --primary: #4356cf;
+  --primary-ink: #ffffff;
+  --sky: #d2e0fb;
+  --sky-ink: #23356f;
+
+  /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
+  --blue-bg: #9cb2eb;
+  --blue-ink: #17265e;
+  --pink-bg: #ffd0d2;
+  --pink-ink: #8a2535;
+  --yellow-bg: #f4e271;
+  --yellow-ink: #5f5300;
+  --mint-bg: #bdeace;
+  --mint-ink: #14543a;
+  --lavender-bg: #ddd4fb;
+  --lavender-ink: #412b8c;
+  --coral-bg: #ffd0b8;
+  --coral-ink: #8a3714;
+  --orange-bg: #ffe2ad;
+  --orange-ink: #6f4206;
+  --gray-bg: #dde4f3;
+  --gray-ink: #333d5c;
+
+  /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
+  --ieung-body: #9cb2eb;
+  --ieung-limb: #7f97dd;
+  --ieung-face: #1e2742;
+  --ieung-blush: #ffd0d2;
+
+  /* 입체 이응 — 테마가 바뀌어도 같은 값이라 라이트 블록에만 있다 */
+  --ieung-light: #dce6fd;
+  --ieung-shade: #7690d8;
+  --ieung-stem-light: #6476e2;
+  --ieung-stem-dark: #3241a8;
+  --ieung-cheek: #ff9fb3;
+
+  /* 달력 전용 */
+  --sun: #c62f44;
+  --sat: #2f62c9;
+  --special: #b07400;
+
+  /* 뜻 이름은 별칭이다. 여기에 hex 를 다시 적지 말 것 */
+  --cal-year-bg: var(--blue-bg);
+  --cal-year-ink: var(--blue-ink);
+  --cal-month-bg: var(--pink-bg);
+  --cal-month-ink: var(--pink-ink);
+  --cal-day-bg: var(--mint-bg);
+  --cal-day-ink: var(--mint-ink);
+  --cal-week-bg: var(--yellow-bg);
+  --cal-week-ink: var(--yellow-ink);
+  --ok-bg: var(--mint-bg);
+  --ok-ink: var(--mint-ink);
+  --bad-bg: var(--coral-bg);
+  --bad-ink: var(--coral-ink);
+
+  /* 글꼴 — Nunito 가 영문·숫자, Jua 가 한글을 맡는다 (한 스택에서 글자별로 분기) */
+  --font-app: "Nunito", "Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "Jua", "Nunito", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-reading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+
+  /* 간격 */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 28px;
+  --space-9: 36px;
+  --folder-overlap: 16px;
+
+  /* 모서리 */
+  --radius-sm: 12px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+
+  /* 그림자 — folder 는 위쪽으로 드리운다 */
+  --shadow-card: 0 14px 30px -12px rgba(30, 39, 66, 0.22);
+  --shadow-folder: 0 -6px 16px -8px rgba(30, 39, 66, 0.28);
+
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* 바탕과 글자 */
+    --bg: #131a2c;
+    --surface: #1d2740;
+    --ink: #e7ecfb;
+    --muted: #97a3c6;
+    --line: #36426a;
+    --primary: #95a8ff;
+    --primary-ink: #0d1428;
+    --sky: #27365e;
+    --sky-ink: #c3d4fb;
+
+    /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
+    --blue-bg: #24335f;
+    --blue-ink: #b6c7ff;
+    --pink-bg: #4b2630;
+    --pink-ink: #ffbcc1;
+    --yellow-bg: #443c14;
+    --yellow-ink: #f2e48d;
+    --mint-bg: #17432f;
+    --mint-ink: #a3ebc6;
+    --lavender-bg: #2d2659;
+    --lavender-ink: #cfc3ff;
+    --coral-bg: #4b2718;
+    --coral-ink: #ffbda2;
+    --orange-bg: #453112;
+    --orange-ink: #ffcf96;
+    --gray-bg: #2a3450;
+    --gray-ink: #c6cfe6;
+
+    /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
+    --ieung-body: #8095d4;
+    --ieung-limb: #6478b8;
+    --ieung-face: #141c33;
+    --ieung-blush: #e8a8ad;
+
+    /* 달력 전용 */
+    --sun: #ff8a96;
+    --sat: #8db2ff;
+    --special: #ffd45c;
+
+    --shadow-card: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
+    --shadow-folder: 0 -6px 16px -8px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  /* 바탕과 글자 */
+  --bg: #131a2c;
+  --surface: #1d2740;
+  --ink: #e7ecfb;
+  --muted: #97a3c6;
+  --line: #36426a;
+  --primary: #95a8ff;
+  --primary-ink: #0d1428;
+  --sky: #27365e;
+  --sky-ink: #c3d4fb;
+
+  /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
+  --blue-bg: #24335f;
+  --blue-ink: #b6c7ff;
+  --pink-bg: #4b2630;
+  --pink-ink: #ffbcc1;
+  --yellow-bg: #443c14;
+  --yellow-ink: #f2e48d;
+  --mint-bg: #17432f;
+  --mint-ink: #a3ebc6;
+  --lavender-bg: #2d2659;
+  --lavender-ink: #cfc3ff;
+  --coral-bg: #4b2718;
+  --coral-ink: #ffbda2;
+  --orange-bg: #453112;
+  --orange-ink: #ffcf96;
+  --gray-bg: #2a3450;
+  --gray-ink: #c6cfe6;
+
+  /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
+  --ieung-body: #8095d4;
+  --ieung-limb: #6478b8;
+  --ieung-face: #141c33;
+  --ieung-blush: #e8a8ad;
+
+  /* 달력 전용 */
+  --sun: #ff8a96;
+  --sat: #8db2ff;
+  --special: #ffd45c;
+
+  --shadow-card: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow-folder: 0 -6px 16px -8px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
