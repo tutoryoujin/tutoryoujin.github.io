@@ -881,32 +881,31 @@
     "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
     "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cloud%20with%20lightning%20and%20rain"
   },
-  "weather/usan": {
+  "weather/angae": {
     "kind": "icon",
-    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Closed%20umbrella/3D/closed_umbrella_3d.png",
-    "title": "Closed umbrella",
+    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Foggy/3D/foggy_3d.png",
+    "title": "Foggy",
     "author": "Microsoft Fluent Emoji",
     "license": "MIT",
     "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Closed%20umbrella"
+    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Foggy"
   },
-  "weather/paeding": {
+  "weather/seonseonhaeyo": {
     "kind": "icon",
-    "file": "art/paeding.png",
-    "url": "https://game-icons.net/icons/ffffff/000000/1x1/delapouite/moncler-jacket.png",
-    "title": "Moncler jacket (recolored)",
-    "author": "Delapouite (game-icons.net)",
-    "license": "CC BY 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
-    "source": "https://game-icons.net/1x1/delapouite/moncler-jacket.html"
-  },
-  "weather/seonkeurim": {
-    "kind": "icon",
-    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Lotion%20bottle/3D/lotion_bottle_3d.png",
-    "title": "Lotion bottle",
+    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Wind%20face/3D/wind_face_3d.png",
+    "title": "Wind face",
     "author": "Microsoft Fluent Emoji",
     "license": "MIT",
     "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Lotion%20bottle"
+    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Wind%20face"
+  },
+  "weather/geonjohaeyo": {
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Cactus/3D/cactus_3d.png",
+    "title": "Cactus",
+    "author": "Microsoft Fluent Emoji",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cactus"
   }
 }
