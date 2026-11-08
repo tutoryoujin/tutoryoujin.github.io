@@ -31,15 +31,6 @@ export function stretchTall(rows: readonly string[], h: number): string[] {
   return out;
 }
 
-/** 섞인 모음 하나만 — 자모표에서 쓴다 */
-export function mixedVowelCells(jung: string): { cells: Cell[]; flat: Cell[]; w: number; h: number } {
-  const [f, t] = MIXED_PARTS[jung];
-  const fr = VOWELS[f].rows;
-  const tr = stretchTall(VOWELS[t].rows, 5);
-  const flat = at(fr, 0, 5 - fr.length);
-  return { flat, cells: [...flat, ...at(tr, 6, 0)], w: 6 + tr[0].length, h: 5 };
-}
-
 export function layoutSyllable(cho: string, jung: string | null, jong: string | null): Layout {
   const c = CONSONANTS[cho].rows;
   const cs = sizeOf(c);

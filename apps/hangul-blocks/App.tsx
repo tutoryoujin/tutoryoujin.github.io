@@ -2,8 +2,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Btn, ListenBtn, Note, Page, Tabs, canSpeak, hasKoreanVoice, onVoicesChanged, speak, useHashTab, type TabDef } from "@yj/ui";
 import { MIXED_PARTS, canBeJong, compose, isCommon, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
-import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, cellsOf, sizeOf, type Glyph } from "./glyphs";
-import { blockType, layoutSyllable, mixedVowelCells, type Role } from "./layout";
+import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, cellsOf } from "./glyphs";
+import { blockType, layoutSyllable, type Role } from "./layout";
 import { Blocks, fitSize, type BlockCell } from "./Blocks";
 import "./hangul-blocks.css";
 
@@ -425,29 +425,14 @@ function ChartTab() {
 
 function ChartTile({ ch }: { ch: string }) {
   const info: { ko: string; en: string } = CONSONANTS[ch] ?? VOWELS[ch] ?? MIXED[ch];
-  const isCons = ch in CONSONANTS;
-  let cells: BlockCell[];
-  let w = 5;
-  if (ch in MIXED) {
-    const m = mixedVowelCells(ch);
-    const flat = new Set(m.flat.map(([x, y]) => `${x},${y}`));
-    cells = m.cells.map(([x, y]) => ({ key: `${x},${y}`, x, y, tone: flat.has(`${x},${y}`) ? "blk-jung" : "blk-jung2" }));
-    w = m.w;
-  } else {
-    const g: Glyph = isCons ? CONSONANTS[ch] : VOWELS[ch];
-    const s = sizeOf(g.rows);
-    const ox = (5 - s.w) >> 1;
-    const oy = (5 - s.h) >> 1;
-    cells = cellsOf(g.rows).map(([x, y]) => ({ key: `${x},${y}`, x: x + ox, y: y + oy, tone: isCons ? "blk-cho" : "blk-jung" }));
-  }
+  // 자모표는 블록 대신 보통 글꼴(Pretendard)로 크게 — 잘 보이는 게 먼저다
+  const tone = ch in CONSONANTS ? "blk-cho" : "blk-jung";
+  const parts = MIXED_PARTS[ch];
   return (
     <button type="button" className="hb-tile" aria-label={`${ch} ${info.ko}`} onClick={() => speak(info.ko)}>
-      <span className="hb-tile-art">
-        <Blocks cells={cells} w={w} h={5} size={w > 5 ? 7 : 9} label={ch} />
-      </span>
-      <b>{ch}</b>
+      <span className={`hb-tile-char tone-${tone}`}>{ch}</span>
       <span className="ko">{info.ko}</span>
-      <span className="en">{info.en}</span>
+      <span className="en">{parts ? `${parts[0]} + ${parts[1]} · ${info.en}` : info.en}</span>
     </button>
   );
 }

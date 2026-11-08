@@ -11,8 +11,6 @@
   --blk-cho-ink: var(--blue-ink);
   --blk-jung-bg: var(--pink-bg); /* 모음 · 섞인 모음의 가로 쪽 */
   --blk-jung-ink: var(--pink-ink);
-  --blk-jung2-bg: var(--lavender-bg); /* 섞인 모음의 세로 쪽 */
-  --blk-jung2-ink: var(--lavender-ink);
   --blk-jong-bg: var(--mint-bg); /* 받침 */
   --blk-jong-ink: var(--mint-ink);
   --blk-add-bg: var(--yellow-bg); /* 획 하나 더 — 더한 칸 */
@@ -379,21 +377,17 @@
   line-height: 1.2;
   cursor: pointer;
 }
-.hb-tile-art {
-  height: 50px;
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
-}
-/* 자모표는 한 번에 많이 그려서 떨어지는 움직임을 끈다 */
-.hb-tile .blk-cell {
-  animation: none;
-}
-.hb-tile b {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.5rem;
+/* 자모표는 블록 대신 읽기 글꼴로 크게. 책에서 보는 모양 그대로 */
+.hb-tile-char {
+  font-family: var(--font-reading);
+  font-weight: 500;
+  font-size: 3rem;
+  line-height: 1;
+  width: 100%;
+  padding: 12px 0 14px;
+  margin-bottom: 6px;
+  border-radius: var(--radius-md);
 }
 .hb-tile .ko {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
