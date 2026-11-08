@@ -81,3 +81,41 @@ export function blockType(jung: string, jong: string | null): 1 | 2 | 3 | 4 | nu
   if (s === "mixed") return null;
   return ((s === "tall" ? 1 : 2) + (jong ? 2 : 0)) as 1 | 2 | 3 | 4;
 }
+
+/* ---------- 획 하나 더 ---------- */
+
+type XY = readonly [number, number];
+export type StrokeCell = { x: number; y: number; from: XY; added: boolean };
+
+/**
+ * 원래 자모(plain)에서 획 하나 더한 자모(more)로. 칸마다 어디서 왔는지와 새로 더한 칸인지.
+ *
+ * 그냥 겹치는 칸만 보면 안 된다. ㅏ 의 짧은 획은 가운데 줄인데 ㅑ 의 두 획은 그 위아래라
+ * 겹치는 칸이 없어서 두 획이 다 '새 획'으로 보인다. 그래서 자리를 옮긴 칸은 가장 가까운
+ * 새 자리로 짝지어 미끄러지게 하고, 짝 없이 남은 칸만 더한 획으로 친다 (ㅏ → ㅑ 는 한 칸).
+ */
+export function strokeDiff(plain: readonly XY[], more: readonly XY[]): StrokeCell[] {
+  const key = ([x, y]: XY) => `${x},${y}`;
+  const inPlain = new Set(plain.map(key));
+  const inMore = new Set(more.map(key));
+  const moved = plain.filter((c) => !inMore.has(key(c)));
+  const free = more.filter((c) => !inPlain.has(key(c)));
+  const from = new Map<string, XY>();
+  for (const m of moved) {
+    // 가장 가까운 빈 새 자리로. 거리가 같으면 앞(위 · 왼쪽)의 것
+    let best = -1;
+    let bestD = Infinity;
+    free.forEach((f, i) => {
+      if (from.has(key(f))) return;
+      const d = Math.abs(f[0] - m[0]) + Math.abs(f[1] - m[1]);
+      if (d < bestD) (best = i), (bestD = d);
+    });
+    if (best >= 0) from.set(key(free[best]), m);
+  }
+  return more.map((c) => {
+    const k = key(c);
+    if (inPlain.has(k)) return { x: c[0], y: c[1], from: c, added: false };
+    const f = from.get(k);
+    return f ? { x: c[0], y: c[1], from: f, added: false } : { x: c[0], y: c[1], from: c, added: true };
+  });
+}
