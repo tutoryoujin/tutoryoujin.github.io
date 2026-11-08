@@ -21,6 +21,15 @@ export type AppInfo = {
 };
 
 export const APPS: AppInfo[] = [
+  // 한글부터 — 다른 앱은 모두 한글을 읽을 줄 안다는 데서 시작한다
+  {
+    slug: "hangul-blocks",
+    ko: "한국어 블록",
+    en: "Hangul Blocks",
+    emoji: "🧱",
+    about: { ko: "자음·모음을 누르면 글자 블록이 쌓여요", en: "Tap letters and stack them into a Hangul block" },
+    tagline: { ko: "글자 만들기, 매일 조금씩.", en: "Build Hangul, one block at a time." },
+  },
   {
     slug: "korean-cards",
     ko: "한국어 카드",

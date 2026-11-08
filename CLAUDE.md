@@ -32,7 +32,7 @@ shared/
   apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말이 모두 여기서 나온다
   tokens/            tokens.json(원본) → tokens.css(생성물, npm run tokens)
   ui/                공통 컴포넌트 — import { … } from "@yj/ui"
-  korean/            숫자 읽기(sino · native · nativeCounter · josa) + 테스트
+  korean/            숫자 읽기(sino · native · nativeCounter · josa) · 한글 합치기(hangul.ts) + 테스트
 apps/
   index.html, home.tsx
   <slug>/            index.html · main.tsx · App.tsx · <slug>.css
@@ -81,6 +81,11 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   Python 은 `python -m venv .venv` 후 `.venv/Scripts/pip install Pillow svglib`. 진행 저장 열쇠 `kcards:*` 는 바꾸지 않는다 — 학생들 기록이 날아간다.
 - **한국어 달력** — 공휴일은 양력 고정만. 6월·10월(유월·시월)은 퀴즈에 꼭 한 번씩 나온다.
 - **한국어 시계** — 시 = orange(고유어), 분 = lavender(한자어) 별칭.
+- **한국어 블록** — 설명은 교재(Hangul Basics CV01~03)를 따른다: 세로 모음 → 오른쪽, 가로 모음 → 아래, 1~4번 모양.
+  자모 그림은 `apps/hangul-blocks/glyphs.ts` (5×5, 디자인 캔버스 https://claude.ai/artifact/VzXxCndiskddCmd7twN573 와 같은 데이터).
+  「획 하나 더」는 교재의 쌍만 — 자음(바람 한 번) ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ,
+  모음(앞에 y 소리) ㅏ→ㅑ · ㅓ→ㅕ · ㅗ→ㅛ · ㅜ→ㅠ · ㅐ→ㅒ · ㅔ→ㅖ. 겹받침은 다루지 않는다.
+  색 별칭: 첫 자음 = blue, 모음 = pink, 받침 = mint, 더한 칸 = yellow.
 
 ## 작업 규칙
 
