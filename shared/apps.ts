@@ -45,6 +45,14 @@ export const APPS: AppInfo[] = [
     about: { ko: "시곗바늘을 돌리면 한국어로 읽어 줘요", en: "Turn the hands, hear the time in Korean" },
     tagline: { ko: "시계 읽기, 매일 조금씩.", en: "Tell time in Korean, one minute at a time." },
   },
+  {
+    slug: "hangul-blocks",
+    ko: "한국어 블록",
+    en: "Hangul Blocks",
+    emoji: "🧱",
+    about: { ko: "자음·모음을 누르면 글자 블록이 쌓여요", en: "Tap letters and stack them into a Hangul block" },
+    tagline: { ko: "글자 만들기, 매일 조금씩.", en: "Build Hangul, one block at a time." },
+  },
 ];
 
 export const appBySlug = (slug: string) => {

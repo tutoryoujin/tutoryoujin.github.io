@@ -1,0 +1,399 @@
+/* ============================================================
+   한국어 블록 — 이 앱에만 있는 스타일.
+   공통 스타일(탭·상자·버튼·알아 두기)은 shared/ui/base.css 에 있다.
+   ============================================================ */
+:root {
+  --shell-width: 520px;
+
+  /* 뜻 이름은 악센트 8쌍의 별칭이다. 여기에 hex 를 다시 적지 말 것.
+     다크 값은 원본 쌍이 tokens.css 의 세 블록에서 바뀌므로 따라온다. */
+  --blk-cho-bg: var(--blue-bg); /* 첫 자음 (자모표에서는 자음 전부) */
+  --blk-cho-ink: var(--blue-ink);
+  --blk-jung-bg: var(--pink-bg); /* 모음 · 섞인 모음의 가로 쪽 */
+  --blk-jung-ink: var(--pink-ink);
+  --blk-jung2-bg: var(--lavender-bg); /* 섞인 모음의 세로 쪽 */
+  --blk-jung2-ink: var(--lavender-ink);
+  --blk-jong-bg: var(--mint-bg); /* 받침 */
+  --blk-jong-ink: var(--mint-ink);
+  --blk-add-bg: var(--yellow-bg); /* 획 하나 더 — 더한 칸 */
+  --blk-add-ink: var(--yellow-ink);
+
+  /* 칸 입체감 — 흰색·검은색을 겹치는 세기. 색이 아니라 투명도라서 hex 가 없다 */
+  --blk-hi: 0.45;
+  --blk-lo: 0.16;
+}
+/* 다크에서는 칸이 어두워서 흰 테가 회색 줄처럼 보인다 — 세 상태 모두 정의 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --blk-hi: 0.1;
+    --blk-lo: 0.35;
+  }
+}
+:root[data-theme="dark"] {
+  --blk-hi: 0.1;
+  --blk-lo: 0.35;
+}
+
+.hb {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* :where 로 우선순위를 낮춘다 — 공통 버튼·알아 두기의 .en 은 제 스타일을 쓴다 */
+.hb :where(.ko) {
+  font-family: var(--font-display);
+}
+.hb :where(.en) {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.tone-blk-cho {
+  background: var(--blk-cho-bg);
+  color: var(--blk-cho-ink);
+}
+.tone-blk-jung {
+  background: var(--blk-jung-bg);
+  color: var(--blk-jung-ink);
+}
+.tone-blk-jong {
+  background: var(--blk-jong-bg);
+  color: var(--blk-jong-ink);
+}
+.tone-blk-add {
+  background: var(--blk-add-bg);
+  color: var(--blk-add-ink);
+}
+/* 파스텔 위에서는 muted 를 쓰지 않는다 — 대비가 모자란다 */
+[class*="tone-blk-"] .en {
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   블록
+   ============================================================ */
+.blk {
+  position: relative;
+  margin: 0 auto;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+.blk-cell {
+  position: absolute;
+  box-sizing: border-box;
+  /* 입체 칸 — 새 색을 만들지 않고 흰색·검은색을 반투명하게 겹친다 */
+  box-shadow:
+    inset var(--bevel) var(--bevel) 0 rgb(255 255 255 / var(--blk-hi)),
+    inset calc(var(--bevel) * -1) calc(var(--bevel) * -1) 0 rgb(0 0 0 / var(--blk-lo)),
+    inset 0 0 0 1px rgb(0 0 0 / var(--blk-lo));
+  transition:
+    left 0.3s ease,
+    top 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
+  animation: blk-drop 0.38s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.blk-cell.is-ghost {
+  opacity: 0.45;
+}
+@keyframes blk-drop {
+  from {
+    transform: translateY(-140px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blk,
+  .blk-cell {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ============================================================
+   무대 — 블록 + 보통 글꼴 글자
+   ============================================================ */
+.hb-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 250px;
+  overflow: hidden; /* 떨어지는 칸이 상자 밖으로 보이지 않게 */
+}
+.hb-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 230px;
+}
+.blk-empty {
+  width: 150px;
+  height: 150px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+}
+.hb-glyph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+/* 블록 옆의 진짜 글자. 학생이 책·간판에서 보는 모양이라 Jua 대신 읽기 글꼴 */
+.hb-syl {
+  font-family: var(--font-reading);
+  font-size: 5.5rem;
+  line-height: 1;
+  color: var(--ink);
+}
+.hb-shape,
+.hb-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+.hb-shape b {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.hb-hint .ko {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 420px) {
+  .hb-stage {
+    grid-template-columns: 1fr;
+  }
+  .hb-syl {
+    font-size: 4rem;
+  }
+}
+
+/* ============================================================
+   자리 셋 — 첫 자음 · 모음 · 받침
+   ============================================================ */
+.hb-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.hb-slot {
+  font: inherit;
+  border: 0;
+  border-radius: var(--radius-md);
+  min-height: 76px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.15;
+  cursor: pointer;
+}
+.hb-slot:disabled {
+  cursor: default;
+}
+.hb-slot small {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+}
+.hb-slot b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+.hb-slot em {
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.hb-slot.is-empty {
+  background: var(--surface);
+  color: var(--muted);
+  border: 2px dashed var(--line);
+}
+.hb-slot.is-ghost b {
+  opacity: 0.55;
+}
+.hb-slot:focus-visible,
+.hb-key:focus-visible,
+.hb-pair:focus-visible,
+.hb-say-btn:focus-visible,
+.hb-tile:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.hb-tip {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ============================================================
+   자판
+   ============================================================ */
+.hb-keys-title {
+  margin: 8px 0 0;
+  font-size: 1.05rem;
+  font-weight: 400;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.hb-keys {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 6px;
+}
+.hb-key {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  min-height: 52px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--blk-cho-bg);
+  color: var(--blk-cho-ink);
+  cursor: pointer;
+}
+.hb-key.is-vowel {
+  background: var(--blk-jung-bg);
+  color: var(--blk-jung-ink);
+}
+/* 받침 자리인데 받침이 될 수 없는 자음. 눌러도 이유를 알려 준다 */
+.hb-key.is-off {
+  background: var(--surface);
+  color: var(--muted);
+  border-style: dashed;
+}
+.hb-key:active,
+.hb-tile:active,
+.hb-say-btn:active {
+  transform: scale(0.96);
+}
+
+.hb-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+.hb-actions .yj-btn {
+  margin-top: 0;
+}
+
+/* ============================================================
+   획 하나 더
+   ============================================================ */
+.hb-pairs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.hb-pair {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  min-height: 48px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.hb-pair[aria-checked="true"] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-ink);
+}
+.hb-legend {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.hb-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.hb-say {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.hb-say-btn {
+  font: inherit;
+  border: 0;
+  border-radius: var(--radius-lg);
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+}
+.hb-say-btn b {
+  font-family: var(--font-reading);
+  font-weight: 500;
+  font-size: 2.2rem;
+  line-height: 1.1;
+}
+
+/* ============================================================
+   자모표
+   ============================================================ */
+.hb-chart {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+.hb-tile {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 12px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.hb-tile-art {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+/* 자모표는 한 번에 많이 그려서 떨어지는 움직임을 끈다 */
+.hb-tile .blk-cell {
+  animation: none;
+}
+.hb-tile b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+.hb-tile .ko {
+  font-size: 0.85rem;
+}
