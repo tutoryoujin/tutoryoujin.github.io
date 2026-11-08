@@ -77,3 +77,106 @@
   font-weight: 700;
   color: var(--muted);
 }
+
+/* ---------- 이응이 소개 ---------- */
+.home-ieung {
+  margin-top: 36px;
+  padding: 20px 18px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  word-break: keep-all; /* 한국어 낱말이 줄 끝에서 쪼개지지 않게 */
+  overflow-wrap: anywhere;
+}
+.home-ieung em {
+  display: block;
+  font-style: normal;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.home-ieung-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.home-ieung-mark {
+  width: 48px;
+  height: 48px;
+}
+.home-ieung h2 {
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.home-ieung h2 .ko {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+.home-ieung h2 .en {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.home-ieung-lead {
+  margin: 14px 0 0;
+}
+.home-ieung-story {
+  list-style: none;
+  counter-reset: story;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.home-ieung-story li {
+  counter-increment: story;
+  position: relative;
+  padding: 12px 14px 12px 50px;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+/* 장 번호 — 색은 sky 쌍, 글자(숫자)가 같이 있어서 색만으로 구분하지 않는다 */
+.home-ieung-story li::before {
+  content: counter(story);
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: var(--sky);
+  color: var(--sky-ink);
+  font-family: var(--font-display);
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+}
+.home-ieung-story b {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.05rem;
+}
+.home-ieung-story b small {
+  margin-left: 6px;
+  font-family: var(--font-app);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.home-ieung-story p {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.home-ieung-motto {
+  margin: 18px 0 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+.home-ieung-motto em {
+  font-family: var(--font-app);
+}

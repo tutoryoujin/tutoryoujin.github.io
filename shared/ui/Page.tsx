@@ -95,15 +95,20 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   return (
     <header className="site-header">
       <div className="site-inner">
-        <a className="brand" href={`/${slug}/`} aria-label={`${me.ko} with Youjin 홈 / Home`}>
-          <span className="brand-mark" aria-hidden="true">
-            {MARK}
-          </span>
-          <Tag className="brand-text">
-            {me.ko} <em>with Youjin</em>
-            <small>{me.en}</small>
-          </Tag>
-        </a>
+        <div className="brand">
+          {/* 이응 = 모든 앱 첫 화면, 이름 = 이 앱 첫 화면. 앱 사이를 오가는 길이 메뉴 안에만 있으면 못 찾는다 */}
+          <a className="brand-home" href="/" aria-label="모든 앱 / All apps">
+            <span className="brand-mark" aria-hidden="true">
+              {MARK}
+            </span>
+          </a>
+          <a className="brand-app" href={`/${slug}/`} aria-label={`${me.ko} with Youjin 처음으로 / ${me.en} start`}>
+            <Tag className="brand-text">
+              {me.ko} <em>with Youjin</em>
+              <small>{me.en}</small>
+            </Tag>
+          </a>
+        </div>
         <div className="menu">
           <button
             ref={btn}
