@@ -77,3 +77,147 @@
   font-weight: 700;
   color: var(--muted);
 }
+
+/* ---------- 이응이 — 누르면 말한다 ---------- */
+.home-ieung {
+  margin-top: 36px;
+  padding: 20px 16px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  word-break: keep-all;
+  overflow: hidden;
+}
+.home-ieung h2 {
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.home-ieung h2 .ko {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+.home-ieung h2 .en {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.ieung-stage {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* 말풍선 — 줄이 바뀔 때마다 톡 튀어나온다. 높이를 잡아 둬서 이응이가 들썩이지 않는다 */
+.ieung-bubble {
+  position: relative;
+  margin: 0;
+  min-height: 76px;
+  max-width: 300px;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--sky);
+  color: var(--sky-ink);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2; /* 튀는 글자가 말풍선 글을 가리지 않게 */
+  animation: ieung-bubble 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.ieung-bubble em {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-family: var(--font-app);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--sky-ink);
+  opacity: 0.8;
+}
+.ieung-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  margin-left: -10px;
+  border: 10px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--sky);
+}
+@keyframes ieung-bubble {
+  from { transform: scale(0.6) translateY(10px); opacity: 0; }
+}
+
+.ieung-btn {
+  position: relative;
+  margin-top: 6px;
+  width: 190px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: var(--radius-lg);
+}
+.ieung-btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+}
+/* 누르면 말랑하게 눌렸다가 튄다 */
+.ieung-poke {
+  display: block;
+  animation: ieung-poke 0.45s ease-out;
+}
+@keyframes ieung-poke {
+  0% { transform: scale(1, 1); }
+  25% { transform: scale(1.12, 0.86); }
+  55% { transform: scale(0.94, 1.08); }
+  80% { transform: scale(1.03, 0.98); }
+  100% { transform: scale(1, 1); }
+}
+
+/* 튀어나오는 글자 (out) · 안으로 담기는 낱말 (in). 색은 -bg/-ink 쌍, 글자가 같이 있다 */
+.ieung-bit {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+.ieung-bit.is-out { animation: ieung-out 1.4s ease-out forwards; }
+.ieung-bit.is-in { animation: ieung-in 1.3s ease-in forwards; }
+@keyframes ieung-out {
+  0% { transform: translate(-50%, 0) scale(0.4); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--x) * 2.3), -95px) rotate(var(--r)) scale(1); opacity: 0; }
+}
+@keyframes ieung-in {
+  0% { transform: translate(calc(-50% + var(--x) * 1.7), -120px) rotate(var(--r)) scale(1); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translate(-50%, 0) scale(0.2); opacity: 0; }
+}
+
+.ieung-count {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ieung-bubble,
+  .ieung-poke { animation: none; }
+  .ieung-bit { display: none; }
+}

@@ -51,6 +51,34 @@
   min-width: 0;
 }
 
+.brand-home,
+.brand-app {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+/* 이응 마크는 36px 라 누를 자리를 44px 로 넓힌다 (바깥으로만 — 줄 높이는 그대로) */
+.brand-home {
+  margin: -4px;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+.brand-home:hover .brand-mark {
+  transform: scale(1.08);
+}
+.brand-home:focus-visible,
+.brand-app:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.brand-home:focus-visible {
+  border-radius: var(--radius-full);
+}
+
 /* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
    preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
 .brand-mark {
@@ -61,6 +89,7 @@
   border-radius: var(--radius-full);
   background: var(--sky);
   overflow: hidden;
+  transition: transform 0.15s ease;
 }
 .brand-mark svg {
   display: block;
