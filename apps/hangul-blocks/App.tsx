@@ -3,7 +3,7 @@ import { Btn, ListenBtn, Note, Page, Tabs, canSpeak, hasKoreanVoice, onVoicesCha
 import { MIXED_PARTS, canBeJong, compose, isCommon, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
 import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, Y_PAIRS, cellsOf, type StrokePair } from "./glyphs";
-import { blockType, layoutSyllable, type Role } from "./layout";
+import { blockType, layoutSyllable, strokeDiff, type Role } from "./layout";
 import { Blocks, fitSize, type BlockCell } from "./Blocks";
 import "./hangul-blocks.css";
 
@@ -317,13 +317,15 @@ function AirTab() {
   const plainName = (CONSONANTS[p.plain] ?? VOWELS[p.plain]).ko;
   const baseTone = p.kind === "air" ? "blk-cho" : "blk-jung";
 
-  const base = new Set(stageCells(p.plain).map(([x, y]) => `${x},${y}`));
-  const cells: BlockCell[] = stageCells(ch).map(([x, y]) => ({
-    key: `${x},${y}`,
-    x,
-    y,
-    tone: base.has(`${x},${y}`) ? baseTone : "blk-add",
-  }));
+  // 옮긴 칸은 원래 자리 key 를 그대로 써서 미끄러지고, 더한 칸만 노랗게 떨어진다
+  const cells: BlockCell[] = on
+    ? strokeDiff(stageCells(p.plain), stageCells(p.more)).map((c) => ({
+        key: `${c.from[0]},${c.from[1]}`,
+        x: c.x,
+        y: c.y,
+        tone: c.added ? "blk-add" : baseTone,
+      }))
+    : stageCells(p.plain).map(([x, y]) => ({ key: `${x},${y}`, x, y, tone: baseTone }));
 
   const pick = (n: number) => {
     setI(n);

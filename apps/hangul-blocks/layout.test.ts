@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CHO, JUNG, canBeJong, commonSyllables, decompose } from "@yj/korean/hangul";
 import { AIR_PAIRS, CONSONANTS, VOWELS, Y_PAIRS, cellsOf, sizeOf } from "./glyphs";
-import { blockType, layoutSyllable, stretchTall } from "./layout";
+import { blockType, layoutSyllable, strokeDiff, stretchTall } from "./layout";
 
 describe("자모 그림", () => {
   it("자음 19 · 모음 14 가 다 있다 (섞인 모음 7 은 이어 붙인다)", () => {
@@ -101,5 +101,24 @@ describe("배치", () => {
     }
     expect(bad).toEqual([]);
     expect(n).toBeGreaterThan(2000);
+  });
+});
+
+describe("획 하나 더 — 노란 칸", () => {
+  // ㅏ → ㅑ 에서 두 획이 다 노랗게 나오던 문제. 더한 획은 언제나 하나다
+  it.each([...AIR_PAIRS, ...Y_PAIRS].filter((p) => p.plain !== "ㅂ").map((p) => [p.plain, p.more]))("%s → %s", (a, b) => {
+    const g = (ch: string) => (CONSONANTS[ch] ?? VOWELS[ch]).rows;
+    const diff = strokeDiff(cellsOf(g(a)), cellsOf(g(b)));
+    const added = diff.filter((c) => c.added).length;
+    expect(added, "더한 칸").toBe(cellsOf(g(b)).length - cellsOf(g(a)).length);
+    // 원래 칸은 하나도 빠짐없이 어딘가로 간다 (from 이 겹치지 않는다)
+    const froms = diff.filter((c) => !c.added).map((c) => c.from.join(","));
+    expect(new Set(froms).size).toBe(cellsOf(g(a)).length);
+  });
+
+  it("ㅏ → ㅑ: 원래 획은 위로 옮기고 아래 획 하나만 새로", () => {
+    const diff = strokeDiff(cellsOf(VOWELS["ㅏ"].rows), cellsOf(VOWELS["ㅑ"].rows));
+    expect(diff.filter((c) => c.added).map((c) => [c.x, c.y])).toEqual([[1, 3]]);
+    expect(diff.find((c) => c.x === 1 && c.y === 1)?.from).toEqual([1, 2]);
   });
 });
