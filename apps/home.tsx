@@ -1,7 +1,7 @@
 /* 첫 화면(/) — shared/apps.ts 의 앱을 모두 보여 준다. 여기는 손댈 일이 거의 없다. */
 import { APPS } from "@yj/apps";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Ieung, mount, speak, type Mood } from "@yj/ui";
+import { Ieung, mount, type Mood } from "@yj/ui";
 import "./home.css";
 
 function Home() {
@@ -92,7 +92,6 @@ function IeungStory() {
     const next = asleep && n >= 0 ? n : (n + 1) % LINES.length;
     setAsleep(false);
     setN(next);
-    speak(LINES[next].ko);
     const fx = LINES[next].fx ?? "out";
     const pool = fx === "in" ? WORDS : POP;
     const fresh: Bit[] = Array.from({ length: fx === "in" ? 3 : 5 }, (_, i) => ({
