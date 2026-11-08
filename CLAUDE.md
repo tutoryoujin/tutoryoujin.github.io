@@ -76,7 +76,7 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 
 ## 앱별 메모
 
-- **한국어 카드** — 덱은 `apps/korean-cards/decks/*.ts`, 새 덱은 `decks/index.ts` 에 한 줄. 그림은 `public/korean-cards/img/<덱>/<카드>.webp`.
+- **한국어 카드** — 덱은 `apps/korean-cards/decks/*.ts`, 새 덱은 `decks/index.ts` 에 한 줄. 만들 덱 후보는 `apps/korean-cards/deck-ideas.md`. 그림은 `public/korean-cards/img/<덱>/<카드>.webp`.
   그림·출처는 `tools/korean-cards/images.json` 에 적고 `build_images.py` 를 돌린다 (출처 화면 데이터 `credits-data.json` 도 같이 생성 — 직접 고치지 말 것). 공유 이미지는 `build_og.py`.
   Python 은 `python -m venv .venv` 후 `.venv/Scripts/pip install Pillow svglib`. 진행 저장 열쇠 `kcards:*` 는 바꾸지 않는다 — 학생들 기록이 날아간다.
 - **한국어 달력** — 공휴일은 양력 고정만. 6월·10월(유월·시월)은 퀴즈에 꼭 한 번씩 나온다.
