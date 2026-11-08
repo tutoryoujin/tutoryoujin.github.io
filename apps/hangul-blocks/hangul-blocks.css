@@ -46,6 +46,10 @@
   font-weight: 700;
   color: var(--muted);
 }
+/* 공통 버튼의 영어 줄은 색을 따로 안 정해서(opacity 만) 버튼 글자색을 따라가게 */
+.hb .yj-btn .en {
+  color: inherit;
+}
 
 .tone-blk-cho {
   background: var(--blk-cho-bg);
@@ -301,8 +305,9 @@
    ============================================================ */
 .hb-pairs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
   gap: 6px;
+  margin-top: 6px;
 }
 .hb-pair {
   font-family: var(--font-display);

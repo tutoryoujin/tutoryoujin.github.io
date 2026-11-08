@@ -83,7 +83,8 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 - **한국어 시계** — 시 = orange(고유어), 분 = lavender(한자어) 별칭.
 - **한국어 블록** — 설명은 교재(Hangul Basics CV01~03)를 따른다: 세로 모음 → 오른쪽, 가로 모음 → 아래, 1~4번 모양.
   자모 그림은 `apps/hangul-blocks/glyphs.ts` (5×5, 디자인 캔버스 https://claude.ai/artifact/VzXxCndiskddCmd7twN573 와 같은 데이터).
-  「획 하나 더」는 교재의 네 쌍만 — ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ. 겹받침은 다루지 않는다.
+  「획 하나 더」는 교재의 쌍만 — 자음(바람 한 번) ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ,
+  모음(앞에 y 소리) ㅏ→ㅑ · ㅓ→ㅕ · ㅗ→ㅛ · ㅜ→ㅠ · ㅐ→ㅒ · ㅔ→ㅖ. 겹받침은 다루지 않는다.
   색 별칭: 첫 자음 = blue, 모음 = pink, 받침 = mint, 더한 칸 = yellow.
 
 ## 작업 규칙

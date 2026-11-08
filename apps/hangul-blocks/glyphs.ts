@@ -63,18 +63,32 @@ export const MIXED: Record<string, { ko: string; en: string }> = {
 };
 
 /** 획 하나 더 = 바람 한 번 (교재 CV02). 예시는 교재의 낱말 */
-export type AirPair = {
+/**
+ * 획 하나 더 (교재 CV01 · CV02).
+ *   자음: 획 하나 더 = 바람 한 번     ㄱ → ㅋ
+ *   모음: 획 하나 더 = 앞에 y 소리    ㅏ → ㅑ
+ */
+export type StrokePair = {
+  kind: "air" | "y";
   plain: string;
-  air: string;
+  more: string;
   syl: [string, string];
   /** 소리 하나로 뜻이 바뀌는 낱말 — [한국어, 영어] */
   words?: [[string, string], [string, string]];
 };
-export const AIR_PAIRS: AirPair[] = [
-  { plain: "ㄱ", air: "ㅋ", syl: ["가", "카"] },
-  { plain: "ㄷ", air: "ㅌ", syl: ["다", "타"] },
-  { plain: "ㅂ", air: "ㅍ", syl: ["바", "파"], words: [["비", "rain"], ["피", "blood"]] },
-  { plain: "ㅈ", air: "ㅊ", syl: ["자", "차"], words: [["자다", "to sleep"], ["차다", "to kick"]] },
+export const AIR_PAIRS: StrokePair[] = [
+  { kind: "air", plain: "ㄱ", more: "ㅋ", syl: ["가", "카"] },
+  { kind: "air", plain: "ㄷ", more: "ㅌ", syl: ["다", "타"] },
+  { kind: "air", plain: "ㅂ", more: "ㅍ", syl: ["바", "파"], words: [["비", "rain"], ["피", "blood"]] },
+  { kind: "air", plain: "ㅈ", more: "ㅊ", syl: ["자", "차"], words: [["자다", "to sleep"], ["차다", "to kick"]] },
+];
+export const Y_PAIRS: StrokePair[] = [
+  { kind: "y", plain: "ㅏ", more: "ㅑ", syl: ["아", "야"] },
+  { kind: "y", plain: "ㅓ", more: "ㅕ", syl: ["어", "여"] },
+  { kind: "y", plain: "ㅗ", more: "ㅛ", syl: ["오", "요"] },
+  { kind: "y", plain: "ㅜ", more: "ㅠ", syl: ["우", "유"] },
+  { kind: "y", plain: "ㅐ", more: "ㅒ", syl: ["애", "얘"] },
+  { kind: "y", plain: "ㅔ", more: "ㅖ", syl: ["에", "예"] },
 ];
 
 export type Cell = [x: number, y: number];

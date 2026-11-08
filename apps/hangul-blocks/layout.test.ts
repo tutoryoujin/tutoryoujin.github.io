@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CHO, JUNG, canBeJong, commonSyllables, decompose } from "@yj/korean/hangul";
-import { AIR_PAIRS, CONSONANTS, VOWELS, cellsOf, sizeOf } from "./glyphs";
+import { AIR_PAIRS, CONSONANTS, VOWELS, Y_PAIRS, cellsOf, sizeOf } from "./glyphs";
 import { blockType, layoutSyllable, stretchTall } from "./layout";
 
 describe("자모 그림", () => {
@@ -20,12 +20,26 @@ describe("자모 그림", () => {
 
   // ㄱ→ㅋ · ㄷ→ㅌ · ㅈ→ㅊ 은 원래 칸이 그대로 있고 새 칸만 떨어진다 (아래 맞춤).
   // ㅂ→ㅍ 은 모양이 바뀌어서 여기서 뺀다.
-  it.each(AIR_PAIRS.filter((p) => p.plain !== "ㅂ").map((p) => [p.plain, p.air]))("%s → %s 는 칸만 더한다", (a, b) => {
+  it.each(AIR_PAIRS.filter((p) => p.plain !== "ㅂ").map((p) => [p.plain, p.more]))("%s → %s 는 칸만 더한다", (a, b) => {
     const bottom = (rows: string[]) => cellsOf(rows).map(([x, y]) => `${x},${y + 5 - rows.length}`);
     const after = new Set(bottom(CONSONANTS[b].rows));
     const before = bottom(CONSONANTS[a].rows);
     for (const c of before) expect(after.has(c), c).toBe(true);
     expect(after.size).toBeGreaterThan(before.length);
+  });
+
+  // 모음은 짧은 획 하나가 둘이 된다 — 칸이 꼭 하나 늘고, 크기는 같다 (같은 자리에서 바뀌어 보이게)
+  it.each(Y_PAIRS.map((p) => [p.plain, p.more]))("%s → %s 는 칸이 하나 는다", (a, b) => {
+    expect(cellsOf(VOWELS[b].rows)).toHaveLength(cellsOf(VOWELS[a].rows).length + 1);
+    expect(sizeOf(VOWELS[b].rows)).toEqual(sizeOf(VOWELS[a].rows));
+  });
+
+  // 들려주는 소리가 그 자모로 만든 글자여야 한다 — 아 → 야
+  it.each([...AIR_PAIRS, ...Y_PAIRS].map((p) => [p.plain, p.more, p.syl] as const))("%s → %s 의 예시 글자", (a, b, syl) => {
+    const first = (s: string) => decompose(s)!;
+    const pick = (d: { cho: string; jung: string }, ch: string) => (ch in CONSONANTS ? d.cho : d.jung);
+    expect(pick(first(syl[0]), a)).toBe(a);
+    expect(pick(first(syl[1]), b)).toBe(b);
   });
 });
 

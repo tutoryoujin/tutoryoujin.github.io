@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Btn, ListenBtn, Note, Page, Tabs, canSpeak, hasKoreanVoice, onVoicesChanged, speak, useHashTab, type TabDef } from "@yj/ui";
 import { MIXED_PARTS, canBeJong, compose, isCommon, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
-import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, cellsOf } from "./glyphs";
+import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, Y_PAIRS, cellsOf, type StrokePair } from "./glyphs";
 import { blockType, layoutSyllable, type Role } from "./layout";
 import { Blocks, fitSize, type BlockCell } from "./Blocks";
 import "./hangul-blocks.css";
@@ -285,27 +285,44 @@ function BuildNotes({ parts, syl, ghost }: { parts: Parts; syl: string | null; g
 }
 
 /* ============================================================
-   획 하나 더 — ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ (교재 CV02)
+   획 하나 더 (교재 CV01 · CV02)
+     자음: ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ   획 하나 더 = 바람 한 번
+     모음: ㅏ→ㅑ · ㅓ→ㅕ · ㅗ→ㅛ · ㅜ→ㅠ · ㅐ→ㅒ · ㅔ→ㅖ   획 하나 더 = 앞에 y 소리
    ============================================================ */
-/** 자음 하나를 5×5 에 아래 맞춤으로. key 는 자리라서 같은 자리 칸은 그대로 남는다 */
-const bottomCells = (ch: string) => {
-  const rows = CONSONANTS[ch].rows;
-  const off = 5 - rows.length;
-  return cellsOf(rows).map(([x, y]) => [x, y + off] as const);
+const PAIRS = [...AIR_PAIRS, ...Y_PAIRS];
+
+/**
+ * 자모 하나를 5×5 에. 자음은 아래 맞춤(ㅈ→ㅊ 처럼 윗줄에 칸이 얹히게),
+ * 모음은 가운데. key 는 자리라서 같은 자리 칸은 그대로 남고 새 칸만 떨어진다.
+ */
+const stageCells = (ch: string) => {
+  const isCons = ch in CONSONANTS;
+  const rows = (isCons ? CONSONANTS : VOWELS)[ch].rows;
+  const ox = (5 - rows[0].length) >> 1;
+  const oy = isCons ? 5 - rows.length : (5 - rows.length) >> 1;
+  return cellsOf(rows).map(([x, y]) => [x + ox, y + oy] as const);
+};
+
+const SAY: Record<StrokePair["kind"], { off: [string, string]; on: [string, string] }> = {
+  air: { off: ["바람 없음", "no air"], on: ["바람 있음", "with air"] },
+  y: { off: ["그냥 소리", "plain"], on: ["앞에 y", "y in front"] },
 };
 
 function AirTab() {
   const [i, setI] = useState(0);
   const [on, setOn] = useState(false);
-  const p = AIR_PAIRS[i];
-  const ch = on ? p.air : p.plain;
+  const p = PAIRS[i];
+  const ch = on ? p.more : p.plain;
+  const info = CONSONANTS[ch] ?? VOWELS[ch];
+  const plainName = (CONSONANTS[p.plain] ?? VOWELS[p.plain]).ko;
+  const baseTone = p.kind === "air" ? "blk-cho" : "blk-jung";
 
-  const base = new Set(bottomCells(p.plain).map(([x, y]) => `${x},${y}`));
-  const cells: BlockCell[] = bottomCells(ch).map(([x, y]) => ({
+  const base = new Set(stageCells(p.plain).map(([x, y]) => `${x},${y}`));
+  const cells: BlockCell[] = stageCells(ch).map(([x, y]) => ({
     key: `${x},${y}`,
     x,
     y,
-    tone: base.has(`${x},${y}`) ? "blk-cho" : "blk-add",
+    tone: base.has(`${x},${y}`) ? baseTone : "blk-add",
   }));
 
   const pick = (n: number) => {
@@ -317,15 +334,34 @@ function AirTab() {
     speak(p.syl[on ? 0 : 1]);
   };
 
-  return (
-    <section className="hb">
-      <div className="hb-pairs" role="radiogroup" aria-label="자음 고르기 · Pick a pair">
-        {AIR_PAIRS.map((q, n) => (
-          <button key={q.plain} type="button" role="radio" aria-checked={n === i} className="hb-pair" onClick={() => pick(n)}>
-            {q.plain} → {q.air}
+  const group = (ko: string, en: string, list: StrokePair[], offset: number) => (
+    <div>
+      <h2 className="hb-keys-title">
+        <span className="ko">{ko}</span> <span className="en">{en}</span>
+      </h2>
+      <div className="hb-pairs" role="radiogroup" aria-label={`${ko} · ${en}`}>
+        {list.map((q, n) => (
+          <button
+            key={q.plain}
+            type="button"
+            role="radio"
+            aria-checked={n + offset === i}
+            className="hb-pair"
+            onClick={() => pick(n + offset)}
+          >
+            {q.plain} → {q.more}
           </button>
         ))}
       </div>
+    </div>
+  );
+
+  const say = SAY[p.kind];
+
+  return (
+    <section className="hb">
+      {group("자음", "Consonants: one puff of air", AIR_PAIRS, 0)}
+      {group("모음", "Vowels: a y sound in front", Y_PAIRS, AIR_PAIRS.length)}
 
       <div className="yj-box hb-stage">
         <div className="hb-block">
@@ -335,15 +371,17 @@ function AirTab() {
           <span className="hb-syl">{ch}</span>
           <span className="hb-shape">
             <span className="ko">
-              {CONSONANTS[ch].ko} · {CONSONANTS[ch].en}
+              {info.ko} · {info.en}
             </span>
-            <span className="en">{on ? "With a puff of air" : "No puff of air"}</span>
+            <span className="en">
+              {p.kind === "air" ? (on ? "With a puff of air" : "No puff of air") : on ? "A y sound in front" : "No y sound"}
+            </span>
           </span>
         </div>
       </div>
 
       <div className="hb-legend">
-        <span className="hb-chip tone-blk-cho">
+        <span className={`hb-chip tone-${baseTone}`}>
           <span className="ko">원래 칸</span> <span className="en">Kept</span>
         </span>
         <span className="hb-chip tone-blk-add">
@@ -351,39 +389,59 @@ function AirTab() {
         </span>
       </div>
 
-      <Btn ko={on ? `↩ ${p.plain}으로 돌아가기` : `➕ 획 하나 더 → ${p.air}`} en={on ? `Back to ${p.plain}` : `Add one stroke → ${p.air}`} onClick={toggle} />
-
-      <Note
-        ko="획 하나 더 = 바람 한 번. 입 모양은 그대로, 숨만 달라져요."
-        en="One extra stroke = one puff of air. The mouth shape does not change. Only the breath changes."
+      <Btn
+        ko={on ? `↩ ${p.plain}${josa(plainName, "으로", "로").slice(plainName.length)} 돌아가기` : `➕ 획 하나 더 → ${p.more}`}
+        en={on ? `Back to ${p.plain}` : `Add one stroke → ${p.more}`}
+        onClick={toggle}
       />
+
+      {p.kind === "air" ? (
+        <Note
+          ko="획 하나 더 = 바람 한 번. 입 모양은 그대로, 숨만 달라져요."
+          en="One extra stroke = one puff of air. The mouth shape does not change. Only the breath changes."
+        />
+      ) : (
+        <Note
+          ko={`획 하나 더 = 소리 앞에 y가 붙어요. ${p.syl[0]} → ${p.syl[1]}`}
+          en={`Add ONE more line → the sound gets a Y in front. ${p.syl[0]} → ${p.syl[1]}`}
+        />
+      )}
 
       <h2 className="hb-keys-title">
         <span className="ko">소리 비교</span> <span className="en">Say the difference</span>
       </h2>
       <div className="hb-say">
         {p.syl.map((s, n) => (
-          <button key={s} type="button" className={`hb-say-btn tone-${n ? "blk-add" : "blk-cho"}`} onClick={() => speak(s)}>
+          <button key={s} type="button" className={`hb-say-btn tone-${n ? "blk-add" : baseTone}`} onClick={() => speak(s)}>
             <b>{s}</b>
-            <span className="ko">{n ? "바람 있음" : "바람 없음"}</span>
-            <span className="en">{n ? "with air" : "no air"}</span>
+            <span className="ko">{(n ? say.on : say.off)[0]}</span>
+            <span className="en">{(n ? say.on : say.off)[1]}</span>
           </button>
         ))}
       </div>
       {p.words && (
         <div className="hb-say">
           {p.words.map(([w, en], n) => (
-            <button key={w} type="button" className={`hb-say-btn tone-${n ? "blk-add" : "blk-cho"}`} onClick={() => speak(w)}>
+            <button key={w} type="button" className={`hb-say-btn tone-${n ? "blk-add" : baseTone}`} onClick={() => speak(w)}>
               <b>{w}</b>
               <span className="en">{en}</span>
             </button>
           ))}
         </div>
       )}
-      <Note
-        ko="손바닥을 입 앞에 대 보세요. ㅋ ㅌ ㅍ ㅊ은 바람이 느껴지고, ㄱ ㄷ ㅂ ㅈ은 안 느껴져요."
-        en="Put your hand in front of your mouth. With ㅋ ㅌ ㅍ ㅊ you feel the air. With ㄱ ㄷ ㅂ ㅈ you do not."
-      />
+
+      {p.kind === "air" && (
+        <Note
+          ko="손바닥을 입 앞에 대 보세요. ㅋ ㅌ ㅍ ㅊ은 바람이 느껴지고, ㄱ ㄷ ㅂ ㅈ은 안 느껴져요."
+          en="Put your hand in front of your mouth. With ㅋ ㅌ ㅍ ㅊ you feel the air. With ㄱ ㄷ ㅂ ㅈ you do not."
+        />
+      )}
+      {(p.plain === "ㅐ" || p.plain === "ㅔ") && (
+        <Note
+          ko="ㅐ와 ㅔ가 소리가 같듯이, ㅒ와 ㅖ도 소리가 같아요."
+          en="Just like ㅐ and ㅔ, ㅒ and ㅖ sound exactly the same."
+        />
+      )}
     </section>
   );
 }
