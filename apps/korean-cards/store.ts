@@ -110,3 +110,23 @@ export function markHowtoSeen() {
     /* 무시 — 다음에 또 보일 뿐 */
   }
 }
+
+/**
+ * 이 기기의 카드 기록 전부 (kcards:* 열쇠와 값 그대로).
+ * 나중에 로그인이 생기면 처음 한 번 이걸 서버로 올려 기기 사이를 잇는다 (#13).
+ * 열쇠는 바꾸지 않는다 — 로그인 안 한 학생은 지금처럼 이 기기에서만 쓴다.
+ */
+export function exportProgress(storage: Pick<Storage, "length" | "key" | "getItem"> | undefined = globalThis.localStorage): Record<string, string> {
+  const out: Record<string, string> = {};
+  try {
+    if (!storage) return out;
+    for (let i = 0; i < storage.length; i++) {
+      const k = storage.key(i);
+      const v = k?.startsWith("kcards:") ? storage.getItem(k) : null;
+      if (k && v !== null) out[k] = v;
+    }
+  } catch {
+    /* 사생활 보호 모드 등 */
+  }
+  return out;
+}

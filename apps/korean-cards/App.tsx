@@ -7,9 +7,10 @@
 import { useEffect, useState } from "react";
 import { cn, Page } from "@yj/ui";
 import { Credits } from "./Credits";
-import { deckById } from "./decks";
+import { loadDeck, peekDeck } from "./decks";
 import { Home } from "./Home";
 import { Study } from "./Study";
+import type { Deck } from "./types";
 import "./cards.css";
 
 const LEGAL = (
@@ -34,10 +35,28 @@ function useRoute() {
   return route;
 }
 
+/** 주소의 덱. 받아 둔 덱은 바로, 아니면 loadDeck() 으로 받는다 (decks/index.ts) */
+function useDeck(id: string | undefined): { deck?: Deck; pending: boolean } {
+  const [got, setGot] = useState<Record<string, Deck | null>>({});
+  const ready = id ? peekDeck(id) : undefined;
+  const asked = !!id && id in got;
+  useEffect(() => {
+    if (!id || ready || asked) return;
+    let live = true;
+    loadDeck(id).then((d) => live && setGot((g) => ({ ...g, [id]: d ?? null })));
+    return () => {
+      live = false;
+    };
+  }, [id, ready, asked]);
+  if (!id) return { pending: false };
+  if (ready) return { deck: ready, pending: false };
+  return asked ? { deck: got[id] ?? undefined, pending: false } : { pending: true };
+}
+
 export function App() {
   const route = useRoute();
   const m = route.match(/^\/deck\/([\w-]+)$/);
-  const deck = m ? deckById(m[1]) : undefined;
+  const { deck, pending } = useDeck(m?.[1]);
   const credits = route === "/credits";
 
   useEffect(() => {
@@ -46,9 +65,13 @@ export function App() {
       : credits
         ? "이미지 출처 · 한국어 카드 with Youjin"
         : "한국어 카드 with Youjin";
+    if (pending) return;
     if (!deck && !credits && route !== "/") history.replaceState(null, "", "#/");
     window.scrollTo(0, 0);
-  }, [route, deck, credits]);
+  }, [route, deck, credits, pending]);
+
+  // 덱을 받는 동안 (유료 덱 · 서버) 홈이 한 번 번쩍이지 않게 비워 둔다. 무료 덱은 기다림이 없다
+  if (pending) return null;
 
   // 학습 화면은 카드에 집중하도록 헤더·꼬리말 없이 자체 상단바만 쓴다
   if (deck) return <Study key={deck.id} deck={deck} />;

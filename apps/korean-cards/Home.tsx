@@ -3,9 +3,9 @@
    덱 하나가 카드 한 장. 세로로 겹쳐 쌓아 포개 둔 더미처럼 보이게 한다.
    ============================================================ */
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Bubble, cn, Ieung, pokeClass, type Mood } from "@yj/ui";
+import { Bubble, cn, Ieung, pokeClass, track, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
-import { DECKS, folderArtSrc } from "./decks";
+import { folderArtSrc, peekDeck, shelf, type ShelfItem } from "./decks";
 import { daysAway, howtoSeen, lastDeck, markHowtoSeen, progress } from "./store";
 
 /** 화면 맨 위 제목 (홈, 출처) */
@@ -107,7 +107,9 @@ export function Home() {
       <Hero ko="오늘은 어떤 카드로 공부할까요?" en="What would you like to learn today?" />
       <HowTo />
       <nav aria-label="덱 / Decks">
-        {DECKS.map((deck) => {
+        {shelf().map((item) => {
+          if (item.product) return <Locked key={item.info.id} item={item} />;
+          const deck = peekDeck(item.info.id)!;
           const p = progress(deck);
           const pct = Math.round((p.done / p.total) * 100);
           const done = p.started && p.done === p.total;
@@ -170,5 +172,33 @@ export function Home() {
         </div>
       </nav>
     </>
+  );
+}
+
+/* 유료 덱 — 판매 링크가 있을 때만 (decks/index.ts 의 shelf). 같은 더미에 잠긴 카드로 끼운다.
+   누르면 판매 페이지가 새 탭에서 열린다. 잠김은 색이 아니라 🔒 와 글자로 알린다 */
+function Locked({ item: { info, product } }: { item: ShelfItem }) {
+  if (!product) return null;
+  const price = product.price ? ` · ${product.price}` : "";
+  return (
+    <a
+      className={cn(folder, TONE[info.color], "bg-(--g-bg)")}
+      href={product.href}
+      target="_blank"
+      rel="noopener"
+      onClick={() => track("product-click", { product: product.id, source: "korean-cards-shelf" })}
+    >
+      <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{info.title.ko}</span>
+      <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">
+        <span aria-hidden="true">🔒 </span>
+        {info.count}장 · 유료 덱{price}
+      </p>
+      <p className={gloss}>
+        <span className="whitespace-nowrap">{info.title.en}</span> · <span className="whitespace-nowrap">{info.count} cards</span> ·{" "}
+        <span className="whitespace-nowrap">Paid deck</span>
+        <span className="sr-only"> (새 탭에서 열려요 / opens in a new tab)</span>
+      </p>
+      <Art src={folderArtSrc(info)} emoji={info.emoji} className={artClass} fallbackClass={artFallback} />
+    </a>
   );
 }
