@@ -189,8 +189,9 @@ describe("GEO — 자바스크립트 없이 읽히는 것", () => {
   });
   it("소유 확인 코드가 비면 메타가 없고, 있으면 넣는다", () => {
     const names = (c: SiteConfig) => headTags("", c).map((t) => t.attrs?.name);
-    expect(names(SITE)).not.toContain("google-site-verification");
-    expect(names(SITE)).not.toContain("naver-site-verification");
+    const off = { ...SITE, verify: { google: "", naver: "" } };
+    expect(names(off)).not.toContain("google-site-verification");
+    expect(names(off)).not.toContain("naver-site-verification");
     const on = { ...SITE, verify: { google: "abc", naver: "def" } };
     expect(headTags("", on).find((t) => t.attrs?.name === "google-site-verification")?.attrs?.content).toBe("abc");
     expect(names(on)).toContain("naver-site-verification");
