@@ -45,3 +45,32 @@
     transform: none;
   }
 }
+
+/* 모음의 긴 획 — 같은 쌍의 진한 쪽(ink)으로 두 번. 새 색이 아니다 */
+@keyframes blk-flash {
+  20%,
+  40%,
+  70% {
+    background-color: var(--blk-jung-ink);
+  }
+  30%,
+  55% {
+    background-color: var(--blk-jung-bg);
+  }
+}
+
+/* 「→ 오른쪽」 같은 알림 — 떴다가 사라진다. 움직임 줄이기면 그냥 보인다 */
+@keyframes blk-hint {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  15%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+  }
+}

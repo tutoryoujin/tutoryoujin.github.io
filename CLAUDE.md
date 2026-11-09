@@ -100,10 +100,14 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   Python 은 `python -m venv .venv` 후 `.venv/Scripts/pip install Pillow svglib`. 진행 저장 열쇠 `kcards:*` 는 바꾸지 않는다 — 학생들 기록이 날아간다.
 - **한국어 달력** — 공휴일은 양력 고정만. 6월·10월(유월·시월)은 퀴즈에 꼭 한 번씩 나온다.
 - **한국어 시계** — 시 = orange(고유어), 분 = lavender(한자어) 별칭.
-- **한국어 블록** — 설명은 교재(Hangul Basics CV01~03)를 따른다: 세로 모음 → 오른쪽, 가로 모음 → 아래, 1~4번 모양.
+- **한국어 블록** — 설명은 교재(Hangul Basics CV01~03)를 따른다: 세로 모음 → 오른쪽, 가로 모음 → 아래.
+  교재의 「n번 모양」 번호는 화면에 쓰지 않는다 — 교재를 모르는 학생에겐 뜻이 없다.
   자모 그림은 `apps/hangul-blocks/glyphs.ts` (5×5, 디자인 캔버스 https://claude.ai/artifact/VzXxCndiskddCmd7twN573 와 같은 데이터).
   「획 하나 더」는 교재의 쌍만 — 자음(바람 한 번) ㄱ→ㅋ · ㄷ→ㅌ · ㅂ→ㅍ · ㅈ→ㅊ,
-  모음(앞에 y 소리) ㅏ→ㅑ · ㅓ→ㅕ · ㅗ→ㅛ · ㅜ→ㅠ · ㅐ→ㅒ · ㅔ→ㅖ. 겹받침은 다루지 않는다.
+  모음(앞에 y 소리) ㅏ→ㅑ · ㅓ→ㅕ · ㅗ→ㅛ · ㅜ→ㅠ · ㅐ→ㅒ · ㅔ→ㅖ.
+  겹받침(교재 밖)은 만들기에서만 — 받침 뒤에 짝이 되는 자음(+ 표시)을 누르면 합쳐지고, 빼면 뒤 자음만 빠진다.
+  두 자음은 맨 아래에 나란히. 읽기는 `shared/korean/hangul.ts` 의 `readJong`: 앞을 읽고, ㄺ · ㄻ · ㄿ 은 뒤, 밟[밥]은 예외.
+  만든 글자 아래 영어 뜻은 받침 있는 글자만 (`apps/hangul-blocks/words.ts`, 동사 줄기는 넣지 않는다).
   색 별칭: 첫 자음 = blue, 모음 = pink, 받침 = mint, 더한 칸 = yellow.
 
 ## 작업 규칙

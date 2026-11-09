@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { CHO, JUNG, canBeJong, commonSyllables, decompose } from "@yj/korean/hangul";
+import { CHO, JUNG, commonSyllables, decompose } from "@yj/korean/hangul";
 import { AIR_PAIRS, CONSONANTS, VOWELS, Y_PAIRS, cellsOf, sizeOf } from "./glyphs";
-import { blockType, layoutSyllable, strokeDiff, stretchTall } from "./layout";
+import { layoutSyllable, longStroke, strokeDiff, stretchTall } from "./layout";
 
 describe("자모 그림", () => {
   it("자음 19 · 모음 14 가 다 있다 (섞인 모음 7 은 이어 붙인다)", () => {
@@ -65,21 +65,22 @@ describe("배치", () => {
     const top = Math.max(...l.pieces.filter((p) => p.role !== "jong").flatMap((p) => p.cells.map(([, y]) => y)));
     expect(Math.min(...jong.cells.map(([, y]) => y))).toBeGreaterThan(top);
   });
-  it.each([
-    ["ㅏ", null, 1],
-    ["ㅗ", null, 2],
-    ["ㅏ", "ㅇ", 3],
-    ["ㅗ", "ㅁ", 4],
-    ["ㅘ", null, null],
-  ] as const)("%s + %s → %s번 모양", (v, j, t) => expect(blockType(v, j)).toBe(t));
 
-  // 자주 쓰는 2,350자 중 겹받침이 없는 글자 전부: 조각끼리 겹치지 않고, 맞닿지도 않는다
+  it("겹받침은 두 자음을 맨 아래에 나란히 — 닭", () => {
+    const l = layoutSyllable("ㄷ", "ㅏ", "ㄺ");
+    const jong = l.pieces.filter((p) => p.role === "jong");
+    expect(jong.map((p) => p.ch)).toEqual(["ㄹ", "ㄱ"]);
+    const maxX = (p: (typeof jong)[number]) => Math.max(...p.cells.map(([x]) => x));
+    const minX = (p: (typeof jong)[number]) => Math.min(...p.cells.map(([x]) => x));
+    expect(minX(jong[1])).toBeGreaterThan(maxX(jong[0]) + 1); // 한 칸 띄운다
+  });
+
+  // 자주 쓰는 2,350자 전부: 조각끼리 겹치지 않고, 맞닿지도 않는다
   it("자주 쓰는 글자 전부 — 조각 사이에 빈 줄이 있다", () => {
     let n = 0;
     const bad: string[] = [];
     for (const s of commonSyllables()) {
       const d = decompose(s)!;
-      if (d.jong && !canBeJong(d.jong)) continue; // 겹받침은 다루지 않는다
       if (!JUNG.includes(d.jung as (typeof JUNG)[number])) bad.push(`${s} 모음`);
       const l = layoutSyllable(d.cho, d.jung, d.jong || null);
       const owner = new Map<string, string>();
@@ -88,7 +89,7 @@ describe("배치", () => {
           if (x < 0 || x >= l.w || y < 0 || y >= l.h) bad.push(`${s} 칸이 밖으로 ${x},${y}`);
           const k = `${x},${y}`;
           if (owner.has(k)) bad.push(`${s} 겹침 ${k}`);
-          owner.set(k, p.role);
+          owner.set(k, `${p.role}·${p.ch}`); // 겹받침 두 자음도 서로 붙으면 안 된다
         }
       for (const [k, role] of owner) {
         const [x, y] = k.split(",").map(Number);
@@ -100,7 +101,26 @@ describe("배치", () => {
       n++;
     }
     expect(bad).toEqual([]);
-    expect(n).toBeGreaterThan(2000);
+    expect(n).toBe(2350);
+  });
+});
+
+describe("모음의 긴 획", () => {
+  const jungOf = (v: string) => layoutSyllable("ㅇ", v, null).pieces.find((p) => p.role === "jung")!.cells;
+  const lines = (v: string) => {
+    const keys = [...longStroke(jungOf(v))].map((k) => k.split(",").map(Number));
+    return { xs: new Set(keys.map(([x]) => x)).size, ys: new Set(keys.map(([, y]) => y)).size, n: keys.length };
+  };
+  it.each(["ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅣ"])("%s 는 세로줄 하나", (v) => expect(lines(v).xs).toBe(1));
+  it.each(["ㅐ", "ㅒ", "ㅔ", "ㅖ"])("%s 는 세로줄 둘", (v) => expect(lines(v).xs).toBe(2));
+  it.each(["ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ"])("%s 는 가로줄 하나", (v) => expect(lines(v).ys).toBe(1));
+  it.each(["ㅘ", "ㅝ", "ㅢ", "ㅚ", "ㅟ"])("%s 는 가로줄 + 세로줄", (v) => {
+    const cells = jungOf(v);
+    const long = longStroke(cells);
+    const rows = new Set([...long].map((k) => k.split(",")[1]));
+    const cols = new Set([...long].map((k) => k.split(",")[0]));
+    expect(rows.size).toBeGreaterThan(1); // 세로줄이 여러 줄에 걸친다
+    expect(cols.size).toBeGreaterThan(1); // 가로줄이 여러 칸에 걸친다
   });
 });
 

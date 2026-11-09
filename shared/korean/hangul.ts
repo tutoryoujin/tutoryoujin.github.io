@@ -71,11 +71,48 @@ const JONG_SOUND: Record<string, string> = {
   ㅇ: "ㅇ",
 };
 
-/** 글자 하나를 혼자 읽을 때의 소리. 낮 → 낟, 부엌 → (엌 →) 억. 받침이 없거나 그대로면 같은 글자 */
+/* ---------- 겹받침 ---------- */
+
+/** 겹받침 = 앞 자음 + 뒤 자음. 11개 */
+export const DOUBLE_JONG: Record<string, [front: string, back: string]> = {
+  ㄳ: ["ㄱ", "ㅅ"],
+  ㄵ: ["ㄴ", "ㅈ"],
+  ㄶ: ["ㄴ", "ㅎ"],
+  ㄺ: ["ㄹ", "ㄱ"],
+  ㄻ: ["ㄹ", "ㅁ"],
+  ㄼ: ["ㄹ", "ㅂ"],
+  ㄽ: ["ㄹ", "ㅅ"],
+  ㄾ: ["ㄹ", "ㅌ"],
+  ㄿ: ["ㄹ", "ㅍ"],
+  ㅀ: ["ㄹ", "ㅎ"],
+  ㅄ: ["ㅂ", "ㅅ"],
+};
+
+/** 받침 둘을 겹받침 하나로. 짝이 없으면 null — ㄹ + ㄱ → ㄺ */
+export function joinJong(front: string, back: string): string | null {
+  for (const [j, [f, b]] of Object.entries(DOUBLE_JONG)) if (f === front && b === back) return j;
+  return null;
+}
+
+/**
+ * 겹받침에서 혼자 읽을 때 소리 나는 자음.
+ * 앞을 읽는 것이 보통이고, ㄺ · ㄻ · ㄿ 은 뒤를 읽는다 (닭 [닥] · 삶 [삼] · 읊 [읍]).
+ * 밟 은 ㄼ 인데 뒤를 읽는다 [밥] — 넓 [널] 과 다르다.
+ */
+export function readJong(syllable: string): string | null {
+  const d = decompose(syllable);
+  if (!d || !(d.jong in DOUBLE_JONG)) return null;
+  const [f, b] = DOUBLE_JONG[d.jong];
+  const back = d.jong === "ㄺ" || d.jong === "ㄻ" || d.jong === "ㄿ" || syllable === "밟";
+  return back ? b : f;
+}
+
+/** 글자 하나를 혼자 읽을 때의 소리. 낮 → 낟, 부엌 → (엌 →) 억, 닭 → 닥. 받침이 없거나 그대로면 같은 글자 */
 export function soundOf(syllable: string): string {
   const d = decompose(syllable);
   if (!d || !d.jong) return syllable;
-  return compose(d.cho, d.jung, JONG_SOUND[d.jong])!;
+  const j = readJong(syllable) ?? d.jong;
+  return compose(d.cho, d.jung, JONG_SOUND[j])!;
 }
 
 /* ---------- 자주 쓰는 글자 ---------- */
