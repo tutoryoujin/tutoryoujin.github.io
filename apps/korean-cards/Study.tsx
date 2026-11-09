@@ -6,7 +6,7 @@ import { cn, Ieung, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { celebrate, stopConfetti } from "./confetti";
 import { cardOf, colorOf, imgSrc } from "./decks";
-import { load, save, touch, validState, type StudyState } from "./store";
+import { load, markOpened, save, touch, validState, type StudyState } from "./store";
 import type { Deck } from "./types";
 
 /* 큰 버튼 — 회차 끝 화면에도 같이 쓴다 */
@@ -50,6 +50,9 @@ export function Study({ deck }: { deck: Deck }) {
   const onCard = state.phase === "card";
   const n = state.queue.length;
 
+  // 연 덱을 기억해 둔다 — 홈에서 책갈피로 보인다. 카드를 안 넘기고 나가도 남는다
+  useEffect(() => markOpened(deck.id), [deck.id]);
+
   // 화면에 있는 동안만: 키보드 · 스크롤 잠금 · 색종이 정리
   useEffect(() => {
     const lock = ["overscroll-none", "select-none"];
@@ -79,7 +82,7 @@ export function Study({ deck }: { deck: Deck }) {
       if (next.missed.length === 0) celebrateNext.current = true;
     }
     save(deck.id, next);
-    touch(deck.id);
+    touch();
     // 회차가 끝나면 결과 화면에 이응이 따로 선다. 한 화면에 이응은 하나
     if (next.phase === "card") {
       // 정답이면 신나요, 다섯 장 연속이면 놀라요, 오답이면 헷갈려요. 슬픈 이응은 없다

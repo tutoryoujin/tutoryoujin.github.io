@@ -36,18 +36,26 @@ export function save(deckId: string, s: StudyState) {
   }
 }
 
-/** 마지막으로 카드를 넘긴 시각과 덱. 시각은 졸린 이응을, 덱은 홈의 책갈피를 정한다.
-    "kcards:lastDeck" 은 나중에 더한 열쇠라 예전 학생들에게는 없다 — 한 장 넘기면 생긴다 */
-export function touch(deckId: string) {
+/** 마지막으로 카드를 넘긴 시각. 졸린 이응을 언제 보일지 정한다 */
+export function touch() {
   try {
     localStorage.setItem("kcards:last", String(Date.now()));
+  } catch {
+    /* 무시 */
+  }
+}
+
+/** 마지막으로 연 덱. 홈의 책갈피를 정한다.
+    나중에 더한 열쇠라 예전 학생들에게는 없다 — 덱을 한 번 열면 생긴다 */
+export function markOpened(deckId: string) {
+  try {
     localStorage.setItem("kcards:lastDeck", deckId);
   } catch {
     /* 무시 */
   }
 }
 
-/** 마지막으로 공부한 덱 id. 기록이 없으면 null */
+/** 마지막으로 연 덱 id. 기록이 없으면 null */
 export function lastDeck(): string | null {
   try {
     return localStorage.getItem("kcards:lastDeck");

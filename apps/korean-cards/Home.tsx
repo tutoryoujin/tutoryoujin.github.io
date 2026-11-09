@@ -37,7 +37,7 @@ const label = "inline-block rounded-full px-4 pt-2.75 pb-2.25 font-display text-
 /* 폴더 위에서는 muted 를 쓰지 않는다 — 파스텔 8색 중 넷이 4.5:1 에 못 미친다.
    영문도 ink 로 두고 크기와 굵기로만 눌러 준다. */
 const gloss = "mt-1.5 text-[0.76rem] font-semibold";
-/* 책갈피 — 마지막으로 공부한 덱. 위 모서리에 꽂아 둔 리본이라 아래 카드에 가리지 않는다.
+/* 책갈피 — 마지막으로 연 덱. 위 모서리에 꽂아 둔 리본이라 아래 카드에 가리지 않는다.
    색만으로 알리지 않게 모양(리본)으로 보이고, 읽기 프로그램에는 글자로 알린다 */
 const ribbon = "pointer-events-none absolute top-0 right-6 h-9 w-6 fill-(--g-ink)";
 /* 겉면 그림 — 바탕 타일 없이 투명 PNG 를 그대로. 일부러 밖으로 밀어 내
