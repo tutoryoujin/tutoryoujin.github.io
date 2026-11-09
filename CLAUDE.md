@@ -10,6 +10,16 @@
 
 **slug 는 학생들에게 나간 주소입니다. 바꾸지 마세요.**
 
+## 작업 전에 — 이슈부터 (반드시)
+
+**어떤 작업이든 시작하기 전에 GitHub 이슈를 먼저 확인합니다.** 건너뛰지 마세요.
+
+1. `gh issue list` 로 열린 이슈를 보고, 고정된 **로드맵 이슈**(#17)에서 지금 단계를 확인합니다.
+2. 요청과 맞는 이슈가 있으면 `gh issue view <번호>` 로 본문(지켜야 할 것 · 완료 기준 · 시작 조건)을 읽고 그대로 따릅니다.
+   이슈의 시작 조건이 아직 안 됐으면 작업 전에 사용자에게 알립니다.
+3. 맞는 이슈가 없으면 이슈를 먼저 만들고 작업합니다. 작업 중 나온 「나중에 할 일」도 이슈로 남깁니다.
+4. 커밋 메시지에 `Closes #<번호>` 를 적어 main 에 올라가면 닫히게 하고, 로드맵 이슈의 체크도 갱신합니다.
+
 ## 기술 스택
 
 React 18 · TypeScript · Vite 5 (여러 페이지 빌드) · Tailwind CSS 4 · Vitest. 서버 없음 — GitHub Pages 정적 배포.
@@ -102,7 +112,9 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 
 ## 앱별 메모
 
-- **한국어 카드** — 덱은 `apps/korean-cards/decks/*.ts`, 새 덱은 `decks/index.ts` 에 한 줄. 그림은 `public/korean-cards/img/<덱>/<카드>.webp`.
+- **한국어 카드** — 덱은 `apps/korean-cards/decks/*.ts`, 새 덱은 `decks/index.ts` 에 한 줄.
+  덱은 `loadDeck(id)` 로만 받습니다 (무료 = 번들, 유료 = 나중에 서버 #12). 유료 덱은 `decks/paid.ts` 에 **겉면만** — 카드 내용을 저장소에 넣지 마세요.
+  판매 링크(`shared/site.ts` products 의 같은 id)가 있어야 홈 더미에 🔒 카드로 보입니다. 기기 기록 꺼내기는 `exportProgress()` (#13 동기화용). 그림은 `public/korean-cards/img/<덱>/<카드>.webp`.
   그림·출처는 `tools/korean-cards/images.json` 에 적고 `build_images.py` 를 돌린다 (출처 화면 데이터 `credits-data.json` 도 같이 생성 — 직접 고치지 말 것). 공유 이미지는 `build_og.py`.
   Python 은 `python -m venv .venv` 후 `.venv/Scripts/pip install Pillow svglib`. 진행 저장 열쇠 `kcards:*` 는 바꾸지 않는다 — 학생들 기록이 날아간다.
 - **한국어 달력** — 공휴일은 양력 고정만. 6월·10월(유월·시월)은 퀴즈에 꼭 한 번씩 나온다.
