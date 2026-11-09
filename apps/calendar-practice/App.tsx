@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Btn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
+import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
 import { HOLIDAYS, MONTH_EN, RELATIVE, SPECIAL_NOTE, WEEK, readDay, readMonth, readYear, wrongChoices } from "./reading";
 import "./calendar.css";
 
@@ -8,6 +8,20 @@ const TABS: TabDef<"cal" | "year" | "quiz">[] = [
   { key: "year", ko: "연간", en: "Year" },
   { key: "quiz", ko: "퀴즈", en: "Quiz" },
 ];
+
+/* 달 머리(‹ 제목 ›) — 달력 탭과 연간 탭이 같이 쓴다 */
+const monthHead = "mb-3 flex items-center justify-between gap-2";
+const navBtn = "grid size-11 flex-none place-items-center rounded-full border border-line bg-bg text-[1.3rem]";
+const monthTitle = "flex-1 text-center";
+const titleDigits = "font-display text-[1.5rem] leading-[1.1]";
+const titleReading = "mt-0.5 text-[0.95rem] font-bold text-muted";
+const section = "flex flex-col gap-3.5";
+const week7 = "grid grid-cols-7 gap-1";
+const sparkle = "animate-[sparkle_1.6s_ease-in-out_infinite]";
+const tag = "rounded-full border border-line bg-bg px-3 py-1 text-[0.85rem] font-bold";
+const tagWord = "font-display text-[1rem] font-normal";
+/* TTS 가 없어서 들어 보기 버튼이 빠지면 남은 버튼이 한 줄을 다 쓴다 */
+const pickBtn = "mt-3 min-h-13 only:col-span-full";
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const TODAY = startOfDay(new Date());
@@ -62,61 +76,66 @@ function CalendarTab({ view, setView }: { view: View; setView: (v: View) => void
   const first = new Date(y, m - 1, 1).getDay();
   const days = new Date(y, m, 0).getDate();
   const cells = [];
-  for (let i = 0; i < first; i++) cells.push(<div key={"e" + i} className="empty" />);
+  for (let i = 0; i < first; i++) cells.push(<div key={"e" + i} className="aspect-square" />);
   for (let d = 1; d <= days; d++) {
     const date = new Date(y, m - 1, d);
     const wd = date.getDay();
-    const cls = ["cell"];
-    if (wd === 0) cls.push("sun");
-    if (wd === 6) cls.push("sat");
-    if (HOLIDAYS[`${m}-${d}`]) cls.push("holiday");
-    if (+date === +TODAY) cls.push("today");
-    if (+date === +selected) cls.push("selected");
+    const hol = !!HOLIDAYS[`${m}-${d}`];
+    const isSel = +date === +selected;
+    const cls = cn(
+      "relative flex aspect-square min-h-10 flex-col items-center justify-center rounded-sm text-[1rem] font-extrabold",
+      (wd === 0 || hol) && "text-sun",
+      wd === 6 && "text-sat",
+      +date === +TODAY &&
+        "shadow-[inset_0_0_0_2px_var(--primary)] after:mt-px after:font-display after:text-[0.58rem] after:leading-none after:text-primary after:content-['오늘']",
+      hol && "before:absolute before:top-1.5 before:right-[7px] before:size-[5px] before:rounded-full before:bg-sun before:content-['']",
+      isSel ? "bg-primary text-primary-ink before:bg-primary-ink after:text-primary-ink" : "hover:bg-bg",
+    );
     cells.push(
-      <button key={d} className={cls.join(" ")} type="button" aria-label={`${readMonth(m)} ${readDay(d)} ${WEEK[wd][0]}요일`} onClick={() => setSelected(date)}>
+      <button key={d} className={cls} type="button" aria-label={`${readMonth(m)} ${readDay(d)} ${WEEK[wd][0]}요일`} onClick={() => setSelected(date)}>
         {d}
       </button>,
     );
   }
 
   return (
-    <section>
+    <section className={section}>
       <Box>
-        <div className="month-head">
-          <button className="nav" type="button" aria-label="이전 달 / Previous month" onClick={() => shift(-1)}>
+        <div className={monthHead}>
+          <button className={navBtn} type="button" aria-label="이전 달 / Previous month" onClick={() => shift(-1)}>
             ‹
           </button>
-          <div className="month-title">
-            <div className="digits">
+          <div className={monthTitle}>
+            <div className={titleDigits}>
               {y}년 {m}월
             </div>
-            <div className="reading">
+            <div className={titleReading}>
               {readYear(y)} {readMonth(m)}
             </div>
           </div>
-          <button className="nav" type="button" aria-label="다음 달 / Next month" onClick={() => shift(1)}>
+          <button className={navBtn} type="button" aria-label="다음 달 / Next month" onClick={() => shift(1)}>
             ›
           </button>
         </div>
-        <div className="weekdays">
+        <div className={cn(week7, "mb-1.5")}>
           {WEEK.map((w, i) => (
-            <div key={w[0]} className={`wd ${i === 0 ? "sun" : i === 6 ? "sat" : ""}`}>
-              <span className="ko">{w[0]}</span>
-              <span className="en">{w[1]}</span>
+            <div key={w[0]} className="py-0.5 text-center leading-[1.1]">
+              <span className={cn("block font-display text-[1rem]", i === 0 && "text-sun", i === 6 && "text-sat")}>{w[0]}</span>
+              <span className="text-[0.6rem] font-bold text-muted">{w[1]}</span>
             </div>
           ))}
         </div>
-        <div className="grid">{cells}</div>
+        <div className={week7}>{cells}</div>
         <button
-          className="today-btn"
+          className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-line bg-bg"
           type="button"
           onClick={() => {
             setView({ y: TODAY.getFullYear(), m: TODAY.getMonth() + 1 });
             setSelected(TODAY);
           }}
         >
-          <span className="ko">오늘로 가기</span>
-          <span className="en">Go to today</span>
+          <span className="font-display">오늘로 가기</span>
+          <span className="text-[0.75rem] font-bold text-muted">Go to today</span>
         </button>
       </Box>
       <DayPanel date={selected} />
@@ -137,14 +156,14 @@ function DayPanel({ date }: { date: Date }) {
 
   return (
     <Box aria-live="polite">
-      <div className="panel-digits">
+      <div className="mt-0.5 mb-3 text-center font-display text-[1.6rem]">
         {y}년 {m}월 {d}일 {weekKo}
       </div>
       <Segments>
         <Seg tone="cal-year" caption={`${y}년`}>
           {readYear(y)}
         </Seg>
-        <Seg tone="cal-month" caption={`${m}월`} className={special ? "special" : ""}>
+        <Seg tone="cal-month" caption={`${m}월`} className={cn(special && cn("shadow-[0_0_0_3px_var(--special)] motion-reduce:animate-none", sparkle))}>
           {readMonth(m)}
         </Seg>
         <Seg tone="cal-day" caption={`${d}일`}>
@@ -154,22 +173,23 @@ function DayPanel({ date }: { date: Date }) {
           {weekKo}
         </Seg>
       </Segments>
-      <p className="yj-en-line">{en}</p>
+      <p className="mt-3 text-center font-bold text-muted">{en}</p>
       {(rel || hol) && (
-        <div className="tags">
+        <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
           {rel && (
-            <span className="tag">
-              <b>{rel[0]}</b> {rel[1]}
+            <span className={tag}>
+              <b className={tagWord}>{rel[0]}</b> {rel[1]}
             </span>
           )}
           {hol && (
-            <span className="tag hol">
-              <b>{hol[0]}</b> {hol[1]}
+            <span className={cn(tag, "border-current text-sun")}>
+              <b className={tagWord}>{hol[0]}</b> {hol[1]}
             </span>
           )}
         </div>
       )}
-      {special && <Note className="note-special" ko={special[0]} en={special[1]} />}
+      {/* 6월·10월 메모 — special 은 악센트 쌍이 아니라 달력 전용 색이다 */}
+      {special && <Note accent="--special" ko={special[0]} en={special[1]} />}
       <ListenBtn text={`${readYear(y)} ${readMonth(m)} ${readDay(d)} ${weekKo}`} />
     </Box>
   );
@@ -183,41 +203,42 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
   const isThisYear = year === TODAY.getFullYear();
 
   return (
-    <section>
+    <section className={section}>
       <Box>
-        <div className="month-head">
-          <button className="nav" type="button" aria-label="이전 해 / Previous year" onClick={() => setYear(year - 1)}>
+        <div className={monthHead}>
+          <button className={navBtn} type="button" aria-label="이전 해 / Previous year" onClick={() => setYear(year - 1)}>
             ‹
           </button>
-          <div className="month-title">
-            <div className="digits">{year}년</div>
-            <div className="reading">{readYear(year)}</div>
+          <div className={monthTitle}>
+            <div className={titleDigits}>{year}년</div>
+            <div className={titleReading}>{readYear(year)}</div>
           </div>
-          <button className="nav" type="button" aria-label="다음 해 / Next year" onClick={() => setYear(year + 1)}>
+          <button className={navBtn} type="button" aria-label="다음 해 / Next year" onClick={() => setYear(year + 1)}>
             ›
           </button>
         </div>
-        <div className="year-pick" id="yearPick" aria-live="polite">
-          <div className="sub">
+        <div className="text-center" id="yearPick" aria-live="polite">
+          <div className="font-bold text-muted">
             {picked}월 · {MONTH_EN[picked - 1]}
           </div>
-          <div className={`big ${special ? "special-text" : ""}`}>{readMonth(picked)}</div>
-          {special && <Note className="note-special" ko={special[0]} en={special[1]} />}
-          <div className="btn-row">
-            <ListenBtn text={readMonth(picked)} />
-            <Btn variant="ghost" ko="이 달 달력 보기" en="Open this month" onClick={() => open(year, picked)} />
+          <div className={cn("my-1 font-display text-[2.6rem] leading-[1.1]", special && "text-cal-month-ink")}>{readMonth(picked)}</div>
+          {special && <Note accent="--special" className="text-left" ko={special[0]} en={special[1]} />}
+          <div className="grid grid-cols-2 gap-2">
+            <ListenBtn text={readMonth(picked)} className={pickBtn} />
+            <Btn className={pickBtn} variant="ghost" ko="이 달 달력 보기" en="Open this month" onClick={() => open(year, picked)} />
           </div>
         </div>
       </Box>
 
-      <div className="months">
+      {/* 위 상자와의 간격은 section 의 gap 이 준다 */}
+      <div className="grid grid-cols-2 gap-2.5 min-[440px]:grid-cols-3">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((mm) => {
           const first = new Date(year, mm - 1, 1).getDay();
           const days = new Date(year, mm, 0).getDate();
           const isNow = isThisYear && mm === TODAY.getMonth() + 1;
           const mini = [
             ...WEEK.map((w) => (
-              <span key={"h" + w[0]} className="h">
+              <span key={"h" + w[0]} className="font-display font-normal text-muted">
                 {w[0]}
               </span>
             )),
@@ -225,7 +246,11 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
             ...Array.from({ length: days }, (_, k) => {
               const d = k + 1;
               const wd = (first + d - 1) % 7;
-              const cls = [wd === 0 && "s", wd === 6 && "t", HOLIDAYS[`${mm}-${d}`] && "hd", isNow && d === TODAY.getDate() && "td"].filter(Boolean).join(" ");
+              const cls = cn(
+                (wd === 0 || HOLIDAYS[`${mm}-${d}`]) && "text-sun",
+                wd === 6 && "text-sat",
+                isNow && d === TODAY.getDate() && "rounded-full bg-primary text-primary-ink",
+              );
               return (
                 <span key={d} className={cls}>
                   {d}
@@ -236,7 +261,7 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
           return (
             <button
               key={mm}
-              className={`mcard ${mm === picked ? "picked" : ""} ${isNow ? "now" : ""}`}
+              className={cn("rounded-[18px] border-2 border-transparent bg-surface px-2 pt-2.5 pb-2 text-center shadow-card", mm === picked && "border-primary")}
               type="button"
               aria-label={`${mm}월, ${readMonth(mm)}`}
               onClick={() => {
@@ -245,11 +270,17 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
                 document.getElementById("yearPick")?.scrollIntoView({ behavior: "smooth", block: "center" });
               }}
             >
-              <div className={`mname ${SPECIAL_NOTE[mm] ? "special-name" : ""}`}>{readMonth(mm)}</div>
-              <div className="msub">
+              <div
+                className={cn(
+                  "font-display text-[1.3rem] leading-[1.1]",
+                  SPECIAL_NOTE[mm] && cn("inline-block rounded-full px-2 shadow-[0_0_0_2px_var(--special)]", sparkle),
+                  isNow && "after:font-app after:text-[0.62rem] after:font-extrabold after:text-primary after:content-['_·_이번_달']",
+                )}
+              >{readMonth(mm)}</div>
+              <div className="mt-0.5 mb-1.5 text-[0.7rem] font-bold text-muted">
                 {mm}월 · {MONTH_EN[mm - 1]}
               </div>
-              <div className="mini" aria-hidden="true">
+              <div className="grid grid-cols-7 gap-px text-[0.6rem] leading-[1.7] font-bold" aria-hidden="true">
                 {mini}
               </div>
             </button>
@@ -279,7 +310,7 @@ function makeQuestion(index: number): Question {
   return {
     id: `${m}-${d}`,
     prompt: (
-      <div className="q-date">
+      <div className="mt-2.5 mb-4 text-center font-display text-[clamp(2.6rem,14vw,3.4rem)]">
         {m}월 {d}일
       </div>
     ),

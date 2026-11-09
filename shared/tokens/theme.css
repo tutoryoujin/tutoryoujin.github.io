@@ -1,0 +1,124 @@
+/* 한국어 with Youjin — Tailwind 테마.
+
+   shared/tokens/tokens.json 에서 scripts/build-tokens.mjs 가 생성한다. 직접 고치지 말 것.
+
+   bg-blue-bg text-blue-ink   악센트 쌍 — 늘 같이 쓴다
+   bg-surface text-muted      바탕과 글자
+   font-display text-display-md rounded-lg shadow-card
+
+   기본 팔레트·글꼴·모서리·그림자는 지웠다. 여기 없는 색은 만들 수 없다.
+   간격은 Tailwind 기본(4px 단위)을 그대로 쓴다 — p-4 = 16px. */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-sky: var(--sky);
+  --color-sky-ink: var(--sky-ink);
+  --color-blue-bg: var(--blue-bg);
+  --color-blue-ink: var(--blue-ink);
+  --color-pink-bg: var(--pink-bg);
+  --color-pink-ink: var(--pink-ink);
+  --color-yellow-bg: var(--yellow-bg);
+  --color-yellow-ink: var(--yellow-ink);
+  --color-mint-bg: var(--mint-bg);
+  --color-mint-ink: var(--mint-ink);
+  --color-lavender-bg: var(--lavender-bg);
+  --color-lavender-ink: var(--lavender-ink);
+  --color-coral-bg: var(--coral-bg);
+  --color-coral-ink: var(--coral-ink);
+  --color-orange-bg: var(--orange-bg);
+  --color-orange-ink: var(--orange-ink);
+  --color-gray-bg: var(--gray-bg);
+  --color-gray-ink: var(--gray-ink);
+  --color-ieung-body: var(--ieung-body);
+  --color-ieung-limb: var(--ieung-limb);
+  --color-ieung-face: var(--ieung-face);
+  --color-ieung-blush: var(--ieung-blush);
+  --color-ieung-light: var(--ieung-light);
+  --color-ieung-shade: var(--ieung-shade);
+  --color-ieung-stem-light: var(--ieung-stem-light);
+  --color-ieung-stem-dark: var(--ieung-stem-dark);
+  --color-ieung-cheek: var(--ieung-cheek);
+  --color-sun: var(--sun);
+  --color-sat: var(--sat);
+  --color-special: var(--special);
+  --color-cal-year-bg: var(--cal-year-bg);
+  --color-cal-year-ink: var(--cal-year-ink);
+  --color-cal-month-bg: var(--cal-month-bg);
+  --color-cal-month-ink: var(--cal-month-ink);
+  --color-cal-day-bg: var(--cal-day-bg);
+  --color-cal-day-ink: var(--cal-day-ink);
+  --color-cal-week-bg: var(--cal-week-bg);
+  --color-cal-week-ink: var(--cal-week-ink);
+  --color-ok-bg: var(--ok-bg);
+  --color-ok-ink: var(--ok-ink);
+  --color-bad-bg: var(--bad-bg);
+  --color-bad-ink: var(--bad-ink);
+
+  --shadow-*: initial;
+  --shadow-card: var(--shadow-card);
+  --shadow-folder: var(--shadow-folder);
+}
+
+@theme {
+  --font-*: initial;
+  --font-app: "Nunito", "Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "Jua", "Nunito", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-reading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+
+  /* 글자 — 디자인 시스템 타입 스케일. 글꼴은 따로: font-display text-display-md */
+  --text-*: initial;
+  --text-display-xl: 2.2rem;
+  --text-display-xl--line-height: 1;
+  --text-display-xl--font-weight: 400;
+  --text-display-lg: 1.55rem;
+  --text-display-lg--line-height: 1.15;
+  --text-display-lg--font-weight: 400;
+  --text-display-md: 1.2rem;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--font-weight: 400;
+  --text-folder-title: 1.5rem;
+  --text-folder-title--line-height: 1.1;
+  --text-folder-title--font-weight: 800;
+  --text-title: 1.3rem;
+  --text-title--line-height: 1.2;
+  --text-title--font-weight: 800;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 400;
+  --text-body-strong: 1rem;
+  --text-body-strong--line-height: 1.5;
+  --text-body-strong--font-weight: 700;
+  --text-label: 0.85rem;
+  --text-label--line-height: 1.1;
+  --text-label--font-weight: 700;
+  --text-caption: 0.74rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 700;
+  --text-gloss: 0.7rem;
+  --text-gloss--line-height: 1.1;
+  --text-gloss--font-weight: 600;
+  --text-card-word: 2rem;
+  --text-card-word--line-height: 1.2;
+  --text-card-word--font-weight: 700;
+  --text-card-note: 0.95rem;
+  --text-card-note--line-height: 1.6;
+  --text-card-note--font-weight: 400;
+
+  --radius-*: initial;
+  --radius-sm: 12px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+
+  /* 화면 폭 — 600px 하나만. 나머지 한 번 쓰는 폭은 min-[440px]: 처럼 적는다 */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 600px;
+}
+

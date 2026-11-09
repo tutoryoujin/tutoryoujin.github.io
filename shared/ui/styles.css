@@ -1,0 +1,56 @@
+/* ============================================================
+   한국어 with Youjin — Tailwind 입구. @yj/ui 가 import 한다.
+   앱에서 따로 부를 일은 없다.
+
+   tokens.css  CSS 변수 (다크 세 상태)       ← tokens.json 생성물
+   theme.css   Tailwind @theme (변수 → 유틸) ← tokens.json 생성물
+   ieung.css   움직이는 이응 키프레임
+
+   스타일은 컴포넌트의 className 에 유틸리티로 적는다.
+   여기에는 유틸리티로 못 쓰는 것만 둔다.
+   ============================================================ */
+@import "tailwindcss";
+@import "../tokens/tokens.css";
+@import "../tokens/theme.css";
+@import "./ieung.css";
+
+/* Vite root 가 apps/ 라 shared/ 는 자동으로 안 훑는다 */
+@source "../../apps";
+@source "../";
+
+@layer base {
+  html {
+    line-height: normal; /* preflight 의 1.5 대신 글꼴 기본 — 화면들이 이 값으로 짜여 있다 */
+    scroll-padding-top: 72px; /* sticky 헤더에 가리지 않게 */
+  }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-app);
+    font-synthesis: none; /* Jua 는 굵기가 하나뿐 — 가짜 볼드 방지 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  /* React 가 그리는 자리. 헤더·본문·꼬리말이 body 의 flex 에 그대로 놓이게 */
+  #root {
+    display: contents;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  /* 누를 수 있는 것은 모두 같은 포커스 링 */
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* 본문 폭 — <Page width> 나 앱 CSS 의 :root 에서 바꾼다 */
+:root {
+  --shell-width: 640px;
+}

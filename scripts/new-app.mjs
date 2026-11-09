@@ -60,15 +60,18 @@ export function App() {
     <Page app="${slug}">
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
       <Box>
-        <p>여기서 시작해요. {tab}</p>
+        <p className="text-center font-display text-display-md">여기서 시작해요. {tab}</p>
       </Box>
     </Page>
   );
 }
 `,
-  [`${slug}.css`]: `/* ${ko} — 이 앱에만 있는 스타일.
-   색은 악센트 8쌍의 별칭으로만 만든다. 여기에 hex 를 적지 말 것.
-   :root { --xx-bg: var(--mint-bg); --xx-ink: var(--mint-ink); } */
+  [`${slug}.css`]: `/* ${ko} — 스타일은 JSX 의 className 에 Tailwind 유틸리티로 적는다.
+   이 파일에는 유틸리티로 못 쓰는 것만 둔다:
+   - 뜻 이름 색 별칭 (악센트 8쌍의 var() 만, hex 금지)
+       :root { --xx-bg: var(--mint-bg); --xx-ink: var(--mint-ink); }
+     쓸 때는 bg-(--xx-bg) text-(--xx-ink), 또는 <Seg tone="xx">
+   - @keyframes */
 `,
 };
 for (const [name, text] of Object.entries(files)) writeFileSync(dir + name, text);

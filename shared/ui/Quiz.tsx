@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Ieung, type Mood } from "./Ieung";
 import { canSpeak, speak } from "./speech";
-import { Btn } from "./parts";
+import { Btn, boxClass } from "./parts";
+import { cn } from "./cn";
 
 /* ============================================================
    보기 넷 중 하나 고르는 퀴즈 — 판 진행 · 채점 · 피드백 · 결과.
@@ -42,6 +43,17 @@ const shuffle = <T,>(a: T[]) => {
 
 type Round = { q: Question; choices: Choice[]; picked: Choice | null };
 
+const scoreNum = "font-display text-[1rem] font-normal text-ink";
+const enLine = "block text-[0.85rem] font-bold text-muted";
+
+/** 문제·결과 위의 작은 제목. 한국어 한 줄, 영어 한 줄 */
+const QLabel = ({ ko, en }: { ko: string; en: string }) => (
+  <div className="text-center text-[0.85rem] font-bold text-muted">
+    <span className="block font-display text-[1rem] text-ink">{ko}</span>
+    {en}
+  </div>
+);
+
 export function Quiz({ make, length = 10, label }: Props) {
   const [seen, setSeen] = useState<string[]>([]);
   const [round, setRound] = useState<Round | null>(null);
@@ -71,7 +83,7 @@ export function Quiz({ make, length = 10, label }: Props) {
   useEffect(start, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (round?.picked) nextRef.current?.querySelector<HTMLButtonElement>(".yj-btn:last-child")?.focus();
+    if (round?.picked) nextRef.current?.querySelector<HTMLButtonElement>("button:last-child")?.focus();
   }, [round?.picked]);
 
   if (!round) return null;
@@ -90,49 +102,57 @@ export function Quiz({ make, length = 10, label }: Props) {
 
   const ok = picked?.text === q.answer;
   return (
-    <div className="yj-box">
-      <div className="yj-score">
+    <div className={boxClass}>
+      <div className="mb-2.5 flex items-center justify-between text-[0.85rem] font-bold text-muted">
         <span>
-          문제 Question <b>{done + (picked ? 0 : 1)} / {length}</b>
+          문제 Question <b className={scoreNum}>{done + (picked ? 0 : 1)} / {length}</b>
         </span>
         <span>
-          맞힌 개수 Score <b>{score}</b>
+          맞힌 개수 Score <b className={scoreNum}>{score}</b>
         </span>
       </div>
-      <div className="yj-qlabel">
-        <span className="ko">{label.ko}</span>
-        {label.en}
-      </div>
+      <QLabel ko={label.ko} en={label.en} />
       {q.prompt}
-      <div className="yj-opts">
+      <div className="grid gap-2">
         {choices.map((c) => {
           const isAnswer = c.text === q.answer;
-          const cls = picked ? (isAnswer ? "is-right" : c === picked ? "is-wrong" : "") : "";
+          const state = picked ? (isAnswer ? "right" : c === picked ? "wrong" : null) : null;
           return (
-            <button key={c.text} className={`yj-opt ${cls}`} type="button" disabled={!!picked} onClick={() => pick(c)}>
+            <button
+              key={c.text}
+              type="button"
+              disabled={!!picked}
+              onClick={() => pick(c)}
+              className={cn(
+                "min-h-14 rounded-[16px] border-2 border-line bg-surface p-2 font-display text-[1.25rem]",
+                state === "right" && "border-ok-ink bg-ok-bg text-ok-ink",
+                state === "wrong" && "border-bad-ink bg-bad-bg text-bad-ink",
+              )}
+            >
               {/* 색만으로 알리지 않는다 */}
-              {cls === "is-right" && <span aria-hidden="true">✓ </span>}
-              {cls === "is-wrong" && <span aria-hidden="true">✗ </span>}
+              {state === "right" && <span aria-hidden="true">✓ </span>}
+              {state === "wrong" && <span aria-hidden="true">✗ </span>}
               {c.text}
             </button>
           );
         })}
       </div>
-      <div className="yj-feedback" aria-live="polite">
+      <div className="mt-3 text-center leading-[1.4]" aria-live="polite">
         {picked &&
           (ok ? (
             <>
-              <span className="ko">맞아요! 🎉 {q.right}</span>
-              <span className="en">Correct!</span>
+              <span className="block font-display text-[1.2rem]">맞아요! 🎉 {q.right}</span>
+              <span className={enLine}>Correct!</span>
             </>
           ) : (
             <>
-              <span className="ko">아쉬워요! 정답은 ‘{q.answer}’예요.</span>
-              <span className="en">Not quite — the answer is ‘{q.answer}’.</span>
+              <span className="block font-display text-[1.2rem]">아쉬워요! 정답은 ‘{q.answer}’예요.</span>
+              <span className={enLine}>Not quite — the answer is ‘{q.answer}’.</span>
               {picked.why && (
                 <>
-                  <span className="yj-why">{picked.why.ko}</span>
-                  <span className="en">{picked.why.en}</span>
+                  {/* 퀴즈 피드백 — 왜 틀렸는지 */}
+                  <span className="mt-1 block font-display">{picked.why.ko}</span>
+                  <span className={enLine}>{picked.why.en}</span>
                 </>
               )}
             </>
@@ -165,28 +185,26 @@ function Result({ score, length, missed, onRestart }: { score: number; length: n
   const again = useRef<HTMLDivElement>(null);
   useEffect(() => again.current?.querySelector("button")?.focus(), []);
   return (
-    <div className="yj-box yj-result" aria-live="polite">
-      <div className="yj-qlabel">
-        <span className="ko">결과</span>Result
-      </div>
-      <div className="yj-result-mascot">
+    <div className={cn(boxClass, "text-center")} aria-live="polite">
+      <QLabel ko="결과" en="Result" />
+      <div className="mx-auto mt-2 w-30 [&_svg]:h-auto [&_svg]:w-full">
         <Ieung mood={mood} />
       </div>
-      <div className="yj-result-score">
+      <div className="mt-2 mb-1 font-display text-[3rem] leading-[1.1]">
         {score} / {length}
       </div>
-      <div className="yj-result-msg">
-        <span className="ko">{ko}</span>
-        <span className="en">{en}</span>
+      <div>
+        <span className="block font-display text-[1.3rem]">{ko}</span>
+        <span className="text-[0.85rem] font-bold text-muted">{en}</span>
       </div>
       {missed.length > 0 && (
         <>
-          <p className="yj-missed-title">틀린 문제 다시 보기 · Review</p>
-          <ul className="yj-missed">
+          <p className="mt-4 text-[0.85rem] font-bold text-muted">틀린 문제 다시 보기 · Review</p>
+          <ul className="mt-4 grid gap-1.5 text-left">
             {missed.map((q) => (
-              <li key={q.id}>
+              <li key={q.id} className="flex justify-between gap-2 rounded-sm bg-bg px-3 py-2 font-bold">
                 <span>{q.review}</span>
-                <b>{q.answer}</b>
+                <b className="font-display font-normal text-ok-ink">{q.answer}</b>
               </li>
             ))}
           </ul>

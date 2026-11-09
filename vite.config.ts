@@ -1,6 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -17,7 +18,7 @@ for (const d of readdirSync(apps, { withFileTypes: true })) {
 export default defineConfig({
   root: apps,
   publicDir: resolve(here, "public"),
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: { alias: { "@yj": resolve(here, "shared") } },
   build: { outDir: resolve(here, "dist"), emptyOutDir: true, rollupOptions: { input: pages } },
 });

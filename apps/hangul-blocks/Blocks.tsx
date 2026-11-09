@@ -6,6 +6,19 @@
    - 새 key 의 칸은 위에서 떨어진다 (blk-drop 애니메이션).
    ============================================================ */
 import type { CSSProperties } from "react";
+import { cn } from "@yj/ui";
+
+/* 입체 칸 — 새 색을 만들지 않고 흰색·검은색을 반투명하게 겹친다 (세기는 --blk-hi · --blk-lo) */
+const bevel =
+  "[box-shadow:inset_var(--bevel)_var(--bevel)_0_rgb(255_255_255/var(--blk-hi)),inset_calc(var(--bevel)*-1)_calc(var(--bevel)*-1)_0_rgb(0_0_0/var(--blk-lo)),inset_0_0_0_1px_rgb(0_0_0/var(--blk-lo))]";
+const cellClass = cn(
+  "absolute box-border",
+  bevel,
+  "transition-[left,top,width,height] duration-300 ease-[ease]",
+  // 키프레임 blk-drop 은 hangul-blocks.css. 지연 --d 는 줄마다 조금씩
+  "animate-[blk-drop_0.38s_cubic-bezier(0.3,1.3,0.5,1)_var(--d,0ms)_both]",
+  "motion-reduce:transition-none motion-reduce:animate-none",
+);
 
 export type BlockCell = {
   key: string;
@@ -19,11 +32,16 @@ export type BlockCell = {
 
 export function Blocks({ cells, w, h, size, label }: { cells: BlockCell[]; w: number; h: number; size: number; label: string }) {
   return (
-    <div className="blk" role="img" aria-label={label} style={{ width: w * size, height: h * size }}>
+    <div
+      className="relative mx-auto transition-[width,height] duration-300 ease-[ease] motion-reduce:transition-none"
+      role="img"
+      aria-label={label}
+      style={{ width: w * size, height: h * size }}
+    >
       {cells.map((c) => (
         <span
           key={c.key}
-          className={`blk-cell${c.ghost ? " is-ghost" : ""}`}
+          className={cn(cellClass, c.ghost && "opacity-45")}
           style={
             {
               left: c.x * size,
