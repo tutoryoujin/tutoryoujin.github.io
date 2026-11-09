@@ -50,8 +50,13 @@ export function Study({ deck }: { deck: Deck }) {
   const onCard = state.phase === "card";
   const n = state.queue.length;
 
-  // 연 덱을 기억해 둔다 — 홈에서 책갈피로 보인다. 카드를 안 넘기고 나가도 남는다
-  useEffect(() => markOpened(deck.id), [deck.id]);
+  // 열면 바로 기록한다 — 카드를 안 넘기고 나가도 홈에서 책갈피가 꽂히고 "0 / 20 외웠어요" 가 된다.
+  // 섞은 순서도 같이 남아 다시 열면 같은 순서로 이어진다
+  useEffect(() => {
+    markOpened(deck.id);
+    save(deck.id, state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 연 순간 한 번만
+  }, [deck.id]);
 
   // 화면에 있는 동안만: 키보드 · 스크롤 잠금 · 색종이 정리
   useEffect(() => {

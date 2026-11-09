@@ -73,7 +73,7 @@ export function Home() {
           return (
             <a key={deck.id} className={cn(folder, TONE[deck.color], "bg-(--g-bg)")} href={`#/deck/${deck.id}`}>
               <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{deck.title.ko}</span>
-              {isLast && <span className="sr-only">마지막으로 본 카드 / Last studied</span>}
+              {isLast && <span className="sr-only">마지막으로 연 덱 / Last opened</span>}
               {/* 한글은 font-app 의 두 번째 글꼴인 Jua 로 떨어진다. 둥근 서체라
                   .85rem 에서는 뭉쳐서, 본문보다 한 단계만 작게 둔다. */}
               <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{meta.ko}</p>
