@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
 import { cn } from "./cn";
-import { useTheme, type ThemePref } from "./theme";
+import { useTheme } from "./theme";
 
 /* ============================================================
    모든 앱의 겉 — 헤더 · 본문 · 꼬리말.
@@ -82,7 +82,8 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Reac
       <div className={cn(inner, "flex flex-col gap-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-start")}>
         {children}
         {legal && <p className="text-[0.74rem] sm:col-span-full">{legal}</p>}
-        <p className="border-t border-line pt-3.5 text-[0.74rem] font-bold sm:col-span-full">
+        {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}
+        <p className={cn("text-[0.74rem] font-bold sm:col-span-full", (children || legal) && "border-t border-line pt-3.5")}>
           © {new Date().getFullYear()} Made by Youjin. All rights reserved.
         </p>
       </div>
@@ -95,7 +96,6 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   const me = appBySlug(slug);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
-  const themeBox = useRef<HTMLDivElement>(null);
   const Tag = h1 ? "h1" : "span";
 
   useEffect(() => {
@@ -106,11 +106,9 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
         btn.current?.focus();
       }
     };
-    // 메뉴 밖을 누르면 닫는다. 메뉴 안의 링크를 눌러도 닫는다 (해시 이동은 새로고침이 없다).
-    // 테마는 눌러서 바로 보며 고르는 거라 열어 둔다
+    // 메뉴 밖을 누르면 닫는다. 메뉴 안의 링크를 눌러도 닫는다 (해시 이동은 새로고침이 없다)
     const onClick = (e: MouseEvent) => {
-      const t = e.target as Node;
-      if (!btn.current?.contains(t) && !themeBox.current?.contains(t)) setOpen(false);
+      if (!btn.current?.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("click", onClick);
@@ -148,10 +146,11 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             </Tag>
           </a>
         </div>
-        <div className="relative shrink-0">
+        <div className="relative flex shrink-0 items-center gap-2">
+          <ThemeToggle />
           <button
             ref={btn}
-            className="group grid size-11 place-items-center rounded-sm border border-line bg-surface p-0"
+            className={cn(iconBtn, "group")}
             type="button"
             aria-label={open ? "메뉴 닫기 / Close menu" : "메뉴 열기 / Open menu"}
             aria-expanded={open}
@@ -190,7 +189,6 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             <a href="/" className={navLink()}>
               모든 앱<small className={navSmall}>All apps</small>
             </a>
-            <ThemePicker boxRef={themeBox} />
           </nav>
         </div>
       </div>
@@ -198,34 +196,33 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   );
 }
 
-const THEMES: { key: ThemePref; ko: string; en: string }[] = [
-  { key: "auto", ko: "자동", en: "Auto" },
-  { key: "light", ko: "밝게", en: "Light" },
-  { key: "dark", ko: "어둡게", en: "Dark" },
-];
 
-/* 화면 밝기. 자동 = 기기 설정을 따른다. 고른 값은 모든 앱이 같이 쓴다 (shared/ui/theme.ts) */
-function ThemePicker({ boxRef }: { boxRef: RefObject<HTMLDivElement> }) {
-  const [theme, setTheme] = useTheme();
+/** 헤더 아이콘 버튼 — 메뉴 버튼과 같은 모양 */
+const iconBtn = "grid size-11 place-items-center rounded-sm border border-line bg-surface p-0";
+
+/* 밝게 ↔ 어둡게. 지금 보이는 화면의 아이콘(해 · 달)을 보여 준다.
+   처음엔 기기 설정을 따르고(자동), 한 번 누르면 고른 값이 모든 앱에 남는다 (shared/ui/theme.ts) */
+function ThemeToggle() {
+  const { dark, setTheme } = useTheme();
   return (
-    <div ref={boxRef} role="group" aria-labelledby="themeLabel" className="mt-1 border-t border-line px-1.5 pt-2 pb-1">
-      <p id="themeLabel" className="mb-1.5 flex items-baseline justify-between px-1.5 text-[0.95rem] font-bold text-ink">
-        화면<small className="text-[0.7rem] font-semibold text-muted">Theme</small>
-      </p>
-      <div className="grid grid-cols-3 gap-1 rounded-sm bg-bg p-1">
-        {THEMES.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            aria-pressed={theme === t.key}
-            onClick={() => setTheme(t.key)}
-            className="group flex min-h-11 flex-col items-center justify-center rounded-[9px] leading-[1.1] aria-pressed:bg-primary aria-pressed:text-primary-ink"
-          >
-            <span className="text-[0.85rem] font-bold">{t.ko}</span>
-            <span className="text-[0.65rem] font-semibold text-muted group-aria-pressed:text-current group-aria-pressed:opacity-80">{t.en}</span>
-          </button>
-        ))}
-      </div>
-    </div>
+    <button
+      type="button"
+      className={iconBtn}
+      aria-pressed={dark}
+      aria-label="어두운 화면 / Dark mode"
+      title={dark ? "밝게 보기 / Light mode" : "어둡게 보기 / Dark mode"}
+      onClick={() => setTheme(dark ? "light" : "dark")}
+    >
+      <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-ink stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true">
+        {dark ? (
+          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
+        ) : (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </>
+        )}
+      </svg>
+    </button>
   );
 }

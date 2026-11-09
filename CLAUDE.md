@@ -87,7 +87,7 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 - **`-bg` 와 `-ink` 는 쌍입니다.** `Seg`·`Note` 는 `tone="orange"` 처럼 이름만 받아 쌍으로 칠합니다.
 - **색만으로 구분하지 마세요.** 파스텔 8색은 명도가 거의 같습니다. 항상 글자를 같이 둡니다.
 - **다크 모드 세 상태**는 `tokens.css` 가 처리합니다. 앱 CSS 에서 `@media (prefers-color-scheme)` 안에만 색을 정의하지 마세요.
-  사용자는 메뉴의 「화면」(자동 · 밝게 · 어둡게)에서 고르고, `<html data-theme>` + `localStorage["yj:theme"]` 에 남습니다 (`shared/ui/theme.ts`).
+  처음엔 기기 설정을 따르고, 헤더의 해/달 토글을 누르면 밝게↔어둡게로 바뀌어 `<html data-theme>` + `localStorage["yj:theme"]` 에 남습니다 (`shared/ui/theme.ts`).
   첫 그림 전 적용은 `vite.config.ts` 가 모든 index.html 에 넣는 스크립트가 합니다. 색은 토큰이 바뀌니 `dark:` 는 토큰이 없는 것(그림자 세기 등)에만.
 - **한국어가 먼저, 영어는 바로 아래 더 작게 `muted`.** 외국인 학습자용이라 설명·피드백에 영어가 빠지면 안 됩니다. 컴포넌트가 `ko` / `en` 을 따로 받는 이유입니다. 해요체. 한자 쓰지 않음.
 - 꼬리말은 `<하는 일>, 매일 조금씩.` — "매일 조금씩" 은 바꾸지 않습니다.

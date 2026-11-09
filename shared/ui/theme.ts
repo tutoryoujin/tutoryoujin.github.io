@@ -28,9 +28,21 @@ const apply = (t: ThemePref) => {
   else document.documentElement.dataset.theme = t;
 };
 
-/** 현재 고른 테마와 바꾸는 함수. 다른 탭에서 바꿔도 따라온다 */
-export function useTheme(): [ThemePref, (t: ThemePref) => void] {
+const darkQuery = () => matchMedia("(prefers-color-scheme: dark)");
+
+/**
+ * 고른 테마(theme), 지금 실제로 어두운지(dark), 바꾸는 함수.
+ * 자동일 때 dark 는 기기 설정을 따라가고, 다른 탭에서 바꿔도 따라온다.
+ */
+export function useTheme(): { theme: ThemePref; dark: boolean; setTheme: (t: ThemePref) => void } {
   const [theme, setTheme] = useState<ThemePref>(read);
+  const [systemDark, setSystemDark] = useState(() => darkQuery().matches);
+  useEffect(() => {
+    const q = darkQuery();
+    const on = () => setSystemDark(q.matches);
+    q.addEventListener("change", on);
+    return () => q.removeEventListener("change", on);
+  }, []);
   useEffect(() => {
     const on = (e: StorageEvent) => {
       if (e.key !== THEME_KEY) return;
@@ -51,7 +63,7 @@ export function useTheme(): [ThemePref, (t: ThemePref) => void] {
     apply(t);
     setTheme(t);
   };
-  return [theme, set];
+  return { theme, dark: theme === "auto" ? systemDark : theme === "dark", setTheme: set };
 }
 
 /** <head> 에 그대로 들어가는 스크립트. 위 read/apply 와 같은 일을 한다 */
