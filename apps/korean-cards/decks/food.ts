@@ -6,7 +6,6 @@ const deck: Deck = {
   emoji: "🍜",
   cover: "bibimbap",
   color: "pink",
-  blurb: "비빔밥부터 빙수까지, 먹고 싶은 것부터",
   // 겉면 그림은 투명 배경이어야 한다. 이 덱의 cover 는 사진이라 쓸 수 없다.
   folderArt: "bowl",
   unit: { ko: "음식 이름", en: "food words" },

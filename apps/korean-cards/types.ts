@@ -21,8 +21,6 @@ export type Deck = {
   cover: string;
   /** 홈 더미에서 이 덱의 색 */
   color: Accent;
-  /** 홈 더미 설명. 두 줄을 넘기지 않는다 */
-  blurb: string;
   /** 겉면 그림. 없으면 cover. 반드시 투명 배경 */
   folderArt?: string;
   /** 완료 문구: "감정 표현 20개" */

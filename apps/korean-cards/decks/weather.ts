@@ -6,7 +6,6 @@ const deck: Deck = {
   emoji: "🌦️",
   cover: "nalssi",
   color: "lavender",
-  blurb: "덥다와 더워요, 쌀쌀하다는 몇 도일까요",
   unit: { ko: "날씨 표현", en: "weather words" },
   art: "icon",
   groups: {

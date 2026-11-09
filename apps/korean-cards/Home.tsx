@@ -2,11 +2,11 @@
    홈 — 덱 더미 + 진행률.
    덱 하나가 카드 한 장. 세로로 겹쳐 쌓아 포개 둔 더미처럼 보이게 한다.
    ============================================================ */
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { cn, Ieung, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { DECKS, folderArtSrc } from "./decks";
-import { daysAway, progress } from "./store";
+import { daysAway, lastDeck, progress } from "./store";
 
 /** 화면 맨 위 제목 (홈, 출처) */
 export function Hero({ ko, en }: { ko: string; en: string }) {
@@ -23,7 +23,7 @@ export function Hero({ ko, en }: { ko: string; en: string }) {
    overflow-hidden 이 이 컴포넌트의 핵심 — 겉면 그림이 이 모서리에 잘린다.
    오른쪽 padding 은 겉면 그림 자리. 그림 폭(artClass)과 같이 움직여야
    좁은 화면에서 글자가 그림에 닿지 않는다.
-   높이는 전부 같다. 가장 긴 설명(두 줄) + 진행 막대가 들어가는 높이.
+   높이는 전부 같다. 겉면 그림이 들어가는 높이.
    z-2 를 같이 올리지 않으면 아래 카드에 가려 안 올라온 것처럼 보인다.
    hover: 는 포인터가 있는 기기에서만 — 터치에서는 hover 가 눌린 채로 남는다. */
 const folder =
@@ -37,6 +37,9 @@ const label = "inline-block rounded-full px-4 pt-2.75 pb-2.25 font-display text-
 /* 폴더 위에서는 muted 를 쓰지 않는다 — 파스텔 8색 중 넷이 4.5:1 에 못 미친다.
    영문도 ink 로 두고 크기와 굵기로만 눌러 준다. */
 const gloss = "mt-1.5 text-[0.76rem] font-semibold";
+/* 책갈피 — 마지막으로 공부한 덱. 위 모서리에 꽂아 둔 리본이라 아래 카드에 가리지 않는다.
+   색만으로 알리지 않게 모양(리본)으로 보이고, 읽기 프로그램에는 글자로 알린다 */
+const ribbon = "pointer-events-none absolute top-0 right-6 h-9 w-6 fill-(--g-ink)";
 /* 겉면 그림 — 바탕 타일 없이 투명 PNG 를 그대로. 일부러 밖으로 밀어 내
    카드 모서리가 잘라 주게 둔다. 잘리는 자리가 그림마다 달라서
    같은 틀인데도 덱마다 다르게 보인다. */
@@ -50,6 +53,7 @@ export function Home() {
   const rest: Mood = away !== null && away >= 3 ? "sleepy" : "basic";
   const [mood, setMood] = useState<Mood>(rest);
   const tease = useRef(0);
+  const last = lastDeck();
   useEffect(() => () => clearTimeout(tease.current), []);
 
   return (
@@ -60,15 +64,27 @@ export function Home() {
           const p = progress(deck);
           const pct = Math.round((p.done / p.total) * 100);
           const done = p.started && p.done === p.total;
-          const meta = !p.started ? `${p.total}장 · 아직 안 열어봤어요` : done ? `${p.total}장 모두 외웠어요 🎉` : `${p.done} / ${p.total} 외웠어요`;
+          const meta = !p.started
+            ? { ko: `${p.total}장 · 아직 안 열어봤어요`, en: `${p.total} cards · Not opened yet` }
+            : done
+              ? { ko: `${p.total}장 모두 외웠어요 🎉`, en: `All ${p.total} memorized` }
+              : { ko: `${p.done} / ${p.total} 외웠어요`, en: `${p.done} / ${p.total} memorized` };
+          const isLast = deck.id === last;
           return (
             <a key={deck.id} className={cn(folder, TONE[deck.color], "bg-(--g-bg)")} href={`#/deck/${deck.id}`}>
               <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{deck.title.ko}</span>
+              {isLast && <span className="sr-only">마지막으로 본 카드 / Last studied</span>}
               {/* 한글은 font-app 의 두 번째 글꼴인 Jua 로 떨어진다. 둥근 서체라
                   .85rem 에서는 뭉쳐서, 본문보다 한 단계만 작게 둔다. */}
-              <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{deck.blurb}</p>
+              <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{meta.ko}</p>
               <p className={gloss}>
-                {deck.title.en} · {meta}
+                {/* 덩어리째로만 줄을 바꾼다 — "Not opened / yet" 처럼 꺾이지 않게 */}
+                {[deck.title.en, ...meta.en.split(" · ")].map((t, i) => (
+                  <Fragment key={i}>
+                    {i > 0 && " · "}
+                    <span className="whitespace-nowrap">{t}</span>
+                  </Fragment>
+                ))}
               </p>
               {p.started && !done && (
                 <div className="mt-3 h-1.5 w-[56%] rounded-full bg-[color-mix(in_srgb,var(--g-ink)_22%,transparent)]" aria-hidden="true">
@@ -76,6 +92,12 @@ export function Home() {
                 </div>
               )}
               <Art src={folderArtSrc(deck)} emoji={deck.emoji} className={artClass} fallbackClass={artFallback} />
+              {/* 그림보다 뒤에 둬야 위로 올라온 그림(감정)에 덮이지 않는다 */}
+              {isLast && (
+                <svg className={ribbon} viewBox="0 0 24 36" aria-hidden="true">
+                  <path d="M0 0h24v36l-12-9-12 9z" />
+                </svg>
+              )}
             </a>
           );
         })}

@@ -79,7 +79,7 @@ export function Study({ deck }: { deck: Deck }) {
       if (next.missed.length === 0) celebrateNext.current = true;
     }
     save(deck.id, next);
-    touch();
+    touch(deck.id);
     // 회차가 끝나면 결과 화면에 이응이 따로 선다. 한 화면에 이응은 하나
     if (next.phase === "card") {
       // 정답이면 신나요, 다섯 장 연속이면 놀라요, 오답이면 헷갈려요. 슬픈 이응은 없다
