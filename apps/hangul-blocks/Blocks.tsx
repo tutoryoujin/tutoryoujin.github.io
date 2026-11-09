@@ -9,7 +9,7 @@ import type { CSSProperties } from "react";
 import { cn } from "@yj/ui";
 
 /* 입체 칸 — 새 색을 만들지 않고 흰색·검은색을 반투명하게 겹친다 (세기는 --blk-hi · --blk-lo) */
-const bevel =
+export const bevel =
   "[box-shadow:inset_var(--bevel)_var(--bevel)_0_rgb(255_255_255/var(--blk-hi)),inset_calc(var(--bevel)*-1)_calc(var(--bevel)*-1)_0_rgb(0_0_0/var(--blk-lo)),inset_0_0_0_1px_rgb(0_0_0/var(--blk-lo))]";
 const cellClass = cn(
   "absolute box-border",
@@ -28,7 +28,13 @@ export type BlockCell = {
   tone: string;
   /** 빈자리 ㅇ 처럼 흐리게 */
   ghost?: boolean;
+  /** 떨어진 뒤 한 번 진하게 깜빡 (모음의 긴 획). 새로 생긴 칸에서만 돈다 */
+  flash?: boolean;
 };
+
+/* 떨어지기(blk-drop)가 끝날 즈음 진하게 두 번 (blk-flash · 키프레임은 hangul-blocks.css) */
+const flashClass =
+  "animate-[blk-drop_0.38s_cubic-bezier(0.3,1.3,0.5,1)_var(--d,0ms)_both,blk-flash_1.1s_ease-in-out_0.4s] motion-reduce:animate-none";
 
 export function Blocks({ cells, w, h, size, label }: { cells: BlockCell[]; w: number; h: number; size: number; label: string }) {
   return (
@@ -41,7 +47,7 @@ export function Blocks({ cells, w, h, size, label }: { cells: BlockCell[]; w: nu
       {cells.map((c) => (
         <span
           key={c.key}
-          className={cn(cellClass, c.ghost && "opacity-45")}
+          className={cn(cellClass, c.ghost && "opacity-45", c.flash && flashClass)}
           style={
             {
               left: c.x * size,

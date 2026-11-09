@@ -6,12 +6,13 @@
      3  1 + 받침 → 맨 아래        강
      4  2 + 받침 → 맨 아래        곰
      섞인 모음(와)은 가로 모음이 아래, 세로 모음이 오른쪽.
+   겹받침(닭)은 두 자음을 맨 아래에 나란히. 위보다 넓으면 위를 가운데로 옮긴다.
 
    자모 그림은 늘이거나 줄이지 않고 제 크기 그대로 놓는다. 그래서
    가는 옆으로 넓고, 고는 위아래로 길다 — 모양 차이가 눈에 보인다.
    조각 사이에는 늘 빈 줄이 하나 있다 (layout.test.ts 가 지킨다).
    ============================================================ */
-import { MIXED_PARTS, shapeOf } from "@yj/korean/hangul";
+import { DOUBLE_JONG, MIXED_PARTS, shapeOf } from "@yj/korean/hangul";
 import { CONSONANTS, VOWELS, cellsOf, sizeOf, type Cell } from "./glyphs";
 
 export type Role = "cho" | "jung" | "jong";
@@ -68,18 +69,39 @@ export function layoutSyllable(cho: string, jung: string | null, jong: string | 
 
   if (!jong) return { w: topW, h: topH, pieces };
 
-  // 받침은 늘 맨 아래, 가운데
-  const j = CONSONANTS[jong].rows;
-  const js = sizeOf(j);
-  pieces.push({ role: "jong", ch: jong, cells: at(j, (topW - js.w) >> 1, topH + 1) });
-  return { w: topW, h: topH + 1 + js.h, pieces };
+  // 받침은 늘 맨 아래, 가운데. 겹받침은 자음 둘을 한 칸 띄워 나란히, 아래 맞춤.
+  // 조각은 자음마다 따로 — ㄹ → ㄺ 에서 ㄹ 칸이 key 그대로 미끄러지고 ㄱ 만 떨어진다
+  const parts = DOUBLE_JONG[jong] ?? [jong];
+  const rows = parts.map((ch) => CONSONANTS[ch].rows);
+  const sizes = rows.map(sizeOf);
+  const jw = sizes.reduce((a, z) => a + z.w, 0) + parts.length - 1;
+  const jh = Math.max(...sizes.map((z) => z.h));
+  const w = Math.max(topW, jw);
+  const shift = (w - topW) >> 1;
+  if (shift) for (const p of pieces) p.cells = p.cells.map(([x, y]) => [x + shift, y]);
+  let x = (w - jw) >> 1;
+  parts.forEach((ch, i) => {
+    pieces.push({ role: "jong", ch, cells: at(rows[i], x, topH + 1 + jh - sizes[i].h) });
+    x += sizes[i].w + 1;
+  });
+  return { w, h: topH + 1 + jh, pieces };
 }
 
-/** 교재의 모양 번호. 섞인 모음은 번호가 없다 */
-export function blockType(jung: string, jong: string | null): 1 | 2 | 3 | 4 | null {
-  const s = shapeOf(jung);
-  if (s === "mixed") return null;
-  return ((s === "tall" ? 1 : 2) + (jong ? 2 : 0)) as 1 | 2 | 3 | 4;
+/**
+ * 모음의 긴 획 — 한 줄에 5칸 이상인 세로줄 · 가로줄의 칸 ("x,y").
+ * 세로 모음은 세로줄(ㅐ 는 둘), 가로 모음은 가로줄, 섞인 모음은 둘 다.
+ * 만들기에서 모음을 넣을 때 이 칸만 잠깐 진하게 — 세로로 긴지 가로로 긴지 보이게.
+ */
+export function longStroke(cells: readonly Cell[]): Set<string> {
+  const byX = new Map<number, Cell[]>();
+  const byY = new Map<number, Cell[]>();
+  for (const c of cells) {
+    byX.set(c[0], [...(byX.get(c[0]) ?? []), c]);
+    byY.set(c[1], [...(byY.get(c[1]) ?? []), c]);
+  }
+  const out = new Set<string>();
+  for (const line of [...byX.values(), ...byY.values()]) if (line.length >= 5) for (const [x, y] of line) out.add(`${x},${y}`);
+  return out;
 }
 
 /* ---------- 획 하나 더 ---------- */
