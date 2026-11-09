@@ -30,7 +30,11 @@ main 에 올라가면 `.github/workflows/deploy.yml` 이 검사 → 빌드 → �
 
 ```
 shared/
-  apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말이 모두 여기서 나온다
+  apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말 · 검색/공유 메타(description · og)가 모두 여기서 나온다
+  site.ts            사이트 설정 — 분석(provider · id) · Kit 구독 폼 id · 상품 배열 · 구독/상품 문구. 비우면 그 기능은 꺼진다
+  analytics.ts       쿠키 없는 분석 스크립트(GoatCounter · Plausible · Umami) + track()
+  seo.ts             <title> · description · OG · Twitter · favicon 메타, sitemap.xml · robots.txt (vite.config.ts 가 넣는다)
+  subscribe.ts       Kit 폼으로 이메일 보내기
   tokens/            tokens.json(원본) → tokens.css · theme.css · theme.ts (생성물, npm run tokens)
   ui/                공통 컴포넌트 — import { … } from "@yj/ui"
     styles.css       Tailwind 입구 (preflight · 토큰 · 테마 · 이응 키프레임)
@@ -56,6 +60,9 @@ public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/
 | `Quiz` | 보기 넷 퀴즈 — 채점 · 오답 이유 · 결과 · 다시 보기 |
 | `Ieung` | 움직이는 입체 이응 (표정 12종) |
 | `speak()` | 한국어 TTS |
+| `Subscribe` | 이메일 구독 폼 (Kit). `site.ts` 에 폼 id 가 없으면 안 그린다 |
+| `Products` | 상품 목록. `site.ts` 의 `products` 가 비면 안 그린다 |
+| `track()` | 분석 이벤트 (`deck-complete` · `subscribe` · `product-click`). 분석이 꺼져 있으면 아무 일도 안 한다 |
 | `cn()` | 클래스 합치기 (tailwind-merge). 뒤의 것이 이긴다 |
 | `Footer` · `mainClass` · `boxClass` | 겉 부품을 컴포넌트 없이 쓸 때 |
 
@@ -109,6 +116,13 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   두 자음은 맨 아래에 나란히. 읽기는 `shared/korean/hangul.ts` 의 `readJong`: 앞을 읽고, ㄺ · ㄻ · ㄿ 은 뒤, 밟[밥]은 예외.
   만든 글자 아래 영어 뜻은 받침 있는 글자만 (`apps/hangul-blocks/words.ts`, 동사 줄기는 넣지 않는다).
   색 별칭: 첫 자음 = blue, 모음 = pink, 받침 = mint, 더한 칸 = yellow.
+
+## 사이트 설정 · SEO
+
+- index.html 에 `<title>` · description · og 를 적지 마세요. `vite.config.ts` 가 `shared/seo.ts` 로 넣습니다.
+  공유 그림이 있으면 `apps.ts` 의 `og` 에 (1200×630, `public/` 경로).
+- 분석 · 구독 · 상품은 `shared/site.ts` 값만 바꿉니다. 꺼졌을 때 아무것도 안 나오는지는 `shared/site.test.ts` 가 봅니다.
+- 수업 · 튜터링 · 예약 · 외부 결제 안내는 넣지 않습니다. 기능을 `?ref` 나 localStorage 로 숨기지 않습니다.
 
 ## 작업 규칙
 
