@@ -3,10 +3,10 @@
    덱 하나가 카드 한 장. 세로로 겹쳐 쌓아 포개 둔 더미처럼 보이게 한다.
    ============================================================ */
 import { Fragment, useEffect, useRef, useState } from "react";
-import { cn, Ieung, type Mood } from "@yj/ui";
+import { Bubble, cn, Ieung, pokeClass, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { DECKS, folderArtSrc } from "./decks";
-import { daysAway, lastDeck, progress } from "./store";
+import { daysAway, howtoSeen, lastDeck, markHowtoSeen, progress } from "./store";
 
 /** 화면 맨 위 제목 (홈, 출처) */
 export function Hero({ ko, en }: { ko: string; en: string }) {
@@ -14,6 +14,52 @@ export function Hero({ ko, en }: { ko: string; en: string }) {
     <section className="px-0.5 pt-1">
       <h1 className="text-[1.55rem] leading-[1.25] font-extrabold">{ko}</h1>
       <p className="mt-1 text-[0.92rem] font-bold text-muted">{en}</p>
+    </section>
+  );
+}
+
+/* ---------- 이응이의 쓰는 법 ----------
+   첫 화면 이응이처럼 누를 때마다 한 줄씩. 처음 온 학생이 회차 방식과
+   "기록은 이 기기에만" 을 모르고 시작하지 않게 한다. 덱 더미를 밀어내지 않게
+   이응이는 왼쪽에 작게, 말풍선은 높이를 잡아 둬서 줄이 바뀌어도 들썩이지 않는다.
+   딱 한 번만 — 마지막 줄까지 보면 기록해 두고 다음부터는 안 그린다.
+   마지막 줄에서 한 번 더 누르면 그 자리에서 닫힌다. */
+const TIPS: { mood: Mood; ko: string; en: string }[] = [
+  { mood: "basic", ko: "카드 쓰는 법을 알려 드릴게요. 저를 눌러 보세요!", en: "Let me show you how the cards work. Tap me!" },
+  { mood: "wink", ko: "카드는 몇 번이고 다시 돌아요. 못 외운 카드는 다음 회차에 또 나와요.", en: "Cards come around in rounds. The ones you miss come back next round." },
+  { mood: "focus", ko: "첫 회차는 가볍게 눈에 익히기만 해요.", en: "In round 1, just get used to seeing them." },
+  { mood: "love", ko: "한 번에 다 외우지 않아도 괜찮아요. 매일 조금씩!", en: "No need to learn them all at once. A little every day!" },
+  { mood: "huh", ko: "기록은 이 기기에만 남아요. 폰에서 시작했으면 폰으로 이어 해요.", en: "Progress is saved on this device only. Started on your phone? Keep going there." },
+];
+
+function HowTo() {
+  const [n, setN] = useState(0);
+  const [shown, setShown] = useState(() => !howtoSeen());
+  const end = n === TIPS.length - 1;
+  useEffect(() => {
+    if (end) markHowtoSeen();
+  }, [end]);
+  if (!shown) return null;
+  const tip = TIPS[n];
+  return (
+    <section className="mt-3 mb-6 flex items-center gap-3.5" aria-label="카드 쓰는 법 / How to use the cards">
+      <button
+        type="button"
+        className="w-21 shrink-0 cursor-pointer rounded-lg bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-offset-4"
+        onClick={() => (end ? setShown(false) : setN(n + 1))}
+        aria-label={end ? "이응이 누르기, 닫기 / Tap Ieung-i to close" : "이응이 누르기, 다음 말 / Tap Ieung-i for the next tip"}
+      >
+        <span className={pokeClass} key={n}>
+          <Ieung mood={tip.mood} />
+        </span>
+      </button>
+      <div className="min-w-0 flex-1">
+        <Bubble tail="left" className="min-h-35 text-[1rem] sm:min-h-22" key={n} aria-live="polite" ko={tip.ko} en={tip.en} />
+        <p className="mt-1.5 pl-1 text-[0.75rem] font-bold text-muted" aria-hidden="true">
+          {n + 1} / {TIPS.length}
+          {end && " · 누르면 닫혀요 · Tap to close"}
+        </p>
+      </div>
     </section>
   );
 }
@@ -59,6 +105,7 @@ export function Home() {
   return (
     <>
       <Hero ko="오늘은 어떤 카드로 공부할까요?" en="What would you like to learn today?" />
+      <HowTo />
       <nav aria-label="덱 / Decks">
         {DECKS.map((deck) => {
           const p = progress(deck);

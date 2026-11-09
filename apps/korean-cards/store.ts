@@ -93,3 +93,20 @@ export function progress(deck: Deck) {
   const remaining = s.phase === "card" ? s.missed.length + (s.queue.length - s.index) : s.missed.length;
   return { done: total - remaining, total, started: true, round: s.round };
 }
+
+/** 쓰는 법을 끝까지 봤는지. 다 본 학생에게는 다시 안 보인다 */
+const HOWTO = "kcards:howto";
+export function howtoSeen(): boolean {
+  try {
+    return localStorage.getItem(HOWTO) === "1";
+  } catch {
+    return false;
+  }
+}
+export function markHowtoSeen() {
+  try {
+    localStorage.setItem(HOWTO, "1");
+  } catch {
+    /* 무시 — 다음에 또 보일 뿐 */
+  }
+}
