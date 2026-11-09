@@ -14,6 +14,8 @@ export type HeadTag = { tag: "title" | "meta" | "link"; attrs?: Record<string, s
 
 const HOME = {
   title: "한국어 with Youjin · Small apps for learning Korean",
+  /** tools/home/build_og.py 로 만든다 (#18) */
+  og: { image: "/og.png", alt: "이응이와 네 가지 앱 — 한국어 블록, 한국어 카드, 한국어 달력, 한국어 시계" },
   description: "한국어를 배우는 사람을 위한 작은 앱 모음 — 한글, 낱말 카드, 날짜, 시계. Small free apps for learning Korean: Hangul, flashcards, dates and time.",
 };
 
@@ -24,7 +26,7 @@ export type PageMeta = { url: string; title: string; description: string; image?
 
 /** slug 가 "" 이면 첫 화면 */
 export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APPS): PageMeta {
-  if (!slug) return { url: c.url + "/", ...HOME };
+  if (!slug) return { url: c.url + "/", title: HOME.title, description: HOME.description, image: { url: c.url + HOME.og.image, alt: HOME.og.alt } };
   const a = apps.find((x) => x.slug === slug);
   if (!a) throw new Error(`shared/apps.ts 에 없는 앱이에요: ${slug}`);
   return {
@@ -62,6 +64,9 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
   if (m.image) {
     tags.push(
       meta("property", "og:image", m.image.url),
+      // 공유 그림은 모두 1200×630 (apps.ts 의 og 설명 참고)
+      meta("property", "og:image:width", "1200"),
+      meta("property", "og:image:height", "630"),
       meta("property", "og:image:alt", m.image.alt),
       meta("name", "twitter:image", m.image.url),
       meta("name", "twitter:image:alt", m.image.alt),
