@@ -120,7 +120,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
 
   const navLink = (active?: boolean) =>
     cn(
-      "flex min-h-11 items-baseline justify-between gap-3 rounded-sm px-3 py-2.5 text-[0.95rem] font-bold text-ink no-underline hover:bg-bg",
+      "flex min-h-11 items-baseline justify-between gap-3 rounded-sm px-3 py-2.5 text-[0.95rem] font-bold whitespace-nowrap text-ink no-underline hover:bg-bg",
       active && "bg-bg text-primary",
     );
   const navSmall = "text-[0.7rem] font-semibold text-muted";
@@ -165,7 +165,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             </span>
           </button>
           <nav
-            className="absolute top-[calc(100%+8px)] right-0 z-1 flex min-w-53 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5 shadow-card"
+            className="absolute top-[calc(100%+8px)] right-0 z-1 flex w-max max-w-[calc(100vw-32px)] min-w-53 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5 shadow-card"
             id="siteNav"
             aria-label="메뉴 / Menu"
             hidden={!open}
