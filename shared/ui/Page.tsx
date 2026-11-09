@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { APPS, appBySlug } from "../apps";
 import { cn } from "./cn";
+import { useTheme, type ThemePref } from "./theme";
 
 /* ============================================================
    모든 앱의 겉 — 헤더 · 본문 · 꼬리말.
@@ -46,7 +47,8 @@ const withYoujin = "text-[0.78em] not-italic text-primary";
 
 export function Page({ app, children, legal, h1 = true, width, links = [], mainClass: main = mainClass }: Props) {
   const me = appBySlug(app);
-  useEffect(() => {
+  // 첫 그림 전에 건다. useEffect 면 한 프레임 640px 로 보였다가 줄어든다
+  useLayoutEffect(() => {
     if (width) document.documentElement.style.setProperty("--shell-width", width + "px");
   }, [width]);
 
@@ -93,6 +95,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   const me = appBySlug(slug);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
+  const themeBox = useRef<HTMLDivElement>(null);
   const Tag = h1 ? "h1" : "span";
 
   useEffect(() => {
@@ -103,9 +106,11 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
         btn.current?.focus();
       }
     };
-    // 메뉴 밖을 누르면 닫는다. 메뉴 안의 링크를 눌러도 닫는다 (해시 이동은 새로고침이 없다)
+    // 메뉴 밖을 누르면 닫는다. 메뉴 안의 링크를 눌러도 닫는다 (해시 이동은 새로고침이 없다).
+    // 테마는 눌러서 바로 보며 고르는 거라 열어 둔다
     const onClick = (e: MouseEvent) => {
-      if (!btn.current?.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (!btn.current?.contains(t) && !themeBox.current?.contains(t)) setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("click", onClick);
@@ -185,9 +190,42 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             <a href="/" className={navLink()}>
               모든 앱<small className={navSmall}>All apps</small>
             </a>
+            <ThemePicker boxRef={themeBox} />
           </nav>
         </div>
       </div>
     </header>
+  );
+}
+
+const THEMES: { key: ThemePref; ko: string; en: string }[] = [
+  { key: "auto", ko: "자동", en: "Auto" },
+  { key: "light", ko: "밝게", en: "Light" },
+  { key: "dark", ko: "어둡게", en: "Dark" },
+];
+
+/* 화면 밝기. 자동 = 기기 설정을 따른다. 고른 값은 모든 앱이 같이 쓴다 (shared/ui/theme.ts) */
+function ThemePicker({ boxRef }: { boxRef: RefObject<HTMLDivElement> }) {
+  const [theme, setTheme] = useTheme();
+  return (
+    <div ref={boxRef} role="group" aria-labelledby="themeLabel" className="mt-1 border-t border-line px-1.5 pt-2 pb-1">
+      <p id="themeLabel" className="mb-1.5 flex items-baseline justify-between px-1.5 text-[0.95rem] font-bold text-ink">
+        화면<small className="text-[0.7rem] font-semibold text-muted">Theme</small>
+      </p>
+      <div className="grid grid-cols-3 gap-1 rounded-sm bg-bg p-1">
+        {THEMES.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            aria-pressed={theme === t.key}
+            onClick={() => setTheme(t.key)}
+            className="group flex min-h-11 flex-col items-center justify-center rounded-[9px] leading-[1.1] aria-pressed:bg-primary aria-pressed:text-primary-ink"
+          >
+            <span className="text-[0.85rem] font-bold">{t.ko}</span>
+            <span className="text-[0.65rem] font-semibold text-muted group-aria-pressed:text-current group-aria-pressed:opacity-80">{t.en}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -17,7 +17,7 @@ const titleDigits = "font-display text-[1.5rem] leading-[1.1]";
 const titleReading = "mt-0.5 text-[0.95rem] font-bold text-muted";
 const section = "flex flex-col gap-3.5";
 const week7 = "grid grid-cols-7 gap-1";
-const sparkle = "animate-[sparkle_1.6s_ease-in-out_infinite]";
+const sparkle = "animate-[sparkle_1.6s_ease-in-out_infinite] motion-reduce:animate-none";
 const tag = "rounded-full border border-line bg-bg px-3 py-1 text-[0.85rem] font-bold";
 const tagWord = "font-display text-[1rem] font-normal";
 /* TTS 가 없어서 들어 보기 버튼이 빠지면 남은 버튼이 한 줄을 다 쓴다 */
@@ -163,7 +163,7 @@ function DayPanel({ date }: { date: Date }) {
         <Seg tone="cal-year" caption={`${y}년`}>
           {readYear(y)}
         </Seg>
-        <Seg tone="cal-month" caption={`${m}월`} className={cn(special && cn("shadow-[0_0_0_3px_var(--special)] motion-reduce:animate-none", sparkle))}>
+        <Seg tone="cal-month" caption={`${m}월`} className={cn(special && cn("shadow-[0_0_0_3px_var(--special)]", sparkle))}>
           {readMonth(m)}
         </Seg>
         <Seg tone="cal-day" caption={`${d}일`}>

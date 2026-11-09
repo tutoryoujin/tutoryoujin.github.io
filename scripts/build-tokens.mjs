@@ -165,6 +165,19 @@ ${data.radius.tokens.map((t) => `  --${t.name}: ${t.value};`).join("\n")}
   --breakpoint-sm: 600px;
 }
 
+/* dark: — tokens.css 와 같은 세 상태. 색은 토큰이 알아서 바뀌니
+   dark: 는 그림자 세기·그림 밝기처럼 토큰이 없는 것에만 쓴다.
+   (시스템 다크이고 사용자가 밝게를 안 골랐을 때) 또는 (어둡게를 골랐을 때) */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+}
 `;
 
 // tailwind-merge 가 text-label 을 글자 크기로 알아보게 이름만 내보낸다 (shared/ui/cn.ts)
