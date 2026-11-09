@@ -47,7 +47,7 @@ export const SITE: SiteConfig = {
   analytics: { provider: "goatcounter", id: "" },
   subscribe: { provider: "kit", formId: "" },
   products: [],
-  verify: { google: "", naver: "" },
+  verify: { google: "F90xj4F_Hxwna83n8hoXvx_BeCP3RfqCwqV3ME6raUU", naver: "" },
 };
 
 /** 구독 폼 문구. 영어 — 처음 오는 사람이 읽는 글이다 */
