@@ -1,7 +1,7 @@
 /* 첫 화면(/) — shared/apps.ts 의 앱을 모두 보여 준다. 여기는 손댈 일이 거의 없다. */
 import { APPS } from "@yj/apps";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { cn, Footer, Ieung, mainClass, mount, type Mood } from "@yj/ui";
+import { Bubble, cn, Footer, Ieung, mainClass, mount, pokeClass, type Mood } from "@yj/ui";
 import "./home.css";
 
 function Home() {
@@ -119,18 +119,7 @@ function IeungStory() {
       <div className="mt-3.5 flex flex-col items-center">
         {/* 말풍선 — 줄이 바뀔 때마다 톡 튀어나온다. 높이를 잡아 둬서 이응이가 들썩이지 않는다.
             z-2: 튀는 글자가 말풍선 글을 가리지 않게 */}
-        <p
-          className={cn(
-            "relative z-2 flex min-h-19 max-w-75 flex-col justify-center rounded-lg bg-sky px-4 py-3 font-display text-[1.1rem] leading-[1.35] text-sky-ink",
-            "animate-[ieung-bubble_0.35s_cubic-bezier(0.3,1.5,0.5,1)] motion-reduce:animate-none",
-            "after:absolute after:bottom-[-9px] after:left-1/2 after:-ml-2.5 after:border-[10px] after:border-b-0 after:border-transparent after:border-t-sky after:content-['']",
-          )}
-          key={`${asleep}-${n}`}
-          aria-live="polite"
-        >
-          {line.ko}
-          <em className="mt-0.5 block font-app text-[0.8rem] font-bold not-italic text-sky-ink opacity-80">{line.en}</em>
-        </p>
+        <Bubble className="z-2 min-h-19 max-w-75" key={`${asleep}-${n}`} aria-live="polite" ko={line.ko} en={line.en} />
         <button
           type="button"
           className="relative mt-1.5 w-[190px] cursor-pointer rounded-lg bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-offset-4"
@@ -138,7 +127,7 @@ function IeungStory() {
           aria-label="이응이 누르기 / Tap Ieung-i"
         >
           {/* 누르면 말랑하게 눌렸다가 튄다 */}
-          <span className="block animate-[ieung-poke_0.45s_ease-out] motion-reduce:animate-none" key={`${n}-${asleep}`}>
+          <span className={pokeClass} key={`${n}-${asleep}`}>
             <Ieung mood={line.mood} />
           </span>
           {/* 튀어나오는 글자 (out) · 안으로 담기는 낱말 (in). 색은 -bg/-ink 쌍, 글자가 같이 있다 */}

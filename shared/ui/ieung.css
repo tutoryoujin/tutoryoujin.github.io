@@ -75,3 +75,15 @@
 .ex-tongue .mv-move{animation:mv-tilt 2.8s ease-in-out infinite}
 .ex-tongue .mv-tongue{animation:mv-tongue 2.8s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){.mv *{animation:none !important}}
+
+/* 말풍선(<Bubble>) 이 톡 튀어나오고, 누른 이응이가 말랑하게 눌린다 (pokeClass) */
+@keyframes ieung-bubble {
+  from { transform: scale(0.6) translateY(10px); opacity: 0; }
+}
+@keyframes ieung-poke {
+  0% { transform: scale(1, 1); }
+  25% { transform: scale(1.12, 0.86); }
+  55% { transform: scale(0.94, 1.08); }
+  80% { transform: scale(1.03, 0.98); }
+  100% { transform: scale(1, 1); }
+}
