@@ -45,6 +45,25 @@ export function touch() {
   }
 }
 
+/** 마지막으로 연 덱. 홈의 책갈피를 정한다.
+    나중에 더한 열쇠라 예전 학생들에게는 없다 — 덱을 한 번 열면 생긴다 */
+export function markOpened(deckId: string) {
+  try {
+    localStorage.setItem("kcards:lastDeck", deckId);
+  } catch {
+    /* 무시 */
+  }
+}
+
+/** 마지막으로 연 덱 id. 기록이 없으면 null */
+export function lastDeck(): string | null {
+  try {
+    return localStorage.getItem("kcards:lastDeck");
+  } catch {
+    return null;
+  }
+}
+
 /** 마지막 학습 뒤 지난 날 수. 기록이 없으면 null */
 export function daysAway(): number | null {
   try {

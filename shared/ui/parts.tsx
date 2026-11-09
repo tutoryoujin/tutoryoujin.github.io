@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { cn } from "./cn";
 import { canSpeak, speak } from "./speech";
 
 /* ============================================================
@@ -16,52 +17,71 @@ export type Accent = "blue" | "pink" | "yellow" | "mint" | "lavender" | "coral" 
 export type Tone = Accent | (string & {});
 const toneStyle = (t: Tone): CSSProperties => ({ background: `var(--${t}-bg)`, color: `var(--${t}-ink)` });
 
-export const Box = ({ children, className = "", ...rest }: { children: ReactNode; className?: string } & Record<string, unknown>) => (
-  <div className={`yj-box ${className}`} {...rest}>
+/** 흰 상자. 화면의 큰 덩어리마다 하나 */
+export const boxClass = "rounded-[24px] bg-surface p-4 shadow-card";
+export const Box = ({ children, className, ...rest }: { children: ReactNode; className?: string } & Record<string, unknown>) => (
+  <div className={cn(boxClass, className)} {...rest}>
     {children}
   </div>
 );
 
-/** 큰 버튼. variant="ghost" 는 흰 바탕 */
-export function Btn(props: { ko: ReactNode; en: ReactNode; onClick?: () => void; variant?: "ghost"; id?: string }) {
+/**
+ * 큰 버튼. variant="ghost" 는 흰 바탕.
+ * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant 로.
+ */
+export function Btn(props: { ko: ReactNode; en: ReactNode; onClick?: () => void; variant?: "ghost"; id?: string; className?: string }) {
   return (
-    <button id={props.id} className={`yj-btn ${props.variant ? "yj-" + props.variant : ""}`} type="button" onClick={props.onClick}>
-      <span className="ko">{props.ko}</span>
-      <span className="en">{props.en}</span>
+    <button
+      id={props.id}
+      type="button"
+      onClick={props.onClick}
+      className={cn(
+        "mt-3.5 flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[18px] border-2 leading-[1.2]",
+        "motion-safe:active:scale-[0.98]",
+        props.variant === "ghost" ? "border-line bg-surface text-ink" : "border-primary bg-primary text-primary-ink",
+        props.className,
+      )}
+    >
+      <span className="font-display text-[1.1rem]">{props.ko}</span>
+      <span className="text-[0.75rem] font-bold opacity-80">{props.en}</span>
     </button>
   );
 }
 
 /** 🔊 들어 보기. TTS 가 없는 브라우저에서는 그리지 않는다 */
-export function ListenBtn({ text, variant }: { text: string; variant?: "ghost" }) {
+export function ListenBtn({ text, variant, className }: { text: string; variant?: "ghost"; className?: string }) {
   if (!canSpeak) return null;
-  return <Btn ko="🔊 들어 보기" en="Listen" variant={variant} onClick={() => speak(text)} />;
+  return <Btn ko="🔊 들어 보기" en="Listen" variant={variant} className={className} onClick={() => speak(text)} />;
 }
 
 /**
  * 색 알약 — 문장을 쪼개 뜻마다 색을 입힌다.
  * 파스텔 8색은 명도가 거의 같아서 caption 과 en 으로 늘 글자를 같이 둔다.
  */
-export function Seg({ tone, caption, en, children, className = "" }: { tone: Tone; caption: ReactNode; en?: ReactNode; children: ReactNode; className?: string }) {
+export function Seg({ tone, caption, en, children, className }: { tone: Tone; caption: ReactNode; en?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <div className={`yj-seg ${className}`} style={toneStyle(tone)}>
-      <small>{caption}</small>
-      <span>{children}</span>
-      {en && <em>{en}</em>}
+    <div className={cn("min-w-16 rounded-[16px] px-3 py-2 text-center leading-[1.15]", className)} style={toneStyle(tone)}>
+      <small className="block text-[0.72rem] font-extrabold opacity-75">{caption}</small>
+      <span className="font-display text-[1.35rem]">{children}</span>
+      {/* 파스텔 위라 muted 대신 ink 계열 그대로, 크기로만 누른다 */}
+      {en && <em className="mt-0.5 block text-[0.68rem] font-extrabold not-italic">{en}</em>}
     </div>
   );
 }
-export const Segments = ({ children }: { children: ReactNode }) => <div className="yj-segs">{children}</div>;
+export const Segments = ({ children }: { children: ReactNode }) => <div className="flex flex-wrap justify-center gap-2">{children}</div>;
 
 /** ✨ 알아 두기. ex 는 예시 한 줄 */
-/** className 으로 앱 CSS 에서 --note-accent 를 줄 수도 있다 (악센트 쌍이 아닌 색일 때) */
-export function Note({ ko, en, ex, tone, className = "" }: { ko: ReactNode; en: ReactNode; ex?: ReactNode; tone?: Tone; className?: string }) {
-  const style = tone ? ({ "--note-accent": `var(--${tone}-ink)` } as CSSProperties) : undefined;
+/** accent 는 왼쪽 띠 색. 악센트 쌍이 아닌 색(달력의 special 등)일 때 CSS 변수 이름으로 */
+export function Note({ ko, en, ex, tone, accent, className }: { ko: ReactNode; en: ReactNode; ex?: ReactNode; tone?: Tone; accent?: string; className?: string }) {
+  const bar = accent ?? (tone ? `--${tone}-ink` : "--primary");
   return (
-    <div className={`yj-note ${className}`} style={style}>
-      <span className="ko">✨ {ko}</span>
-      <span className="en">{en}</span>
-      {ex && <span className="ex">{ex}</span>}
+    <div
+      className={cn("mt-3 rounded-md border-l-4 bg-bg px-3 py-2.5 text-[0.92rem] leading-normal", className)}
+      style={{ borderLeftColor: `var(${bar})` }}
+    >
+      <span className="block font-display text-[1rem]">✨ {ko}</span>
+      <span className="block text-[0.85rem] font-bold text-muted">{en}</span>
+      {ex && <span className="mt-1.5 block font-display">{ex}</span>}
     </div>
   );
 }
@@ -93,11 +113,18 @@ export function useHashTab<K extends string>(tabs: TabDef<K>[]): [K, (k: K) => v
 
 export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef<K>[]; value: K; onChange: (k: K) => void }) {
   return (
-    <div className="yj-tabs" role="tablist">
+    <div className="grid auto-cols-fr grid-flow-col rounded-full border border-line bg-surface p-1" role="tablist">
       {tabs.map((t) => (
-        <button key={t.key} className="yj-tab" role="tab" type="button" aria-selected={t.key === value} onClick={() => onChange(t.key)}>
-          <span className="ko">{t.ko}</span>
-          <span className="en">{t.en}</span>
+        <button
+          key={t.key}
+          className="group flex min-h-11 flex-col items-center justify-center rounded-full px-1 py-1.5 leading-[1.1] aria-selected:bg-primary aria-selected:text-primary-ink"
+          role="tab"
+          type="button"
+          aria-selected={t.key === value}
+          onClick={() => onChange(t.key)}
+        >
+          <span className="font-display text-[1rem]">{t.ko}</span>
+          <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-80">{t.en}</span>
         </button>
       ))}
     </div>

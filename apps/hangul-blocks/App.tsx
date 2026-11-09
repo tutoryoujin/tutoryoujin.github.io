@@ -1,5 +1,19 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Btn, ListenBtn, Note, Page, Tabs, canSpeak, hasKoreanVoice, onVoicesChanged, speak, useHashTab, type TabDef } from "@yj/ui";
+import {
+  Btn,
+  ListenBtn,
+  Note,
+  Page,
+  Tabs,
+  boxClass,
+  canSpeak,
+  cn,
+  hasKoreanVoice,
+  onVoicesChanged,
+  speak,
+  useHashTab,
+  type TabDef,
+} from "@yj/ui";
 import { MIXED_PARTS, canBeJong, compose, isCommon, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
 import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, Y_PAIRS, cellsOf, type StrokePair } from "./glyphs";
@@ -51,6 +65,44 @@ function VoiceNote() {
 }
 
 const TONE: Record<Role, string> = { cho: "blk-cho", jung: "blk-jung", jong: "blk-jong" };
+/** 별칭 쌍을 바탕·글자로. Tailwind 가 찾을 수 있게 이름을 통째로 적는다 */
+const TONE_CLASS: Record<string, string> = {
+  "blk-cho": "bg-(--blk-cho-bg) text-(--blk-cho-ink)",
+  "blk-jung": "bg-(--blk-jung-bg) text-(--blk-jung-ink)",
+  "blk-jong": "bg-(--blk-jong-bg) text-(--blk-jong-ink)",
+  "blk-add": "bg-(--blk-add-bg) text-(--blk-add-ink)",
+};
+
+/* ---------- 이 앱의 모양 ---------- */
+const section = "flex flex-col gap-3";
+/** 한국어 줄 */
+const ko = "font-display";
+/** 영어 줄 */
+const en = "text-[0.75rem] font-bold text-muted";
+/** 파스텔 위의 영어 줄 — muted 를 쓰지 않는다, 대비가 모자란다 */
+const enOnTone = "text-[0.75rem] font-bold opacity-85";
+/** 무대 — 블록 + 보통 글꼴 글자. overflow-hidden: 떨어지는 칸이 상자 밖으로 보이지 않게 */
+const stage = cn(boxClass, "grid min-h-[250px] grid-cols-2 items-center gap-3 overflow-hidden max-[420px]:grid-cols-1");
+const blockWrap = "flex min-h-[230px] items-center justify-center";
+const glyph = "flex flex-col items-center gap-2 text-center";
+/** 블록 옆의 진짜 글자. 학생이 책·간판에서 보는 모양이라 Jua 대신 읽기 글꼴 */
+const sylClass = "font-reading text-[5.5rem] leading-none text-ink max-[420px]:text-[4rem]";
+const lines = "flex flex-col gap-0.5 leading-[1.3]";
+const tip = "flex flex-col items-center text-center leading-[1.3]";
+const title = "mt-2 flex items-baseline gap-2 text-[1.05rem] font-normal";
+const press = "active:scale-[0.96]";
+const keyClass = cn("min-h-13 rounded-sm border border-line px-1.5 py-px font-display text-[1.45rem]", press);
+const sayBtn = cn("flex min-h-24 flex-col items-center justify-center gap-0.5 rounded-lg px-1.5 py-px", press);
+const sayRow = "grid grid-cols-2 gap-2";
+const sayChar = "font-reading text-[2.2rem] leading-[1.1] font-medium";
+const chip = "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1";
+const keys = "grid grid-cols-[repeat(auto-fill,minmax(48px,1fr))] gap-1.5";
+const Title = ({ k, e }: { k: ReactNode; e: ReactNode }) => (
+  <h2 className={title}>
+    <span className={ko}>{k}</span> <span className={en}>{e}</span>
+  </h2>
+);
+
 const ROLE_NAME: Record<Role, { ko: string; en: string }> = {
   cho: { ko: "첫 자음", en: "First consonant" },
   jung: { ko: "모음", en: "Vowel" },
@@ -98,25 +150,25 @@ function BuildTab() {
   const jongTarget = !!(parts.cho && parts.jung);
 
   return (
-    <section className="hb">
-      <div className="yj-box hb-stage">
+    <section className={section}>
+      <div className={stage}>
         <BuildBlock parts={parts} ghost={ghost} />
-        <div className="hb-glyph" aria-live="polite">
+        <div className={glyph} aria-live="polite">
           {syl ? (
             <>
-              <span className="hb-syl">{syl}</span>
+              <span className={sylClass}>{syl}</span>
               <ShapeLine jung={parts.jung!} jong={parts.jong} />
             </>
           ) : (
-            <span className="hb-hint">
-              <span className="ko">{cho ? "모음을 골라요" : "자음부터 골라요"}</span>
-              <span className="en">{cho ? "Now pick a vowel" : "Start with a consonant"}</span>
+            <span className={lines}>
+              <span className={cn(ko, "text-[1.1rem]")}>{cho ? "모음을 골라요" : "자음부터 골라요"}</span>
+              <span className={en}>{cho ? "Now pick a vowel" : "Start with a consonant"}</span>
             </span>
           )}
         </div>
       </div>
 
-      <div className="hb-slots">
+      <div className="grid grid-cols-3 gap-2">
         {(["cho", "jung", "jong"] as Role[]).map((r) => {
           const ch = r === "cho" ? cho : parts[r];
           const isGhost = r === "cho" && ghost;
@@ -124,39 +176,44 @@ function BuildTab() {
             <button
               key={r}
               type="button"
-              className={`hb-slot tone-${TONE[r]}${ch ? "" : " is-empty"}${isGhost ? " is-ghost" : ""}`}
+              className={cn(
+                "flex min-h-19 flex-col items-center justify-center gap-0.5 rounded-md px-1 py-1.5 leading-[1.15]",
+                ch ? TONE_CLASS[TONE[r]] : "border-2 border-dashed border-line bg-surface text-muted",
+              )}
               disabled={!parts[r]}
               onClick={() => remove(r)}
               aria-label={parts[r] ? `${ROLE_NAME[r].ko} ${ch} 빼기 · remove` : ROLE_NAME[r].ko}
             >
-              <small>{ROLE_NAME[r].ko}</small>
-              <b>{ch ?? "—"}</b>
-              <em>{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
+              <small className="font-display text-[0.8rem]">{ROLE_NAME[r].ko}</small>
+              <b className={cn("font-display text-[1.6rem] font-normal", isGhost && "opacity-55")}>{ch ?? "—"}</b>
+              <em className="text-[0.68rem] font-bold not-italic">{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
             </button>
           );
         })}
       </div>
-      <p className="hb-tip">
-        <span className="ko">넣은 자모를 누르면 빠져요.</span>
-        <span className="en">Tap a letter above to take it out.</span>
+      <p className={tip}>
+        <span className={ko}>넣은 자모를 누르면 빠져요.</span>
+        <span className={en}>Tap a letter above to take it out.</span>
       </p>
 
       {msg && <Note tone="bad" ko={msg.ko} en={msg.en} />}
       <BuildNotes parts={parts} syl={syl} ghost={ghost} />
 
-      <h2 className="hb-keys-title">
-        <span className="ko">자음</span> <span className="en">Consonants</span>
-      </h2>
-      <p className="hb-tip">
-        <span className="ko">모음 앞이면 첫 자음, 모음 뒤면 받침이 돼요.</span>
-        <span className="en">Before the vowel: first consonant. After it: bottom letter.</span>
+      <Title k="자음" e="Consonants" />
+      <p className={tip}>
+        <span className={ko}>모음 앞이면 첫 자음, 모음 뒤면 받침이 돼요.</span>
+        <span className={en}>Before the vowel: first consonant. After it: bottom letter.</span>
       </p>
-      <div className="hb-keys">
+      <div className={keys}>
         {Object.entries(CONSONANTS).map(([c, g]) => (
           <button
             key={c}
             type="button"
-            className={`hb-key${jongTarget && !canBeJong(c) ? " is-off" : ""}`}
+            className={cn(
+              keyClass,
+              // 받침 자리인데 받침이 될 수 없는 자음. 눌러도 이유를 알려 준다
+              jongTarget && !canBeJong(c) ? "border-dashed bg-surface text-muted" : TONE_CLASS["blk-cho"],
+            )}
             aria-label={`${c} ${g.ko}`}
             onClick={() => tapConsonant(c)}
           >
@@ -165,20 +222,18 @@ function BuildTab() {
         ))}
       </div>
 
-      <h2 className="hb-keys-title">
-        <span className="ko">모음</span> <span className="en">Vowels</span>
-      </h2>
-      <div className="hb-keys">
+      <Title k="모음" e="Vowels" />
+      <div className={keys}>
         {[...Object.keys(VOWELS), ...Object.keys(MIXED)].map((v) => (
-          <button key={v} type="button" className="hb-key is-vowel" aria-label={v} onClick={() => tapVowel(v)}>
+          <button key={v} type="button" className={cn(keyClass, TONE_CLASS["blk-jung"])} aria-label={v} onClick={() => tapVowel(v)}>
             {v}
           </button>
         ))}
       </div>
 
-      <div className="hb-actions">
-        {syl && <ListenBtn text={syl} />}
-        <Btn variant="ghost" ko="새 글자" en="New block" onClick={() => apply({ cho: null, jung: null, jong: null })} />
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-2">
+        {syl && <ListenBtn text={syl} className="mt-0" />}
+        <Btn variant="ghost" className="mt-0" ko="새 글자" en="New block" onClick={() => apply({ cho: null, jung: null, jong: null })} />
       </div>
     </section>
   );
@@ -186,7 +241,7 @@ function BuildTab() {
 
 function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
   const cho = choOf(parts);
-  if (!cho) return <div className="blk-empty" aria-hidden="true" />;
+  if (!cho) return <div className="size-[150px] rounded-md border-2 border-dashed border-line" aria-hidden="true" />;
   const l = layoutSyllable(cho, parts.jung, parts.jong);
   // key 에 자모를 넣는다 — 모음만 바뀌면 첫 자음 칸은 key 가 그대로라서 미끄러져 간다
   const cells: BlockCell[] = l.pieces.flatMap((p) =>
@@ -200,7 +255,7 @@ function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
   );
   const syl = syllableOf(parts);
   return (
-    <div className="hb-block">
+    <div className={blockWrap}>
       <Blocks cells={cells} w={l.w} h={l.h} size={fitSize(l.w, l.h, 220, 30)} label={syl ?? cho} />
     </div>
   );
@@ -216,13 +271,17 @@ function ShapeLine({ jung, jong }: { jung: string; jong: string | null }) {
         ? { ko: "세로 모음 → 오른쪽", en: "Long line standing up → goes RIGHT" }
         : { ko: "가로 모음 → 아래", en: "Long line lying down → goes BELOW" };
   return (
-    <span className="hb-shape">
-      {t && <b>{t}번 모양 · Type {t}</b>}
-      <span className="ko">
+    <span className={lines}>
+      {t && (
+        <b className="text-[0.75rem] font-extrabold text-muted">
+          {t}번 모양 · Type {t}
+        </b>
+      )}
+      <span className={ko}>
         {where.ko}
         {jong && ", 받침은 맨 아래"}
       </span>
-      <span className="en">
+      <span className={en}>
         {where.en}
         {jong && "; the bottom letter goes at the bottom"}
       </span>
@@ -336,19 +395,17 @@ function AirTab() {
     speak(p.syl[on ? 0 : 1]);
   };
 
-  const group = (ko: string, en: string, list: StrokePair[], offset: number) => (
+  const group = (k: string, e: string, list: StrokePair[], offset: number) => (
     <div>
-      <h2 className="hb-keys-title">
-        <span className="ko">{ko}</span> <span className="en">{en}</span>
-      </h2>
-      <div className="hb-pairs" role="radiogroup" aria-label={`${ko} · ${en}`}>
+      <Title k={k} e={e} />
+      <div className="mt-1.5 grid grid-cols-[repeat(auto-fill,minmax(76px,1fr))] gap-1.5" role="radiogroup" aria-label={`${k} · ${e}`}>
         {list.map((q, n) => (
           <button
             key={q.plain}
             type="button"
             role="radio"
             aria-checked={n + offset === i}
-            className="hb-pair"
+            className="min-h-12 rounded-full border border-line bg-surface px-1.5 py-px font-display text-[1.15rem] text-ink aria-checked:border-primary aria-checked:bg-primary aria-checked:text-primary-ink"
             onClick={() => pick(n + offset)}
           >
             {q.plain} → {q.more}
@@ -361,33 +418,33 @@ function AirTab() {
   const say = SAY[p.kind];
 
   return (
-    <section className="hb">
+    <section className={section}>
       {group("자음", "Consonants: one puff of air", AIR_PAIRS, 0)}
       {group("모음", "Vowels: a y sound in front", Y_PAIRS, AIR_PAIRS.length)}
 
-      <div className="yj-box hb-stage">
-        <div className="hb-block">
+      <div className={stage}>
+        <div className={blockWrap}>
           <Blocks cells={cells} w={5} h={5} size={36} label={ch} />
         </div>
-        <div className="hb-glyph">
-          <span className="hb-syl">{ch}</span>
-          <span className="hb-shape">
-            <span className="ko">
+        <div className={glyph}>
+          <span className={sylClass}>{ch}</span>
+          <span className={lines}>
+            <span className={ko}>
               {info.ko} · {info.en}
             </span>
-            <span className="en">
+            <span className={en}>
               {p.kind === "air" ? (on ? "With a puff of air" : "No puff of air") : on ? "A y sound in front" : "No y sound"}
             </span>
           </span>
         </div>
       </div>
 
-      <div className="hb-legend">
-        <span className={`hb-chip tone-${baseTone}`}>
-          <span className="ko">원래 칸</span> <span className="en">Kept</span>
+      <div className="flex justify-center gap-2">
+        <span className={cn(chip, TONE_CLASS[baseTone])}>
+          <span className={ko}>원래 칸</span> <span className={enOnTone}>Kept</span>
         </span>
-        <span className="hb-chip tone-blk-add">
-          <span className="ko">더한 칸</span> <span className="en">Added</span>
+        <span className={cn(chip, TONE_CLASS["blk-add"])}>
+          <span className={ko}>더한 칸</span> <span className={enOnTone}>Added</span>
         </span>
       </div>
 
@@ -409,24 +466,22 @@ function AirTab() {
         />
       )}
 
-      <h2 className="hb-keys-title">
-        <span className="ko">소리 비교</span> <span className="en">Say the difference</span>
-      </h2>
-      <div className="hb-say">
+      <Title k="소리 비교" e="Say the difference" />
+      <div className={sayRow}>
         {p.syl.map((s, n) => (
-          <button key={s} type="button" className={`hb-say-btn tone-${n ? "blk-add" : baseTone}`} onClick={() => speak(s)}>
-            <b>{s}</b>
-            <span className="ko">{(n ? say.on : say.off)[0]}</span>
-            <span className="en">{(n ? say.on : say.off)[1]}</span>
+          <button key={s} type="button" className={cn(sayBtn, TONE_CLASS[n ? "blk-add" : baseTone])} onClick={() => speak(s)}>
+            <b className={sayChar}>{s}</b>
+            <span className={ko}>{(n ? say.on : say.off)[0]}</span>
+            <span className={enOnTone}>{(n ? say.on : say.off)[1]}</span>
           </button>
         ))}
       </div>
       {p.words && (
-        <div className="hb-say">
+        <div className={sayRow}>
           {p.words.map(([w, en], n) => (
-            <button key={w} type="button" className={`hb-say-btn tone-${n ? "blk-add" : baseTone}`} onClick={() => speak(w)}>
-              <b>{w}</b>
-              <span className="en">{en}</span>
+            <button key={w} type="button" className={cn(sayBtn, TONE_CLASS[n ? "blk-add" : baseTone])} onClick={() => speak(w)}>
+              <b className={sayChar}>{w}</b>
+              <span className={enOnTone}>{en}</span>
             </button>
           ))}
         </div>
@@ -462,17 +517,15 @@ const GROUPS: { ko: string; en: string; items: string[] }[] = [
 
 function ChartTab() {
   return (
-    <section className="hb">
-      <p className="hb-tip">
-        <span className="ko">누르면 이름을 읽어 줘요.</span>
-        <span className="en">Tap a letter to hear its name.</span>
+    <section className={section}>
+      <p className={tip}>
+        <span className={ko}>누르면 이름을 읽어 줘요.</span>
+        <span className={en}>Tap a letter to hear its name.</span>
       </p>
       {GROUPS.map((g) => (
         <div key={g.en}>
-          <h2 className="hb-keys-title">
-            <span className="ko">{g.ko}</span> <span className="en">{g.en}</span>
-          </h2>
-          <div className="hb-chart">
+          <Title k={g.ko} e={g.en} />
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(92px,1fr))] gap-2">
             {g.items.map((ch) => (
               <ChartTile key={ch} ch={ch} />
             ))}
@@ -489,10 +542,21 @@ function ChartTile({ ch }: { ch: string }) {
   const tone = ch in CONSONANTS ? "blk-cho" : "blk-jung";
   const parts = MIXED_PARTS[ch];
   return (
-    <button type="button" className="hb-tile" aria-label={`${ch} ${info.ko}`} onClick={() => speak(info.ko)}>
-      <span className={`hb-tile-char tone-${tone}`}>{ch}</span>
-      <span className="ko">{info.ko}</span>
-      <span className="en">{parts ? `${parts[0]} + ${parts[1]} · ${info.en}` : info.en}</span>
+    <button
+      type="button"
+      className={cn(
+        "flex flex-col items-center gap-0.5 rounded-lg border border-line bg-surface px-1.5 pt-3 pb-2.5 leading-[1.2] text-ink",
+        press,
+      )}
+      aria-label={`${ch} ${info.ko}`}
+      onClick={() => speak(info.ko)}
+    >
+      {/* 자모표는 블록 대신 읽기 글꼴로 크게. 책에서 보는 모양 그대로 */}
+      <span className={cn("mb-1.5 w-full rounded-md pt-3 pb-3.5 font-reading text-[3rem] leading-none font-medium", TONE_CLASS[tone])}>
+        {ch}
+      </span>
+      <span className={cn(ko, "text-[1rem]")}>{info.ko}</span>
+      <span className={en}>{parts ? `${parts[0]} + ${parts[1]} · ${info.en}` : info.en}</span>
     </button>
   );
 }

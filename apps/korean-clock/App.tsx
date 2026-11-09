@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Btn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
+import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
 import { native, nativeCounter } from "@yj/korean/numbers";
 import { ClockFace } from "./ClockFace";
 import { contracted, parts, readHour, readMin, readTime, wrapDay, wrongChoices } from "./reading";
@@ -11,6 +11,7 @@ const TABS: TabDef<"clock" | "rule" | "quiz">[] = [
   { key: "quiz", ko: "퀴즈", en: "Quiz" },
 ];
 const pad = (n: number) => String(n).padStart(2, "0");
+const section = "flex flex-col gap-3.5";
 
 export function App() {
   const [tab, setTab] = useHashTab(TABS);
@@ -41,43 +42,44 @@ function ClockTab() {
   const step = (d: number) => setT(wrapDay(t + d));
 
   return (
-    <section>
+    <section className={section}>
       <Box>
-        <div className="ampm" role="radiogroup" aria-label="오전 오후 / AM PM">
+        <div className="mx-auto mb-2 grid max-w-55 grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="오전 오후 / AM PM">
           {[false, true].map((isPm) => (
             <button
               key={String(isPm)}
-              className="ampm-btn"
+              className="group flex min-h-11 flex-col items-center justify-center rounded-full leading-[1.1] aria-checked:bg-(--clk-ampm-bg) aria-checked:text-(--clk-ampm-ink)"
               type="button"
               role="radio"
               aria-checked={pm === isPm}
               onClick={() => pm !== isPm && step(isPm ? 720 : -720)}
             >
-              <span className="ko">{isPm ? "오후" : "오전"}</span>
-              <span className="en">{isPm ? "PM" : "AM"}</span>
+              <span className="font-display text-[1rem]">{isPm ? "오후" : "오전"}</span>
+              <span className="text-[0.66rem] font-bold text-muted group-aria-checked:text-current">{isPm ? "PM" : "AM"}</span>
             </button>
           ))}
         </div>
-        <div className="face-wrap">
+        <div className="mx-auto w-[min(100%,320px)]">
           <ClockFace t={t} onChange={setT} />
         </div>
-        <p className="hint">
-          <span className="ko">바늘을 끌어서 돌려 보세요</span>
-          <span className="en">Drag a hand to turn it</span>
+        <p className="mt-1.5 text-center leading-[1.3]">
+          <span className="block font-display">바늘을 끌어서 돌려 보세요</span>
+          <span className="text-[0.75rem] font-bold text-muted">Drag a hand to turn it</span>
         </p>
-        <div className="steps">
+        <div className="mt-3 grid grid-cols-4 gap-1.5">
           {[-5, -1, 1, 5].map((d) => (
-            <button key={d} className="step" type="button" onClick={() => step(d)}>
+            <button key={d} className="min-h-11 rounded-md border border-line bg-bg text-[1rem] font-extrabold motion-safe:active:scale-[0.97]" type="button" onClick={() => step(d)}>
               {d > 0 ? "+" : "−"}
               {Math.abs(d)}
-              <small>분</small>
+              {/* 브라우저 기본 small 은 smaller (preflight 는 80%) */}
+              <small className="ml-0.5 font-display text-[smaller] font-normal">분</small>
             </button>
           ))}
         </div>
       </Box>
 
       <Box aria-live="polite">
-        <div className="digits">
+        <div className="mt-0.5 mb-3 text-center font-display text-[1.6rem]">
           {ampm} {h}:{pad(m)}
         </div>
         <Segments>
@@ -97,7 +99,7 @@ function ClockTab() {
             </Seg>
           )}
         </Segments>
-        <p className="yj-en-line">
+        <p className="mt-3 text-center font-bold text-muted">
           {h}:{pad(m)} {pm ? "PM" : "AM"}
           {m ? "" : " · o’clock"}
         </p>
@@ -125,45 +127,58 @@ function ClockTab() {
 }
 
 /* ---------- 읽는 법 ---------- */
+const rule = "flex flex-col gap-0.5 rounded-lg p-3 text-center leading-[1.2]";
+const ruleSmall = "text-[0.75rem] font-extrabold";
+const ruleB = "font-display text-[1.6rem] font-normal";
+const ruleSpan = "font-display text-[1rem]";
+const ruleEm = "text-[0.75rem] font-bold not-italic";
+// h2 크기는 브라우저 기본(1.5em) 그대로 — 영어 줄의 줄 높이가 여기서 나온다
+const secTitle = "mb-2.5 text-[1.5em] font-normal leading-[1.2]";
+const secKo = "block font-display text-[1.2rem]";
+const secEn = "text-[0.75rem] font-bold text-muted";
+const row =
+  "grid min-h-13 w-full grid-cols-[auto_1fr] items-center gap-x-2 rounded-md border border-line bg-bg px-2.5 py-1.5 text-left";
+const num = "min-w-[2.6em] text-[0.8rem] font-extrabold text-muted";
+const word = "font-display text-[1.2rem]";
 const MINUTES = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 function RuleTab() {
   return (
-    <section>
+    <section className={section}>
       <Box>
-        <div className="rule-head">
-          <span className="ko">시는 고유어, 분은 한자어</span>
-          <span className="en">Hours use native Korean numbers. Minutes use Sino-Korean numbers.</span>
+        <div className="mb-3 text-center leading-[1.35]">
+          <span className="block font-display text-[1.4rem]">시는 고유어, 분은 한자어</span>
+          <span className="text-[0.82rem] font-bold text-muted">Hours use native Korean numbers. Minutes use Sino-Korean numbers.</span>
         </div>
-        <div className="rule-pair">
-          <div className="rule rule-hour">
-            <small>시 · Hour</small>
-            <b>고유어</b>
-            <span>하나, 둘, 셋…</span>
-            <em>Native Korean</em>
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className={cn(rule, "bg-(--clk-hour-bg) text-(--clk-hour-ink)")}>
+            <small className={ruleSmall}>시 · Hour</small>
+            <b className={ruleB}>고유어</b>
+            <span className={ruleSpan}>하나, 둘, 셋…</span>
+            <em className={ruleEm}>Native Korean</em>
           </div>
-          <div className="rule rule-min">
-            <small>분 · Minute</small>
-            <b>한자어</b>
-            <span>일, 이, 삼…</span>
-            <em>Sino-Korean</em>
+          <div className={cn(rule, "bg-(--clk-min-bg) text-(--clk-min-ink)")}>
+            <small className={ruleSmall}>분 · Minute</small>
+            <b className={ruleB}>한자어</b>
+            <span className={ruleSpan}>일, 이, 삼…</span>
+            <em className={ruleEm}>Sino-Korean</em>
           </div>
         </div>
       </Box>
 
       <Box>
-        <h2 className="sec-title">
-          <span className="ko">시 — 몇 시예요?</span>
-          <span className="en">Hours · tap to listen</span>
+        <h2 className={secTitle}>
+          <span className={secKo}>시 — 몇 시예요?</span>
+          <span className={secEn}>Hours · tap to listen</span>
         </h2>
-        <ul className="list">
+        <ul className="grid grid-cols-2 gap-1.5">
           {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
             <li key={h}>
-              <button className="row row-hour" type="button" onClick={() => speak(readHour(h))}>
-                <span className="num">{h}시</span>
-                <span className="word">{readHour(h)}</span>
+              <button className={row} type="button" onClick={() => speak(readHour(h))}>
+                <span className={num}>{h}시</span>
+                <span className={cn(word, "text-(--clk-hour-ink)")}>{readHour(h)}</span>
                 {contracted(h) && (
-                  <span className="base">
+                  <span className="col-[2] text-[0.72rem] font-bold text-muted">
                     {native(h)} → {nativeCounter(h)}
                   </span>
                 )}
@@ -180,16 +195,16 @@ function RuleTab() {
       </Box>
 
       <Box>
-        <h2 className="sec-title">
-          <span className="ko">분 — 몇 분이에요?</span>
-          <span className="en">Minutes · tap to listen</span>
+        <h2 className={secTitle}>
+          <span className={secKo}>분 — 몇 분이에요?</span>
+          <span className={secEn}>Minutes · tap to listen</span>
         </h2>
-        <ul className="list">
+        <ul className="grid grid-cols-2 gap-1.5">
           {MINUTES.map((m) => (
             <li key={m}>
-              <button className="row row-min" type="button" onClick={() => speak(readMin(m))}>
-                <span className="num">{m}분</span>
-                <span className="word">{readMin(m)}</span>
+              <button className={row} type="button" onClick={() => speak(readMin(m))}>
+                <span className={num}>{m}분</span>
+                <span className={cn(word, "text-(--clk-min-ink)")}>{readMin(m)}</span>
               </button>
             </li>
           ))}
@@ -212,7 +227,7 @@ function makeQuestion(): Question {
   return {
     id: `${h}:${m}`,
     prompt: (
-      <div className="face-wrap small">
+      <div className="mx-auto mt-2.5 mb-4 w-[min(100%,240px)]">
         <ClockFace t={h * 60 + m} />
       </div>
     ),

@@ -5,7 +5,7 @@
    학생들에게 #/deck/<id> 링크가 나가 있어서 해시 주소를 그대로 둔다.
    ============================================================ */
 import { useEffect, useState } from "react";
-import { Page } from "@yj/ui";
+import { cn, Page } from "@yj/ui";
 import { Credits } from "./Credits";
 import { deckById } from "./decks";
 import { Home } from "./Home";
@@ -18,6 +18,10 @@ const LEGAL = (
     the property of their respective owners.
   </>
 );
+
+/* <Page> 가 그리는 main — body 의 flex 안에서 남는 높이를 채운다.
+   좁은 화면은 폭 전부, 600px 부터 640px 가운데 */
+const main = "flex w-full flex-[1_0_auto] flex-col px-4 pt-5 pb-3.5 sm:mx-auto sm:max-w-160 sm:gap-4 sm:px-5 sm:py-6";
 
 function useRoute() {
   const read = () => location.hash.replace(/^#/, "") || "/";
@@ -54,7 +58,7 @@ export function App() {
       app="korean-cards"
       h1={false} // 화면마다 자기 <h1> 이 따로 있다
       legal={LEGAL}
-      mainClass={credits ? "app credits" : "app home"}
+      mainClass={cn(main, credits ? "gap-3" : "gap-5")}
       links={[{ href: "#/credits", ko: "이미지 출처", en: "Image credits", active: credits }]}
     >
       {credits ? <Credits /> : <Home />}

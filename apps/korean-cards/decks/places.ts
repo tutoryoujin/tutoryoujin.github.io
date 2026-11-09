@@ -6,7 +6,6 @@ const deck: Deck = {
   emoji: "🏪",
   cover: "pyeonuijeom",
   color: "mint",
-  blurb: "편의점부터 찜질방까지, 어디 가요?",
   unit: { ko: "장소 이름", en: "place words" },
   art: "icon",
   groups: {

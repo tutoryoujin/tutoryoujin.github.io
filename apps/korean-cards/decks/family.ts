@@ -6,7 +6,6 @@ const deck: Deck = {
   emoji: "👨‍👩‍👧‍👦",
   cover: "gajok",
   color: "yellow",
-  blurb: "형과 오빠는 왜 다를까요",
   unit: { ko: "가족 호칭", en: "family words" },
   art: "icon",
   groups: {

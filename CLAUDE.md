@@ -12,13 +12,14 @@
 
 ## 기술 스택
 
-React 18 · TypeScript · Vite 5 (여러 페이지 빌드) · Vitest. 서버 없음 — GitHub Pages 정적 배포.
+React 18 · TypeScript · Vite 5 (여러 페이지 빌드) · Tailwind CSS 4 · Vitest. 서버 없음 — GitHub Pages 정적 배포.
 
 ```
 npm install
 npm run dev          # http://localhost:5173/<slug>/
 npm test             # 한국어 읽기 규칙 테스트
 npm run typecheck
+npm run check:classes  # 테마에 없는 유틸리티(text-sm, bg-white …) 찾기
 npm run build        # dist/
 npm run new -- <slug> "<한국어 이름>" "<English name>" <emoji>
 ```
@@ -30,13 +31,14 @@ main 에 올라가면 `.github/workflows/deploy.yml` 이 검사 → 빌드 → �
 ```
 shared/
   apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말이 모두 여기서 나온다
-  tokens/            tokens.json(원본) → tokens.css(생성물, npm run tokens)
+  tokens/            tokens.json(원본) → tokens.css · theme.css · theme.ts (생성물, npm run tokens)
   ui/                공통 컴포넌트 — import { … } from "@yj/ui"
+    styles.css       Tailwind 입구 (preflight · 토큰 · 테마 · 이응 키프레임)
   korean/            숫자 읽기(sino · native · nativeCounter · josa) · 한글 합치기(hangul.ts) + 테스트
 apps/
   index.html, home.tsx
-  <slug>/            index.html · main.tsx · App.tsx · <slug>.css
-scripts/             build-tokens.mjs · new-app.mjs
+  <slug>/            index.html · main.tsx · App.tsx · <slug>.css (별칭 · 키프레임만)
+scripts/             build-tokens.mjs · new-app.mjs · check-classes.mjs
 tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
@@ -54,6 +56,8 @@ public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/
 | `Quiz` | 보기 넷 퀴즈 — 채점 · 오답 이유 · 결과 · 다시 보기 |
 | `Ieung` | 움직이는 입체 이응 (표정 12종) |
 | `speak()` | 한국어 TTS |
+| `cn()` | 클래스 합치기 (tailwind-merge). 뒤의 것이 이긴다 |
+| `Footer` · `mainClass` · `boxClass` | 겉 부품을 컴포넌트 없이 쓸 때 |
 
 **앱 두 개에 같은 코드가 생기면 `shared/` 로 올리세요.** 그게 이 구조의 이유입니다.
 
@@ -64,12 +68,27 @@ public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/
 Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/tokens.json`, 컴포넌트는 `project/components/<이름>/README.md`.
 토큰을 바꾸면 `shared/tokens/tokens.json` 을 교체하고 `npm run tokens`.
 
+### Tailwind
+
+스타일은 JSX 의 `className` 에 유틸리티로 적습니다. 앱 CSS 에는 색 별칭과 `@keyframes` 처럼 유틸리티로 못 쓰는 것만.
+
+- **테마는 `theme.css` 하나** (tokens.json 생성물). Tailwind 기본 팔레트 · 글자 크기 · 모서리 · 그림자 · 화면 폭은 지웠습니다.
+  `bg-white` `text-sm` `rounded-2xl` `md:` 은 **조용히 아무것도 안 만듭니다** — `npm run check:classes` 가 잡아요 (CI 도).
+- 색 `bg-surface text-muted border-line` · 쌍 `bg-mint-bg text-mint-ink` · 글꼴 `font-display` · 글자 `text-label`(크기+줄높이+굵기)
+  · 모서리 `rounded-sm/md/lg/xl/full` · 그림자 `shadow-card` · 화면 폭 `sm:`(600px) 하나. 나머지는 `text-[1.2rem]` `rounded-[16px]` `min-[440px]:`.
+- 간격은 Tailwind 기본 4px 단위 (`p-4` = 16px).
+- 앱 별칭은 `bg-(--clk-hour-bg) text-(--clk-hour-ink)` 로 씁니다.
+- 공통 컴포넌트를 앱에서 고칠 땐 CSS 로 덮지 말고 `className` (예: `<Btn className="mt-0">`). `cn()` 이 겹치는 유틸리티를 정리합니다.
+- 앱 CSS 는 레이어 밖이라 유틸리티를 이깁니다. 같은 요소의 같은 속성을 두 곳에서 정하지 마세요.
+
 ### 매번 틀리는 것들
 
 - **색을 새로 만들지 마세요.** 악센트 8쌍(`blue` `pink` `yellow` `mint` `lavender` `coral` `orange` `gray`) 안에서 고르고, 뜻 이름은 앱 CSS 의 `:root` 에 `var()` 별칭으로 (`--clk-hour-bg: var(--orange-bg)`). 별칭 쪽에 hex 금지.
 - **`-bg` 와 `-ink` 는 쌍입니다.** `Seg`·`Note` 는 `tone="orange"` 처럼 이름만 받아 쌍으로 칠합니다.
 - **색만으로 구분하지 마세요.** 파스텔 8색은 명도가 거의 같습니다. 항상 글자를 같이 둡니다.
 - **다크 모드 세 상태**는 `tokens.css` 가 처리합니다. 앱 CSS 에서 `@media (prefers-color-scheme)` 안에만 색을 정의하지 마세요.
+  처음엔 기기 설정을 따르고, 헤더의 해/달 토글을 누르면 밝게↔어둡게로 바뀌어 `<html data-theme>` + `localStorage["yj:theme"]` 에 남습니다 (`shared/ui/theme.ts`).
+  첫 그림 전 적용은 `vite.config.ts` 가 모든 index.html 에 넣는 스크립트가 합니다. 색은 토큰이 바뀌니 `dark:` 는 토큰이 없는 것(그림자 세기 등)에만.
 - **한국어가 먼저, 영어는 바로 아래 더 작게 `muted`.** 외국인 학습자용이라 설명·피드백에 영어가 빠지면 안 됩니다. 컴포넌트가 `ko` / `en` 을 따로 받는 이유입니다. 해요체. 한자 쓰지 않음.
 - 꼬리말은 `<하는 일>, 매일 조금씩.` — "매일 조금씩" 은 바꾸지 않습니다.
 - 누를 수 있는 것은 최소 44px.

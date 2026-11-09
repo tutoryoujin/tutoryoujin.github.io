@@ -1,4 +1,4 @@
-// tokens.json → tokens.css
+// tokens.json → tokens.css + theme.css
 //
 //   npm run tokens          생성
 //   npm run tokens:check    어긋났는지만 확인 (CI)
@@ -7,7 +7,9 @@
 //          ↓ 손으로 내려받아 교체
 //        shared/tokens/tokens.json
 //          ↓ 이 스크립트
-//        shared/tokens/tokens.css   ← 모든 앱이 import 한다
+//        shared/tokens/tokens.css   ← CSS 변수 (--bg, --blue-bg …). 다크 세 상태
+//        shared/tokens/theme.css    ← Tailwind @theme. 위 변수를 유틸리티 이름으로 잇는다
+//        shared/tokens/theme.ts     ← 타입 스케일 이름 (tailwind-merge 용)
 //
 // 예전 korean-cards/tools/sync_shared.py 의 생성 부분을 그대로 옮겼다.
 // 출력이 글자 하나까지 같아야 한다.
@@ -122,14 +124,86 @@ ${shadowBlock("dark", "  ")}
 }
 `;
 
-const out = dir + "tokens.css";
-if (process.argv.includes("--check")) {
-  if (!existsSync(out) || readFileSync(out, "utf8") !== css) {
-    console.error("shared/tokens/tokens.css 가 tokens.json 과 어긋나요. npm run tokens 를 돌리세요.");
-    process.exit(1);
+// ---------- theme.css — Tailwind @theme ----------
+// 색은 var() 로 잇는다(inline). 값은 tokens.css 한 곳에만 있고, 다크로 바뀌면
+// 유틸리티도 같이 바뀐다. Tailwind 기본 팔레트는 지운다 — bg-red-500 같은
+// 이름이 아예 없으니 "색을 새로 만들지 마세요" 를 빌드가 지켜 준다.
+const themeCss = `/* 한국어 with Youjin — Tailwind 테마.
+
+   shared/tokens/tokens.json 에서 scripts/build-tokens.mjs 가 생성한다. 직접 고치지 말 것.
+
+   bg-blue-bg text-blue-ink   악센트 쌍 — 늘 같이 쓴다
+   bg-surface text-muted      바탕과 글자
+   font-display text-display-md rounded-lg shadow-card
+
+   기본 팔레트·글꼴·모서리·그림자는 지웠다. 여기 없는 색은 만들 수 없다.
+   간격은 Tailwind 기본(4px 단위)을 그대로 쓴다 — p-4 = 16px. */
+@theme inline {
+  --color-*: initial;
+${colors.map((t) => `  --color-${t.name}: var(--${t.name});`).join("\n")}
+
+  --shadow-*: initial;
+${shadows.map((t) => `  --shadow-${t.name.replace(/^shadow-/, "")}: var(--${t.name});`).join("\n")}
+}
+
+@theme {
+  --font-*: initial;
+${scalars[0][1].map(([k, v]) => `  ${k}: ${v};`).join("\n")}
+
+  /* 글자 — 디자인 시스템 타입 스케일. 글꼴은 따로: font-display text-display-md */
+  --text-*: initial;
+${data.type.groups
+  .flatMap((g) => g.styles)
+  .map((t) => `  --text-${t.name}: ${t.fontSize};\n  --text-${t.name}--line-height: ${t.lineHeight};\n  --text-${t.name}--font-weight: ${t.fontWeight};`)
+  .join("\n")}
+
+  --radius-*: initial;
+${data.radius.tokens.map((t) => `  --${t.name}: ${t.value};`).join("\n")}
+
+  /* 화면 폭 — 600px 하나만. 나머지 한 번 쓰는 폭은 min-[440px]: 처럼 적는다 */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 600px;
+}
+
+/* dark: — tokens.css 와 같은 세 상태. 색은 토큰이 알아서 바뀌니
+   dark: 는 그림자 세기·그림 밝기처럼 토큰이 없는 것에만 쓴다.
+   (시스템 다크이고 사용자가 밝게를 안 골랐을 때) 또는 (어둡게를 골랐을 때) */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]) *) {
+      @slot;
+    }
   }
-  console.log("tokens.css OK");
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+}
+`;
+
+// tailwind-merge 가 text-label 을 글자 크기로 알아보게 이름만 내보낸다 (shared/ui/cn.ts)
+const textSizes = data.type.groups.flatMap((g) => g.styles.map((t) => t.name));
+const themeTs = `// shared/tokens/tokens.json 에서 scripts/build-tokens.mjs 가 생성한다. 직접 고치지 말 것.
+export const TEXT_SIZES = ${JSON.stringify(textSizes)} as const;
+`;
+
+const outputs = [
+  [dir + "tokens.css", css, "shared/tokens/tokens.css"],
+  [dir + "theme.css", themeCss, "shared/tokens/theme.css"],
+  [dir + "theme.ts", themeTs, "shared/tokens/theme.ts"],
+];
+if (process.argv.includes("--check")) {
+  let bad = false;
+  for (const [out, text, name] of outputs) {
+    if (!existsSync(out) || readFileSync(out, "utf8") !== text) {
+      console.error(`${name} 가 tokens.json 과 어긋나요. npm run tokens 를 돌리세요.`);
+      bad = true;
+    }
+  }
+  if (bad) process.exit(1);
+  console.log("tokens OK");
 } else {
-  writeFileSync(out, css);
-  console.log("generated shared/tokens/tokens.css");
+  for (const [out, text, name] of outputs) {
+    writeFileSync(out, text);
+    console.log("generated " + name);
+  }
 }

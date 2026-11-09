@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
+import { cn } from "./cn";
+import { useTheme } from "./theme";
 
 /* ============================================================
    모든 앱의 겉 — 헤더 · 본문 · 꼬리말.
@@ -8,6 +10,11 @@ import { APPS, appBySlug } from "../apps";
    메뉴는 shared/apps.ts 에서 온다. 앱마다 따로 적으면 갈라진다
    (실제로 그랬다 — 카드 쪽 메뉴만 안 닫혔고, 푸터 내용이 달라졌다).
    ============================================================ */
+/** 본문 기본 레이아웃. 앱이 mainClass 로 통째로 바꿀 때 이걸 기준으로 cn() 한다 */
+export const mainClass = "mx-auto flex w-full max-w-(--shell-width) flex-[1_0_auto] flex-col gap-3.5 px-4 pt-4";
+/** 헤더·꼬리말 안쪽 — 본문과 같은 선에 놓인다 */
+const inner = "mx-auto w-full max-w-(--shell-width) px-4";
+
 type Props = {
   app: string;
   children: ReactNode;
@@ -24,49 +31,68 @@ type Props = {
 };
 export type NavLink = { href: string; ko: string; en: string; active?: boolean };
 
-const MARK = (
-  <svg>
-    <use href="#ieung-mark" />
-  </svg>
+/* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
+   preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
+const Mark = ({ className }: { className?: string }) => (
+  <span
+    className={cn("block size-9 shrink-0 overflow-hidden rounded-full bg-sky transition-transform duration-150 [&_svg]:size-full", className)}
+    aria-hidden="true"
+  >
+    <svg>
+      <use href="#ieung-mark" />
+    </svg>
+  </span>
 );
+const withYoujin = "text-[0.78em] not-italic text-primary";
 
-export function Page({ app, children, legal, h1 = true, width, links = [], mainClass = "yj-main" }: Props) {
+export function Page({ app, children, legal, h1 = true, width, links = [], mainClass: main = mainClass }: Props) {
   const me = appBySlug(app);
-  useEffect(() => {
+  // 첫 그림 전에 건다. useEffect 면 한 프레임 640px 로 보였다가 줄어든다
+  useLayoutEffect(() => {
     if (width) document.documentElement.style.setProperty("--shell-width", width + "px");
   }, [width]);
 
   return (
     <>
       <Header slug={app} h1={h1} links={links} />
-      <main className={mainClass}>{children}</main>
-      <footer className="site-footer">
-        <div className="site-inner">
-          <div className="foot-brand">
-            <span className="brand-mark sm" aria-hidden="true">
-              {MARK}
+      <main className={main}>{children}</main>
+      <Footer legal={legal}>
+        <div className="flex items-start gap-2.5">
+          <Mark className="size-8" />
+          <div>
+            <b className="block text-[0.95rem] font-extrabold text-ink">
+              {me.ko} <em className={withYoujin}>with Youjin</em>
+            </b>
+            <span>
+              {me.tagline.ko}
+              <br />
+              {me.tagline.en}
             </span>
-            <div>
-              <b>
-                {me.ko} <em>with Youjin</em>
-              </b>
-              <span>
-                {me.tagline.ko}
-                <br />
-                {me.tagline.en}
-              </span>
-            </div>
           </div>
-          {legal && <p className="foot-legal">{legal}</p>}
-          <p className="foot-copy">© {new Date().getFullYear()} Made by Youjin. All rights reserved.</p>
         </div>
-      </footer>
+      </Footer>
     </>
   );
 }
 
+/** 꼬리말. children 은 위쪽 브랜드 칸 (첫 화면은 비운다) */
+export function Footer({ children, legal }: { children?: ReactNode; legal?: ReactNode }) {
+  return (
+    <footer className="mt-9 border-t border-line bg-surface pt-7 pb-[calc(--spacing(7)+env(safe-area-inset-bottom,0px))] text-[0.8rem] leading-[1.55] text-muted">
+      <div className={cn(inner, "flex flex-col gap-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-start")}>
+        {children}
+        {legal && <p className="text-[0.74rem] sm:col-span-full">{legal}</p>}
+        {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}
+        <p className={cn("text-[0.74rem] font-bold sm:col-span-full", (children || legal) && "border-t border-line pt-3.5")}>
+          © {new Date().getFullYear()} Made by Youjin. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
 function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink[] }) {
-  const inner = links.some((l) => l.active);
+  const inner_ = links.some((l) => l.active);
   const me = appBySlug(slug);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
@@ -92,55 +118,76 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
     };
   }, [open]);
 
+  const navLink = (active?: boolean) =>
+    cn(
+      "flex min-h-11 items-baseline justify-between gap-3 rounded-sm px-3 py-2.5 text-[0.95rem] font-bold whitespace-nowrap text-ink no-underline hover:bg-bg",
+      active && "bg-bg text-primary",
+    );
+  const navSmall = "text-[0.7rem] font-semibold text-muted";
+  const bar = "block h-0.5 w-4.5 rounded-[2px] bg-ink transition-[transform,background] duration-200";
+
   return (
-    <header className="site-header">
-      <div className="site-inner">
-        <div className="brand">
+    <header className="sticky top-0 z-10 border-b border-line bg-bg/82 backdrop-blur-[14px] backdrop-saturate-[1.4]">
+      <div className={cn(inner, "flex min-h-15 items-center justify-between gap-3")}>
+        <div className="flex min-w-0 items-center gap-2.5 text-ink">
           {/* 이응 = 모든 앱 첫 화면, 이름 = 이 앱 첫 화면. 앱 사이를 오가는 길이 메뉴 안에만 있으면 못 찾는다 */}
-          <a className="brand-home" href="/" aria-label="모든 앱 / All apps">
-            <span className="brand-mark" aria-hidden="true">
-              {MARK}
-            </span>
+          {/* 이응 마크는 36px 라 누를 자리를 44px 로 넓힌다 (바깥으로만 — 줄 높이는 그대로) */}
+          <a className="group -m-1 flex min-w-0 shrink-0 items-center rounded-full p-1" href="/" aria-label="모든 앱 / All apps">
+            <Mark className="group-hover:scale-108" />
           </a>
-          <a className="brand-app" href={`/${slug}/`} aria-label={`${me.ko} with Youjin 처음으로 / ${me.en} start`}>
-            <Tag className="brand-text">
-              {me.ko} <em>with Youjin</em>
-              <small>{me.en}</small>
+          <a
+            className="flex min-w-0 items-center rounded-sm text-inherit no-underline"
+            href={`/${slug}/`}
+            aria-label={`${me.ko} with Youjin 처음으로 / ${me.en} start`}
+          >
+            <Tag className="text-[1.05rem] leading-[1.1] font-extrabold whitespace-nowrap">
+              {me.ko} <em className={withYoujin}>with Youjin</em>
+              <small className="block text-[0.7rem] font-semibold text-muted">{me.en}</small>
             </Tag>
           </a>
         </div>
-        <div className="menu">
+        <div className="relative flex shrink-0 items-center gap-2">
+          <ThemeToggle />
           <button
             ref={btn}
-            className="menu-btn"
+            className={cn(iconBtn, "group")}
             type="button"
             aria-label={open ? "메뉴 닫기 / Close menu" : "메뉴 열기 / Open menu"}
             aria-expanded={open}
             aria-controls="siteNav"
             onClick={() => setOpen((o) => !o)}
           >
-            <span className="bars" aria-hidden="true"></span>
+            {/* 열리면 그 자리에서 X 가 된다. 아이콘을 두 벌 두지 않는다 */}
+            <span className="relative block w-4.5" aria-hidden="true">
+              <span className={cn(bar, "absolute -top-1.5 left-0 group-aria-expanded:translate-y-1.5 group-aria-expanded:rotate-45")} />
+              <span className={cn(bar, "group-aria-expanded:bg-transparent")} />
+              <span className={cn(bar, "absolute top-1.5 left-0 group-aria-expanded:-translate-y-1.5 group-aria-expanded:-rotate-45")} />
+            </span>
           </button>
-          <nav className="site-nav" id="siteNav" aria-label="메뉴 / Menu" hidden={!open}>
+          <nav
+            className="absolute top-[calc(100%+8px)] right-0 z-1 flex w-max max-w-[calc(100vw-32px)] min-w-53 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5 shadow-card"
+            id="siteNav"
+            aria-label="메뉴 / Menu"
+            hidden={!open}
+          >
             {/* 형제 앱을 모두 건다. 한쪽만 걸려 있으면 묶음이 아니라 외딴 페이지로 보인다 */}
-            {APPS.map((a) => (
-              <a
-                key={a.slug}
-                href={`/${a.slug}/`}
-                {...(a.slug === slug && !inner ? { className: "active", "aria-current": "page" as const } : {})}
-              >
-                {a.ko}
-                <small>{a.en}</small>
-              </a>
-            ))}
+            {APPS.map((a) => {
+              const active = a.slug === slug && !inner_;
+              return (
+                <a key={a.slug} href={`/${a.slug}/`} className={navLink(active)} {...(active ? { "aria-current": "page" as const } : {})}>
+                  {a.ko}
+                  <small className={navSmall}>{a.en}</small>
+                </a>
+              );
+            })}
             {links.map((l) => (
-              <a key={l.href} href={l.href} {...(l.active ? { className: "active", "aria-current": "page" as const } : {})}>
+              <a key={l.href} href={l.href} className={navLink(l.active)} {...(l.active ? { "aria-current": "page" as const } : {})}>
                 {l.ko}
-                <small>{l.en}</small>
+                <small className={navSmall}>{l.en}</small>
               </a>
             ))}
-            <a href="/">
-              모든 앱<small>All apps</small>
+            <a href="/" className={navLink()}>
+              모든 앱<small className={navSmall}>All apps</small>
             </a>
           </nav>
         </div>
@@ -150,3 +197,32 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
 }
 
 
+/** 헤더 아이콘 버튼 — 메뉴 버튼과 같은 모양 */
+const iconBtn = "grid size-11 place-items-center rounded-sm border border-line bg-surface p-0";
+
+/* 밝게 ↔ 어둡게. 지금 보이는 화면의 아이콘(해 · 달)을 보여 준다.
+   처음엔 기기 설정을 따르고(자동), 한 번 누르면 고른 값이 모든 앱에 남는다 (shared/ui/theme.ts) */
+function ThemeToggle() {
+  const { dark, setTheme } = useTheme();
+  return (
+    <button
+      type="button"
+      className={iconBtn}
+      aria-pressed={dark}
+      aria-label="어두운 화면 / Dark mode"
+      title={dark ? "밝게 보기 / Light mode" : "어둡게 보기 / Dark mode"}
+      onClick={() => setTheme(dark ? "light" : "dark")}
+    >
+      <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-ink stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true">
+        {dark ? (
+          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
+        ) : (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </>
+        )}
+      </svg>
+    </button>
+  );
+}
