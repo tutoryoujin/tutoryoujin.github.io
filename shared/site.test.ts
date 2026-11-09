@@ -1,4 +1,6 @@
 /* 설정이 꺼져 있으면 아무것도 나오지 않는다 — 분석 · 구독 · 상품. 그리고 켰을 때의 모양 */
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
@@ -111,6 +113,14 @@ describe("SEO", () => {
       for (const n of ["title", "description", "canonical", "icon", "apple-touch-icon", "og:title", "og:description", "og:url", "twitter:card", "twitter:title"]) {
         expect(names, `${slug || "home"} ${n}`).toContain(n);
       }
+    }
+  });
+  it("홈과 카드에는 공유 그림이 있고, public/ 에 파일도 있다", () => {
+    for (const slug of ["", "korean-cards"]) {
+      const img = headTags(slug).find((t) => t.attrs?.property === "og:image")?.attrs?.content;
+      expect(img, slug || "home").toMatch(/^https:\/\/tutoryoujin\.github\.io\/.+\.png$/);
+      expect(existsSync(fileURLToPath(new URL("../public" + new URL(img!).pathname, import.meta.url))), img).toBe(true);
+      expect(headTags(slug).find((t) => t.attrs?.name === "twitter:card")?.attrs?.content).toBe("summary_large_image");
     }
   });
   it("sitemap 은 첫 화면 + 앱 전부, robots 는 sitemap 을 가리킨다", () => {

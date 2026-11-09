@@ -54,6 +54,7 @@ apps/
   <slug>/            index.html · main.tsx · App.tsx · <slug>.css (별칭 · 키프레임만)
 scripts/             build-tokens.mjs · new-app.mjs · check-classes.mjs
 tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
+tools/home/          홈 공유 그림 build_og.py — 토큰 · 이응 · apps.ts 를 그대로 읽어 브라우저로 찍는다
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
 
@@ -132,7 +133,8 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 ## 사이트 설정 · SEO
 
 - index.html 에 `<title>` · description · og 를 적지 마세요. `vite.config.ts` 가 `shared/seo.ts` 로 넣습니다.
-  공유 그림이 있으면 `apps.ts` 의 `og` 에 (1200×630, `public/` 경로).
+  공유 그림이 있으면 `apps.ts` 의 `og` 에 (1200×630, `public/` 경로). 홈 그림은 `public/og.png` ← `tools/home/build_og.py`
+  (`.venv/bin/pip install playwright==1.49.1 && .venv/bin/playwright install chromium`). 토큰·앱 목록이 바뀌면 다시 돌린다.
 - 분석 · 구독 · 상품은 `shared/site.ts` 값만 바꿉니다. 꺼졌을 때 아무것도 안 나오는지는 `shared/site.test.ts` 가 봅니다.
 - 수업 · 튜터링 · 예약 · 외부 결제 안내는 넣지 않습니다. 기능을 `?ref` 나 localStorage 로 숨기지 않습니다.
 
