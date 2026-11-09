@@ -1,12 +1,12 @@
 # 한국어 with Youjin — 앱 모음
 
-한국어를 배우는 사람을 위한 작은 앱들이 **이 저장소 하나**에 모여 있습니다.
+한국어를 배우는 사람 (한국어가 모국어가 아닌 사람 대상)을 위한 작은 앱들이 **이 저장소 하나**에 모여 있습니다.
 저장소 `tutoryoujin/tutoryoujin.github.io` → https://tutoryoujin.github.io/
 
-| 주소 | 폴더 |
-| --- | --- |
-| `/` | `apps/index.html` — 앱 목록 |
-| `/<slug>/` | `apps/<slug>/` — 앱 하나 |
+| 주소       | 폴더                        |
+| ---------- | --------------------------- |
+| `/`        | `apps/index.html` — 앱 목록 |
+| `/<slug>/` | `apps/<slug>/` — 앱 하나    |
 
 **slug 는 학생들에게 나간 주소입니다. 바꾸지 마세요.**
 
@@ -43,7 +43,7 @@ shared/
   apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말 · 검색/공유 메타(description · og)가 모두 여기서 나온다
   site.ts            사이트 설정 — 분석(provider · id) · Kit 구독 폼 id · 상품 배열 · 구독/상품 문구. 비우면 그 기능은 꺼진다
   analytics.ts       쿠키 없는 분석 스크립트(GoatCounter · Plausible · Umami) + track()
-  seo.ts             <title> · description · OG · Twitter · favicon 메타, sitemap.xml · robots.txt (vite.config.ts 가 넣는다)
+  seo.ts             <title> · description · OG · Twitter · favicon 메타, JSON-LD, #root 정적 본문, sitemap.xml · robots.txt · llms.txt (vite.config.ts 가 넣는다)
   subscribe.ts       Kit 폼으로 이메일 보내기
   tokens/            tokens.json(원본) → tokens.css · theme.css · theme.ts (생성물, npm run tokens)
   ui/                공통 컴포넌트 — import { … } from "@yj/ui"
@@ -60,22 +60,22 @@ public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/
 
 ### 공통 컴포넌트 (`@yj/ui`)
 
-| 이름 | 하는 일 |
-| --- | --- |
-| `mount(<App/>)` | 그리기 + 이응 그림 정의 |
-| `<Page app="slug" legal={…}>` | 헤더 · 메뉴 · 꼬리말. 이름·꼬리말은 `apps.ts` 에서 |
-| `Tabs` · `useHashTab` | 탭. 주소 `#key` 로 바로 열린다 |
-| `Box` · `Btn` · `ListenBtn` | 상자, 큰 버튼, 🔊 들어 보기 |
-| `Seg` · `Segments` | 문장을 뜻마다 색 알약으로 쪼개기 |
-| `Note` | ✨ 알아 두기 (ko · en · ex) |
-| `Quiz` | 보기 넷 퀴즈 — 채점 · 오답 이유 · 결과 · 다시 보기 |
-| `Ieung` | 움직이는 입체 이응 (표정 12종) |
-| `speak()` | 한국어 TTS |
-| `Subscribe` | 이메일 구독 폼 (Kit). `site.ts` 에 폼 id 가 없으면 안 그린다 |
-| `Products` | 상품 목록. `site.ts` 의 `products` 가 비면 안 그린다 |
-| `track()` | 분석 이벤트 (`deck-complete` · `subscribe` · `product-click`). 분석이 꺼져 있으면 아무 일도 안 한다 |
-| `cn()` | 클래스 합치기 (tailwind-merge). 뒤의 것이 이긴다 |
-| `Footer` · `mainClass` · `boxClass` | 겉 부품을 컴포넌트 없이 쓸 때 |
+| 이름                                | 하는 일                                                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `mount(<App/>)`                     | 그리기 + 이응 그림 정의                                                                             |
+| `<Page app="slug" legal={…}>`       | 헤더 · 메뉴 · 꼬리말. 이름·꼬리말은 `apps.ts` 에서                                                  |
+| `Tabs` · `useHashTab`               | 탭. 주소 `#key` 로 바로 열린다                                                                      |
+| `Box` · `Btn` · `ListenBtn`         | 상자, 큰 버튼, 🔊 들어 보기                                                                         |
+| `Seg` · `Segments`                  | 문장을 뜻마다 색 알약으로 쪼개기                                                                    |
+| `Note`                              | ✨ 알아 두기 (ko · en · ex)                                                                         |
+| `Quiz`                              | 보기 넷 퀴즈 — 채점 · 오답 이유 · 결과 · 다시 보기                                                  |
+| `Ieung`                             | 움직이는 입체 이응 (표정 12종)                                                                      |
+| `speak()`                           | 한국어 TTS                                                                                          |
+| `Subscribe`                         | 이메일 구독 폼 (Kit). `site.ts` 에 폼 id 가 없으면 안 그린다                                        |
+| `Products`                          | 상품 목록. `site.ts` 의 `products` 가 비면 안 그린다                                                |
+| `track()`                           | 분석 이벤트 (`deck-complete` · `subscribe` · `product-click`). 분석이 꺼져 있으면 아무 일도 안 한다 |
+| `cn()`                              | 클래스 합치기 (tailwind-merge). 뒤의 것이 이긴다                                                    |
+| `Footer` · `mainClass` · `boxClass` | 겉 부품을 컴포넌트 없이 쓸 때                                                                       |
 
 **앱 두 개에 같은 코드가 생기면 `shared/` 로 올리세요.** 그게 이 구조의 이유입니다.
 
@@ -135,6 +135,11 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 - index.html 에 `<title>` · description · og 를 적지 마세요. `vite.config.ts` 가 `shared/seo.ts` 로 넣습니다.
   공유 그림이 있으면 `apps.ts` 의 `og` 에 (1200×630, `public/` 경로). 홈 그림은 `public/og.png` ← `tools/home/build_og.py`
   (`.venv/bin/pip install playwright==1.49.1 && .venv/bin/playwright install chromium`). 토큰·앱 목록이 바뀌면 다시 돌린다.
+- 검색 제목·설명·배우는 것은 `apps.ts` 의 `searchTitle` · `description`(영어 먼저 + 한국어) · `learn`. 학습자는 영어로 검색해서 메타만 영어가 앞입니다 — 화면은 그대로 한국어 먼저.
+  `learn` 에는 앱에 실제로 있는 것만. 구조화 데이터에 평점·리뷰처럼 없는 데이터를 넣지 마세요.
+- 빌드 때 각 페이지 `#root` 안에 정적 본문(h1 · 배우는 것 · 앱 링크)이 들어갑니다. 자바스크립트를 안 돌리는 AI 크롤러용이고 React 가 뜨면 덮습니다.
+  그래서 index.html 의 `<div id="root"></div>` 를 바꾸지 마세요 (없으면 빌드가 멈춥니다). 크롤러에만 보이는 말을 넣지 마세요.
+- 검색엔진 소유 확인 코드는 `site.ts` 의 `verify` (Google Search Console · 네이버 서치어드바이저).
 - 분석 · 구독 · 상품은 `shared/site.ts` 값만 바꿉니다. 꺼졌을 때 아무것도 안 나오는지는 `shared/site.test.ts` 가 봅니다.
 - 수업 · 튜터링 · 예약 · 외부 결제 안내는 넣지 않습니다. 기능을 `?ref` 나 localStorage 로 숨기지 않습니다.
 

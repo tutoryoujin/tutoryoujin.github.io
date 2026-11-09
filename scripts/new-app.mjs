@@ -5,7 +5,7 @@
 //
 // apps/<slug>/ 에 뼈대를 만들고 shared/apps.ts 에 한 줄을 넣는다.
 // 그러면 모든 앱의 메뉴와 첫 화면에 바로 나온다.
-// about · tagline · description 의 TODO 는 손으로 채운다.
+// about · tagline · description · searchTitle · learn 의 TODO 는 손으로 채운다.
 // title · description · 공유 카드 메타는 vite.config.ts 가 apps.ts 에서 넣는다 (shared/seo.ts).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -85,11 +85,13 @@ const entry = `  {
     emoji: "${emoji}",
     about: { ko: "TODO 한 줄 소개 (해요체)", en: "TODO one-line intro" },
     tagline: { ko: "TODO, 매일 조금씩.", en: "TODO, one ___ at a time." },
-    description: "TODO 검색·공유용 한국어 한 줄. TODO English line.",
+    description: "TODO English line for search. TODO 한국어 한 줄.",
+    searchTitle: "TODO what learners type into Google",
+    learn: [{ ko: "TODO 앱에 실제로 있는 것", en: "TODO" }],
   },
 ];`;
 writeFileSync(appsPath, apps.replace(/\n\];/, "\n" + entry));
 
 console.log(`만들었어요: apps/${slug}/`);
-console.log(`- shared/apps.ts 의 TODO(about, tagline, description)를 채우세요`);
+console.log(`- shared/apps.ts 의 TODO(about, tagline, description, searchTitle, learn)를 채우세요`);
 console.log(`- npm run dev 후 http://localhost:5173/${slug}/`);

@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite";
 import { analyticsScript } from "./shared/analytics";
-import { headTags, robotsTxt, sitemapXml } from "./shared/seo";
+import { headTags, jsonLdText, llmsTxt, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
 import { THEME_BOOT } from "./shared/ui/theme";
 
 // 앱 하나 = apps/<slug>/index.html 하나. 폴더만 만들면 빌드에 들어간다.
@@ -29,16 +29,22 @@ const themeBoot: Plugin = {
 const slugOf = (file: string) => relative(apps, dirname(file)).split(sep).join("/");
 const siteHead: Plugin = {
   name: "yj-site-head",
-  transformIndexHtml(_html, ctx) {
-    const tags: HtmlTagDescriptor[] = headTags(slugOf(ctx.filename)).map((t) => ({ ...t, injectTo: "head" }));
+  transformIndexHtml(html, ctx) {
+    const slug = slugOf(ctx.filename);
+    const tags: HtmlTagDescriptor[] = headTags(slug).map((t) => ({ ...t, injectTo: "head" }));
+    tags.push({ tag: "script", attrs: { type: "application/ld+json" }, children: jsonLdText(slug), injectTo: "head" });
     const a = analyticsScript();
     if (a) tags.push({ tag: "script", attrs: { src: a.src, ...a.attrs }, injectTo: "head" });
-    return tags;
+    // 정적 본문 — 자바스크립트를 안 돌리는 크롤러용. React 가 뜨면 그대로 덮는다
+    const root = '<div id="root"></div>';
+    if (!html.includes(root)) throw new Error(`${ctx.filename}: <div id="root"></div> 가 없어요`);
+    return { html: html.replace(root, `<div id="root">${prerenderHtml(slug)}</div>`), tags };
   },
   // 앱을 더하면 sitemap 에도 저절로 들어간다
   generateBundle() {
     this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemapXml() });
     this.emitFile({ type: "asset", fileName: "robots.txt", source: robotsTxt() });
+    this.emitFile({ type: "asset", fileName: "llms.txt", source: llmsTxt() });
   },
 };
 
