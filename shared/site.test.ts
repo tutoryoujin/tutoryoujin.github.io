@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { analyticsScript, track } from "./analytics";
 import { APPS } from "./apps";
-import { headTags, robotsTxt, sitemapXml } from "./seo";
+import { headTags, jsonLd, jsonLdText, llmsTxt, pageMeta, prerenderHtml, robotsTxt, sitemapXml } from "./seo";
 import { SITE, SUBSCRIBE_COPY, type SiteConfig } from "./site";
 import { subscribeEmail, subscribeEndpoint } from "./subscribe";
 import { Products } from "./ui/Products";
@@ -129,6 +129,75 @@ describe("SEO", () => {
     for (const a of APPS) expect(xml).toContain(`<loc>https://tutoryoujin.github.io/${a.slug}/</loc>`);
     expect(robotsTxt()).toContain("Sitemap: https://tutoryoujin.github.io/sitemap.xml");
   });
+  it("검색 제목은 영어 검색어 + 브랜드, 잘리지 않는 길이", () => {
+    for (const slug of ["", ...APPS.map((a) => a.slug)]) {
+      const t = pageMeta(slug).title;
+      expect(t, t).toMatch(/^[A-Z][\w ]+ \| .*(with Youjin|한국어 with Youjin)$/);
+      expect(t.length, t).toBeLessThanOrEqual(65);
+    }
+  });
+  it("설명은 영어 먼저, 한국어도 같이", () => {
+    for (const slug of ["", ...APPS.map((a) => a.slug)]) {
+      const d = pageMeta(slug).description;
+      expect(d, d).toMatch(/^[A-Z]/);
+      expect(d, d).toMatch(/[가-힣]/);
+    }
+  });
+  it("앱마다 배우는 것이 있다 (한국어 · 영어)", () => {
+    for (const a of APPS) {
+      expect(a.learn.length, a.slug).toBeGreaterThan(0);
+      for (const l of a.learn) expect(l.ko && l.en, a.slug).toBeTruthy();
+    }
+  });
+});
+
+describe("GEO — 자바스크립트 없이 읽히는 것", () => {
+  it("정적 본문: h1 · 배우는 것 · 다른 앱 링크", () => {
+    for (const a of APPS) {
+      const html = prerenderHtml(a.slug);
+      expect(html).toContain(`<h1`);
+      expect(html).toContain(a.ko);
+      for (const l of a.learn) expect(html).toContain(l.en.replace(/&/g, "&amp;"));
+      for (const o of APPS.filter((x) => x.slug !== a.slug)) expect(html).toContain(`href="/${o.slug}/"`);
+      expect(html).toContain(`href="/"`);
+    }
+    const home = prerenderHtml("");
+    for (const a of APPS) expect(home).toContain(`href="/${a.slug}/"`);
+  });
+  it("정적 본문은 HTML 을 이스케이프한다", () => {
+    const evil = [{ ...APPS[0], ko: "<script>x</script>" }];
+    expect(prerenderHtml("", SITE, evil)).not.toContain("<script>x");
+  });
+  it("구조화 데이터: 홈은 WebSite · Person · 앱 목록, 앱은 무료 학습 앱 + 경로", () => {
+    const types = (slug: string) => (jsonLd(slug) as { "@graph": { "@type": string | string[] }[] })["@graph"].flatMap((g) => g["@type"]);
+    expect(types("")).toEqual(expect.arrayContaining(["WebSite", "Person", "ItemList"]));
+    for (const a of APPS) {
+      expect(types(a.slug)).toEqual(expect.arrayContaining(["WebApplication", "LearningResource", "BreadcrumbList"]));
+      const text = jsonLdText(a.slug);
+      expect(JSON.parse(text)["@graph"][0].isAccessibleForFree).toBe(true);
+      expect(text).not.toMatch(/aggregateRating|review/i); // 없는 데이터를 지어내지 않는다
+      expect(text).not.toContain("<");
+    }
+  });
+  it("llms.txt 는 앱 전부와 배우는 것을 담는다", () => {
+    const t = llmsTxt();
+    expect(t.startsWith("# ")).toBe(true);
+    for (const a of APPS) {
+      expect(t).toContain(`(https://tutoryoujin.github.io/${a.slug}/)`);
+      for (const l of a.learn) expect(t).toContain(l.en);
+    }
+  });
+  it("소유 확인 코드가 비면 메타가 없고, 있으면 넣는다", () => {
+    const names = (c: SiteConfig) => headTags("", c).map((t) => t.attrs?.name);
+    expect(names(SITE)).not.toContain("google-site-verification");
+    expect(names(SITE)).not.toContain("naver-site-verification");
+    const on = { ...SITE, verify: { google: "abc", naver: "def" } };
+    expect(headTags("", on).find((t) => t.attrs?.name === "google-site-verification")?.attrs?.content).toBe("abc");
+    expect(names(on)).toContain("naver-site-verification");
+  });
+});
+
+describe("주소", () => {
   it("앱 주소(slug)는 그대로", () => {
     expect(APPS.map((a) => a.slug)).toEqual(["hangul-blocks", "korean-cards", "calendar-practice", "korean-clock"]);
   });

@@ -18,8 +18,18 @@ export type AppInfo = {
   about: { ko: string; en: string };
   /** 꼬리말 한 줄. "<하는 일>, 매일 조금씩." — "매일 조금씩"은 바꾸지 않는다 */
   tagline: { ko: string; en: string };
-  /** 검색·공유 카드 설명 (meta description · og · twitter). 한국어 한 줄 + 영어 한 줄 */
+  /**
+   * 검색·공유 카드 설명 (meta description · og · twitter).
+   * 영어 먼저 + 한국어 한 줄 — 학습자는 영어로 검색한다. 화면 문구는 그대로 한국어 먼저.
+   */
   description: string;
+  /** 검색 결과 제목 앞부분. 학습자가 영어로 검색하는 말 — "How to Tell Time in Korean" */
+  searchTitle: string;
+  /**
+   * 이 앱에서 배우는 것. 정적 본문 · 구조화 데이터 · llms.txt 에 들어간다 (shared/seo.ts).
+   * 앱에 실제로 있는 것만 — 지어내지 않는다. 읽기를 적으면 앱 · 테스트와 맞는지 본다.
+   */
+  learn: { ko: string; en: string }[];
   /** 공유 카드 그림 (1200×630). public/ 안의 경로. 없으면 작은 카드로 나간다 */
   og?: { image: string; alt: string };
 };
@@ -33,7 +43,14 @@ export const APPS: AppInfo[] = [
     emoji: "🧱",
     about: { ko: "자음·모음을 누르면 글자 블록이 쌓여요", en: "Tap letters and stack them into a Hangul block" },
     tagline: { ko: "글자 만들기, 매일 조금씩.", en: "Build Hangul, one block at a time." },
-    description: "자음과 모음을 눌러 한글 글자 블록을 만들어 봐요. Tap consonants and vowels to build Hangul syllable blocks.",
+    description: "Tap consonants and vowels to build Hangul syllable blocks — a free, visual way to start reading Korean. 자음과 모음을 눌러 한글 글자 블록을 만들어 봐요.",
+    searchTitle: "Learn Hangul by Building Syllable Blocks",
+    learn: [
+      { ko: "자음과 모음이 모여 글자 한 칸이 되는 법", en: "How consonants and vowels stack into one syllable block" },
+      { ko: "세로 모음은 오른쪽, 가로 모음은 아래", en: "Vertical vowels go to the right, horizontal vowels go below" },
+      { ko: "획 하나 더: ㄱ→ㅋ, ㅏ→ㅑ", en: "Add one stroke: ㄱ→ㅋ (a puff of air), ㅏ→ㅑ (a y sound)" },
+      { ko: "받침과 겹받침 읽기", en: "Reading final consonants (batchim), including double ones" },
+    ],
   },
   {
     slug: "korean-cards",
@@ -42,7 +59,13 @@ export const APPS: AppInfo[] = [
     emoji: "🃏",
     about: { ko: "뒤집어서 외우는 낱말 카드", en: "Flip cards to learn new words" },
     tagline: { ko: "한 장씩, 매일 조금씩.", en: "Learn Korean, one card at a time." },
-    description: "뒤집으며 외우는 한국어 낱말 카드 — 감정, 음식, 가족, 그리고 더. Learn Korean words with flip cards.",
+    description: "Free Korean vocabulary flashcards with pictures — emotions, Korean food, family, places and weather. 뒤집으며 외우는 한국어 낱말 카드.",
+    searchTitle: "Korean Vocabulary Flashcards",
+    learn: [
+      { ko: "감정 · 한국 음식 · 가족 · 장소 · 날씨 낱말 100개", en: "100 everyday words: emotions, Korean food, family, places and weather" },
+      { ko: "카드마다 그림과 짧은 설명", en: "Every card has a picture and a short note" },
+      { ko: "못 외운 카드는 다음 회차에 다시", en: "Cards you miss come back in the next round" },
+    ],
     og: { image: "/korean-cards/img/og.png", alt: "포개어 쌓은 덱 카드 세 장 — 감정, 한국 음식, 가족" },
   },
   {
@@ -52,7 +75,14 @@ export const APPS: AppInfo[] = [
     emoji: "📆",
     about: { ko: "날짜를 한국어로 읽어요", en: "Read dates in Korean" },
     tagline: { ko: "날짜 읽기, 매일 조금씩.", en: "Read Korean dates, one day at a time." },
-    description: "날짜를 한국어로 읽고 퀴즈로 연습해요. Learn to read dates in Korean and practice with a quiz.",
+    description: "Learn to read dates in Korean — years, months, days and weekdays — and practice with a quiz. 날짜를 한국어로 읽고 퀴즈로 연습해요.",
+    searchTitle: "How to Read Dates in Korean",
+    learn: [
+      { ko: "연도 · 월 · 일 · 요일을 한국어로 읽기", en: "Reading the year, month, day and weekday in Korean" },
+      { ko: "6월은 유월, 10월은 시월", en: "Why June is 유월 and October is 시월" },
+      { ko: "양력 고정 공휴일", en: "Korea's fixed-date public holidays" },
+      { ko: "퀴즈로 날짜 읽기 연습", en: "A date-reading quiz" },
+    ],
   },
   {
     slug: "korean-clock",
@@ -61,7 +91,14 @@ export const APPS: AppInfo[] = [
     emoji: "🕒",
     about: { ko: "시곗바늘을 돌리면 한국어로 읽어 줘요", en: "Turn the hands, hear the time in Korean" },
     tagline: { ko: "시계 읽기, 매일 조금씩.", en: "Tell time in Korean, one minute at a time." },
-    description: "시곗바늘을 돌리면 한국어로 읽어 줘요. 시는 고유어, 분은 한자어. Turn the clock hands and hear the time in Korean.",
+    description: "Turn the clock hands and hear the time in Korean. Hours use native Korean numbers, minutes use Sino-Korean. 시곗바늘을 돌리면 한국어로 읽어 줘요.",
+    searchTitle: "How to Tell Time in Korean",
+    learn: [
+      { ko: "시는 고유어: 한 시, 두 시, 세 시", en: "Hours use native Korean numbers: 한 시, 두 시, 세 시" },
+      { ko: "분은 한자어: 십 분, 삼십 분", en: "Minutes use Sino-Korean numbers: 십 분, 삼십 분" },
+      { ko: "시곗바늘을 돌리면 소리로 읽어 줘요", en: "Turn the hands and hear the time read aloud" },
+      { ko: "퀴즈로 시각 읽기 연습", en: "A time-reading quiz" },
+    ],
   },
 ];
 

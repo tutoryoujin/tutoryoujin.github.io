@@ -37,6 +37,8 @@ export type SiteConfig = {
   analytics: { provider: AnalyticsProvider; id: string; src?: string };
   subscribe: { provider: "kit"; formId: string };
   products: Product[];
+  /** 검색엔진 소유 확인 코드 (HTML 태그의 content 값). 비면 메타를 넣지 않는다 */
+  verify: { google: string; naver: string };
 };
 
 export const SITE: SiteConfig = {
@@ -45,6 +47,7 @@ export const SITE: SiteConfig = {
   analytics: { provider: "goatcounter", id: "" },
   subscribe: { provider: "kit", formId: "" },
   products: [],
+  verify: { google: "", naver: "" },
 };
 
 /** 구독 폼 문구. 영어 — 처음 오는 사람이 읽는 글이다 */
