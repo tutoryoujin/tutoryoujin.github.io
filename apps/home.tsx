@@ -1,7 +1,7 @@
 /* 첫 화면(/) — shared/apps.ts 의 앱을 모두 보여 준다. 여기는 손댈 일이 거의 없다. */
 import { APPS } from "@yj/apps";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Bubble, cn, Footer, Ieung, mainClass, mount, pokeClass, type Mood } from "@yj/ui";
+import { Bubble, cn, Footer, Ieung, mainClass, mount, pokeClass, Products, Subscribe, type Mood } from "@yj/ui";
 import "./home.css";
 
 function Home() {
@@ -39,6 +39,9 @@ function Home() {
             </li>
           ))}
         </ul>
+        {/* 설정(shared/site.ts)이 비어 있으면 둘 다 아무것도 그리지 않는다 */}
+        <Products source="home" className="mt-6" />
+        <Subscribe source="home" className="mt-6" />
         <IeungStory />
       </main>
       <Footer />

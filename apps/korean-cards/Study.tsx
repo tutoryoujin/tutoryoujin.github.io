@@ -2,7 +2,7 @@
    학습 화면. 회차 방식 — 못 외운 카드만 모아 다음 회차에서 다시.
    ============================================================ */
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import { cn, Ieung, type Mood } from "@yj/ui";
+import { cn, Ieung, Subscribe, track, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { celebrate, stopConfetti } from "./confetti";
 import { cardOf, colorOf, imgSrc } from "./decks";
@@ -84,7 +84,10 @@ export function Study({ deck }: { deck: Deck }) {
     };
     if (next.index >= next.queue.length) {
       next.phase = "end";
-      if (next.missed.length === 0) celebrateNext.current = true;
+      if (next.missed.length === 0) {
+        celebrateNext.current = true;
+        track("deck-complete", { deck: deck.id, rounds: next.round });
+      }
     }
     save(deck.id, next);
     touch();
@@ -180,7 +183,8 @@ export function Study({ deck }: { deck: Deck }) {
         </span>
       </div>
 
-      <main className="grid min-h-0 flex-1 place-items-center perspective-[1200px]">
+      {/* 끝 화면은 구독 폼까지 들어가서 화면보다 길 수 있다 — 그때는 안에서 굴린다. center-safe: 넘칠 때 위가 잘리지 않게 */}
+      <main className={cn("grid min-h-0 flex-1 perspective-[1200px]", onCard ? "place-items-center" : "place-items-center-safe overflow-y-auto")}>
         {onCard ? (
           <FlashCard key={`${state.round}-${state.index}`} deck={deck} state={state} leaving={leaving} onAnswer={answer} flipRef={flipRef} />
         ) : state.missed.length === 0 ? (
@@ -206,6 +210,7 @@ export function Study({ deck }: { deck: Deck }) {
               <span className={btnKo}>다른 카드 보러 가기</span>
               <span className={btnEn}>Try another deck</span>
             </a>
+            <Subscribe source="korean-cards" className="mt-6 rounded-none border-t border-line px-0 pt-6 pb-0 shadow-none" />
           </section>
         ) : (
           <section className={panel}>

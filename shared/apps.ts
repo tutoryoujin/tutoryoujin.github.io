@@ -18,6 +18,10 @@ export type AppInfo = {
   about: { ko: string; en: string };
   /** 꼬리말 한 줄. "<하는 일>, 매일 조금씩." — "매일 조금씩"은 바꾸지 않는다 */
   tagline: { ko: string; en: string };
+  /** 검색·공유 카드 설명 (meta description · og · twitter). 한국어 한 줄 + 영어 한 줄 */
+  description: string;
+  /** 공유 카드 그림 (1200×630). public/ 안의 경로. 없으면 작은 카드로 나간다 */
+  og?: { image: string; alt: string };
 };
 
 export const APPS: AppInfo[] = [
@@ -29,6 +33,7 @@ export const APPS: AppInfo[] = [
     emoji: "🧱",
     about: { ko: "자음·모음을 누르면 글자 블록이 쌓여요", en: "Tap letters and stack them into a Hangul block" },
     tagline: { ko: "글자 만들기, 매일 조금씩.", en: "Build Hangul, one block at a time." },
+    description: "자음과 모음을 눌러 한글 글자 블록을 만들어 봐요. Tap consonants and vowels to build Hangul syllable blocks.",
   },
   {
     slug: "korean-cards",
@@ -37,6 +42,8 @@ export const APPS: AppInfo[] = [
     emoji: "🃏",
     about: { ko: "뒤집어서 외우는 낱말 카드", en: "Flip cards to learn new words" },
     tagline: { ko: "한 장씩, 매일 조금씩.", en: "Learn Korean, one card at a time." },
+    description: "뒤집으며 외우는 한국어 낱말 카드 — 감정, 음식, 가족, 그리고 더. Learn Korean words with flip cards.",
+    og: { image: "/korean-cards/img/og.png", alt: "포개어 쌓은 덱 카드 세 장 — 감정, 한국 음식, 가족" },
   },
   {
     slug: "calendar-practice",
@@ -45,6 +52,7 @@ export const APPS: AppInfo[] = [
     emoji: "📆",
     about: { ko: "날짜를 한국어로 읽어요", en: "Read dates in Korean" },
     tagline: { ko: "날짜 읽기, 매일 조금씩.", en: "Read Korean dates, one day at a time." },
+    description: "날짜를 한국어로 읽고 퀴즈로 연습해요. Learn to read dates in Korean and practice with a quiz.",
   },
   {
     slug: "korean-clock",
@@ -53,6 +61,7 @@ export const APPS: AppInfo[] = [
     emoji: "🕒",
     about: { ko: "시곗바늘을 돌리면 한국어로 읽어 줘요", en: "Turn the hands, hear the time in Korean" },
     tagline: { ko: "시계 읽기, 매일 조금씩.", en: "Tell time in Korean, one minute at a time." },
+    description: "시곗바늘을 돌리면 한국어로 읽어 줘요. 시는 고유어, 분은 한자어. Turn the clock hands and hear the time in Korean.",
   },
 ];
 

@@ -11,3 +11,6 @@ export { Quiz, type Question, type Choice } from "./Quiz";
 export { Box, boxClass, Btn, ListenBtn, Seg, Segments, Note, Tabs, useHashTab, type TabDef, type Accent, type Tone } from "./parts";
 export { speak, canSpeak, hasKoreanVoice, onVoicesChanged } from "./speech";
 export { mount } from "./mount";
+export { Subscribe } from "./Subscribe";
+export { Products } from "./Products";
+export { track, type EventName } from "../analytics";
