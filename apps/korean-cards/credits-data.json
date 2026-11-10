@@ -809,162 +809,170 @@
  },
  {
   "key": "cafe/americano",
+  "title": "커피 아이스 아메리카노 coffee Iced Americano",
+  "author": "CC0photo",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.flickr.com/photos/137346712@N07/26722095486"
+ },
+ {
+  "key": "cafe/juseyo",
+  "title": "Spark Cafe at the Walmart Visitor Center",
+  "author": "Walmart Corporate",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/50128414@N05/5758712716"
+ },
+ {
+  "key": "cafe/chucheon",
+  "title": "Specialty Drinks - menu seen at Jack's Java in Paris, Tennessee",
+  "author": "Kathleen Tyler Conklin",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/79865753@N00/3515569779"
+ },
+ {
+  "key": "cafe/ice",
+  "title": "cold-brewed iced coffee",
+  "author": "thebittenword.com",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/22198928@N00/688642298"
+ },
+ {
+  "key": "cafe/tteutteutan",
+  "title": "coffee steam 2",
+  "author": "waferboard",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/60944931@N00/7417277946"
+ },
+ {
+  "key": "cafe/shot-chuga",
+  "title": "Single Ristretto Brazilian Espresso Shot",
+  "author": "Breville USA",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/38102750@N06/8735241747"
+ },
+ {
+  "key": "cafe/yeonhage",
+  "title": "Espresso take 2_0527",
+  "author": "gtveloce",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/42596487@N00/3640029549"
+ },
+ {
+  "key": "cafe/decaf",
+  "title": "Decaf...",
+  "author": "tripelle",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/46271005@N00/9309252961"
+ },
+ {
+  "key": "cafe/eoreum",
+  "title": "ice cubes",
+  "author": "Muffet",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/53133240@N00/2591108804"
+ },
+ {
+  "key": "cafe/ppae-juseyo",
+  "title": "Espresso with Whipped Topping in White Cup on Saucer",
+  "author": "Image Catalog",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.flickr.com/photos/132795455@N08/18205822279"
+ },
+ {
+  "key": "cafe/bakkwo-juseyo",
+  "title": "Soy milk carton illustration",
+  "author": "Unknown",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.rawpixel.com/image/7664167/image-people-cartoon-illustrations"
+ },
+ {
+  "key": "cafe/pojang",
+  "title": "Takeaway morning",
+  "author": "Henry Söderlund",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/46563758@N04/51895334197"
+ },
+ {
+  "key": "cafe/meokgo-galgeyo",
+  "title": "Felix coffee",
+  "author": "RaeAllen",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/30628871@N00/14566770943"
+ },
+ {
+  "key": "cafe/eolmayeyo",
+  "title": "한국돈 한국 현금 지폐 1만원 Korean Money Cash Ten thousand won",
+  "author": "CC0photo",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.flickr.com/photos/137346712@N07/27639322190"
+ },
+ {
+  "key": "cafe/kadeu",
+  "title": "Cranberry Isles Fishermen’s Co-op Bookkeeper",
+  "author": "U.S. Department of Agriculture",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.rawpixel.com/image/3259395/free-photo-image-credit-card-machine-shopping"
+ },
+ {
+  "key": "cafe/jeongnip",
+  "title": "Loyalty cards",
+  "author": "illustir",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/12505664@N00/9482222508"
+ },
+ {
+  "key": "cafe/yeongsujeung",
+  "title": "Cappuccino in Cup on Cafe Counter",
+  "author": "Image Catalog",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://www.flickr.com/photos/132795455@N08/18281357909"
+ },
+ {
+  "key": "cafe/jindongbel",
+  "title": "Frog Island buzzer",
+  "author": "byzantiumbooks",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/10688882@N00/54402601761"
+ },
+ {
+  "key": "cafe/jari",
+  "title": "Cafe table in Ballard, 2006",
+  "author": "Seattle Municipal Archives",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/24256351@N04/3038372345"
+ },
+ {
+  "key": "cafe/hwajangsil",
+  "title": "Unisex restroom sign",
+  "author": "sylvar",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://www.flickr.com/photos/44124401501@N01/3360734315"
+ },
+ {
+  "key": "cafe/cup",
   "title": "Hot beverage",
   "author": "Microsoft Fluent Emoji",
   "license": "MIT",
   "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
   "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20beverage"
- },
- {
-  "key": "cafe/juseyo",
-  "title": "Folded hands",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Folded%20hands"
- },
- {
-  "key": "cafe/chucheon",
-  "title": "Thumbs up",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Thumbs%20up"
- },
- {
-  "key": "cafe/ice",
-  "title": "Ice",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Ice"
- },
- {
-  "key": "cafe/tteutteutan",
-  "title": "Hot springs",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20springs"
- },
- {
-  "key": "cafe/shot-chuga",
-  "title": "Plus",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Plus"
- },
- {
-  "key": "cafe/yeonhage",
-  "title": "Droplet",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Droplet"
- },
- {
-  "key": "cafe/decaf",
-  "title": "Sleeping face",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Sleeping%20face"
- },
- {
-  "key": "cafe/eoreum",
-  "title": "Cup with straw",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cup%20with%20straw"
- },
- {
-  "key": "cafe/ppae-juseyo",
-  "title": "Prohibited",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Prohibited"
- },
- {
-  "key": "cafe/bakkwo-juseyo",
-  "title": "Counterclockwise arrows button",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Counterclockwise%20arrows%20button"
- },
- {
-  "key": "cafe/pojang",
-  "title": "Shopping bags",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Shopping%20bags"
- },
- {
-  "key": "cafe/meokgo-galgeyo",
-  "title": "Chair",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Chair"
- },
- {
-  "key": "cafe/eolmayeyo",
-  "title": "Money bag",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Money%20bag"
- },
- {
-  "key": "cafe/kadeu",
-  "title": "Credit card",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Credit%20card"
- },
- {
-  "key": "cafe/jeongnip",
-  "title": "Star",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Star"
- },
- {
-  "key": "cafe/yeongsujeung",
-  "title": "Receipt",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Receipt"
- },
- {
-  "key": "cafe/jindongbel",
-  "title": "Vibration mode",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Vibration%20mode"
- },
- {
-  "key": "cafe/jari",
-  "title": "Seat",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Seat"
- },
- {
-  "key": "cafe/hwajangsil",
-  "title": "Restroom",
-  "author": "Microsoft Fluent Emoji",
-  "license": "MIT",
-  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
-  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Restroom"
  }
 ]

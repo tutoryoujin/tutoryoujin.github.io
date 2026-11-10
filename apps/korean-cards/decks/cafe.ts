@@ -6,8 +6,10 @@ const deck: Deck = {
   emoji: "☕",
   cover: "americano",
   color: "orange",
+  // 겉면 그림은 투명 배경이어야 한다. 이 덱의 cover 는 사진이라 쓸 수 없다.
+  folderArt: "cup",
   unit: { ko: "카페 표현", en: "café phrases" },
-  art: "icon",
+  art: "photo",
   groups: {
     order: { ko: "주문하기", en: "Ordering", color: "orange" },
     option: { ko: "옵션", en: "Options", color: "mint" },
@@ -86,7 +88,7 @@ const deck: Deck = {
       en: "decaf",
       group: "option",
       note: "Not every café has it. Ask first: 디카페인 돼요? (Do you have decaf?)",
-      ex: { ko: "디카페인으로 해 주세요.", en: "Make it decaf, please." },
+      ex: { ko: "디카페인으로 주세요.", en: "Make it decaf, please." },
     },
     {
       id: "eoreum",
@@ -119,7 +121,7 @@ const deck: Deck = {
     {
       id: "pojang",
       emoji: "🛍️",
-      ko: "포장이요",
+      ko: "포장",
       en: "to go",
       group: "pay",
       note: "Staff ask 드시고 가세요? (For here?). 포장 = takeout.",
@@ -141,7 +143,7 @@ const deck: Deck = {
       en: "how much is it?",
       group: "pay",
       note: "Prices use Sino-Korean numbers: 사천오백 원 (4,500 won).",
-      ex: { ko: "전부 얼마예요?", en: "How much is it altogether?" },
+      ex: { ko: "총 얼마예요?", en: "How much is it altogether?" },
     },
     {
       id: "kadeu",
