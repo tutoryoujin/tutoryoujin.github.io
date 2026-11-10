@@ -921,6 +921,7 @@
   "cafe/juseyo": {
     "kind": "icon",
     "own": true,
+    "close": ["bottom"],
     "file": "art/cafe/juseyo.png",
     "title": "juseyo",
     "author": "Youjin",
@@ -931,6 +932,7 @@
   "cafe/chucheon": {
     "kind": "icon",
     "own": true,
+    "close": ["bottom"],
     "file": "art/cafe/chucheon.png",
     "title": "chucheon",
     "author": "Youjin",
@@ -1051,6 +1053,7 @@
   "cafe/kadeu": {
     "kind": "icon",
     "own": true,
+    "close": ["left"],
     "file": "art/cafe/kadeu.png",
     "title": "kadeu",
     "author": "Youjin",
@@ -1110,12 +1113,11 @@
   },
   "cafe/cup": {
     "kind": "icon",
-    "own": true,
-    "file": "art/cafe/cup.png",
-    "title": "cup",
-    "author": "Youjin",
-    "license": "",
-    "licenseUrl": "",
-    "source": ""
+    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Hot%20beverage/3D/hot_beverage_3d.png",
+    "title": "Hot beverage",
+    "author": "Microsoft",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20beverage"
   }
 }

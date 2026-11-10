@@ -6,9 +6,10 @@ const deck: Deck = {
   emoji: "☕",
   cover: "americano",
   color: "orange",
+  // 홈 겉면 그림은 다른 덱처럼 Fluent 3D 이모지 (☕ Hot beverage)
   folderArt: "cup",
   unit: { ko: "카페 표현", en: "café phrases" },
-  // 그림은 직접 만든 일러스트 — 원본 tools/korean-cards/art/cafe/*.png
+  // 카드 그림은 직접 만든 일러스트 — 원본 tools/korean-cards/art/cafe/*.png
   art: "icon",
   groups: {
     order: { ko: "주문하기", en: "Ordering", color: "orange" },
@@ -51,7 +52,7 @@ const deck: Deck = {
       en: "iced",
       group: "order",
       note: "차가운 걸로 (a cold one) also works.",
-      ex: { ko: "아이스로 주세요.", en: "Iced, please." },
+      ex: { ko: "아이스 아메리카노 주세요.", en: "An iced americano, please." },
     },
     {
       id: "tteutteutan",
@@ -197,7 +198,7 @@ const deck: Deck = {
       ko: "화장실",
       en: "restroom",
       group: "seat",
-      note: "Many café restrooms are locked. The code (비밀번호) is often on the receipt.",
+      note: "Many café restrooms are locked. The code (비밀번호) is often posted on the wall or printed on the receipt.",
       ex: { ko: "화장실 비밀번호가 뭐예요?", en: "What’s the restroom code?" },
     },
   ],

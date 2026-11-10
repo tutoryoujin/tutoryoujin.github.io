@@ -806,5 +806,13 @@
   "license": "MIT",
   "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
   "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cactus"
+ },
+ {
+  "key": "cafe/cup",
+  "title": "Hot beverage",
+  "author": "Microsoft",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20beverage"
  }
 ]
