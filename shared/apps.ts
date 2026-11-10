@@ -59,10 +59,10 @@ export const APPS: AppInfo[] = [
     emoji: "🃏",
     about: { ko: "뒤집어서 외우는 낱말 카드", en: "Flip cards to learn new words" },
     tagline: { ko: "한 장씩, 매일 조금씩.", en: "Learn Korean, one card at a time." },
-    description: "Free Korean vocabulary flashcards with pictures — emotions, Korean food, family, places and weather. 뒤집으며 외우는 한국어 낱말 카드.",
+    description: "Free Korean vocabulary flashcards with pictures — emotions, Korean food, family, places, weather and café phrases. 뒤집으며 외우는 한국어 낱말 카드.",
     searchTitle: "Korean Vocabulary Flashcards",
     learn: [
-      { ko: "감정 · 한국 음식 · 가족 · 장소 · 날씨 낱말 100개", en: "100 everyday words: emotions, Korean food, family, places and weather" },
+      { ko: "감정 · 한국 음식 · 가족 · 장소 · 날씨 낱말과 카페 표현 120개", en: "120 everyday words and phrases: emotions, Korean food, family, places, weather and café Korean" },
       { ko: "카드마다 그림과 짧은 설명", en: "Every card has a picture and a short note" },
       { ko: "못 외운 카드는 다음 회차에 다시", en: "Cards you miss come back in the next round" },
     ],

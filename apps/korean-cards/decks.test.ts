@@ -7,7 +7,7 @@ import { exportProgress } from "./store";
 import type { DeckInfo } from "./types";
 
 const cafe: DeckInfo = {
-  id: "cafe",
+  id: "cafe-plus",
   title: { ko: "카페", en: "At the café" },
   emoji: "☕",
   cover: "americano",
@@ -29,14 +29,14 @@ describe("홈 더미", () => {
   });
   it("유료 덱은 판매 링크가 없으면 안 보인다", () => {
     const catalog = [...DECKS.map(infoOf), cafe];
-    expect(shelf(withLink(""), catalog).map((s) => s.info.id)).not.toContain("cafe");
-    expect(shelf({ ...SITE, products: [] }, catalog).map((s) => s.info.id)).not.toContain("cafe");
-    expect(shelf(SITE, [...DECKS.map(infoOf), { ...cafe, product: undefined }]).map((s) => s.info.id)).not.toContain("cafe");
+    expect(shelf(withLink(""), catalog).map((s) => s.info.id)).not.toContain("cafe-plus");
+    expect(shelf({ ...SITE, products: [] }, catalog).map((s) => s.info.id)).not.toContain("cafe-plus");
+    expect(shelf(SITE, [...DECKS.map(infoOf), { ...cafe, product: undefined }]).map((s) => s.info.id)).not.toContain("cafe-plus");
   });
   it("판매 링크가 있으면 무료 덱 뒤에 잠긴 카드로", () => {
     const items = shelf(withLink("https://example.com/cafe"), [...DECKS.map(infoOf), cafe]);
     const last = items[items.length - 1];
-    expect(last.info.id).toBe("cafe");
+    expect(last.info.id).toBe("cafe-plus");
     expect(last.product?.href).toBe("https://example.com/cafe");
   });
   it("유료 덱 목록에는 카드 내용이 없다 — 저장소에 올리면 누구나 받는다", () => {
@@ -60,7 +60,7 @@ describe("loadDeck", () => {
   });
   it("없는 덱 · 아직 받을 곳 없는 유료 덱은 undefined", async () => {
     expect(await loadDeck("nope")).toBeUndefined();
-    expect(await loadDeck("cafe")).toBeUndefined();
+    expect(await loadDeck("cafe-plus")).toBeUndefined();
   });
   it("카드 찾기는 덱 객체 기준 — 나중에 받은 덱도 된다", () => {
     const d = { ...DECKS[0], id: "later", cards: [{ ...DECKS[0].cards[0], id: "x" }] };

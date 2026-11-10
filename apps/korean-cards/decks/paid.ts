@@ -7,7 +7,7 @@
 
    예)
    {
-     id: "cafe", title: { ko: "카페", en: "At the café" }, emoji: "☕", cover: "americano",
+     id: "cafe-plus", title: { ko: "카페", en: "At the café" }, emoji: "☕", cover: "americano",
      color: "orange", unit: { ko: "카페 표현", en: "café phrases" }, count: 30,
      access: "paid", product: "cafe-pack",
    },

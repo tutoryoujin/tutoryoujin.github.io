@@ -806,5 +806,165 @@
   "license": "MIT",
   "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
   "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cactus"
+ },
+ {
+  "key": "cafe/americano",
+  "title": "Hot beverage",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20beverage"
+ },
+ {
+  "key": "cafe/juseyo",
+  "title": "Folded hands",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Folded%20hands"
+ },
+ {
+  "key": "cafe/chucheon",
+  "title": "Thumbs up",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Thumbs%20up"
+ },
+ {
+  "key": "cafe/ice",
+  "title": "Ice",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Ice"
+ },
+ {
+  "key": "cafe/tteutteutan",
+  "title": "Hot springs",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20springs"
+ },
+ {
+  "key": "cafe/shot-chuga",
+  "title": "Plus",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Plus"
+ },
+ {
+  "key": "cafe/yeonhage",
+  "title": "Droplet",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Droplet"
+ },
+ {
+  "key": "cafe/decaf",
+  "title": "Sleeping face",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Sleeping%20face"
+ },
+ {
+  "key": "cafe/eoreum",
+  "title": "Cup with straw",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cup%20with%20straw"
+ },
+ {
+  "key": "cafe/ppae-juseyo",
+  "title": "Prohibited",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Prohibited"
+ },
+ {
+  "key": "cafe/bakkwo-juseyo",
+  "title": "Counterclockwise arrows button",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Counterclockwise%20arrows%20button"
+ },
+ {
+  "key": "cafe/pojang",
+  "title": "Shopping bags",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Shopping%20bags"
+ },
+ {
+  "key": "cafe/meokgo-galgeyo",
+  "title": "Chair",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Chair"
+ },
+ {
+  "key": "cafe/eolmayeyo",
+  "title": "Money bag",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Money%20bag"
+ },
+ {
+  "key": "cafe/kadeu",
+  "title": "Credit card",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Credit%20card"
+ },
+ {
+  "key": "cafe/jeongnip",
+  "title": "Star",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Star"
+ },
+ {
+  "key": "cafe/yeongsujeung",
+  "title": "Receipt",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Receipt"
+ },
+ {
+  "key": "cafe/jindongbel",
+  "title": "Vibration mode",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Vibration%20mode"
+ },
+ {
+  "key": "cafe/jari",
+  "title": "Seat",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Seat"
+ },
+ {
+  "key": "cafe/hwajangsil",
+  "title": "Restroom",
+  "author": "Microsoft Fluent Emoji",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+  "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Restroom"
  }
 ]
