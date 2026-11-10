@@ -15,7 +15,7 @@ import "./cards.css";
 
 const LEGAL = (
   <>
-    Illustrations by Microsoft Fluent Emoji (MIT). Photos by Openverse contributors, used under CC BY / CC BY-SA. Images remain
+    Illustrations by Microsoft Fluent Emoji (MIT) and Youjin. Photos by Openverse contributors, used under CC BY / CC BY-SA. Images remain
     the property of their respective owners.
   </>
 );

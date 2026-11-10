@@ -10,6 +10,8 @@ Manifest key = "<deck>/<cardId>" -> public/korean-cards/img/<deck>/<cardId>.webp
   그림(원본 SVG 는 같은 폴더)에 쓴다. url 은 출처 표기용으로 남는다.
   kind "photo": center-crop 4:3, 800x600 webp
   kind "icon" : keep alpha, max 256px webp
+  "own": true 면 직접 만든 그림 — 출처 화면(credits-data.json)에 넣지 않는다.
+    원본 PNG(투명 배경)는 tools/korean-cards/art/<deck>/<id>.png
 Also writes apps/korean-cards/credits-data.json (attribution list shown on the Credits screen).
 """
 import json, os, sys, time, urllib.request
@@ -76,7 +78,7 @@ def main():
             print("FAIL", key, e)
 
     credits = [{"key": k, **{f: v[f] for f in ("title", "author", "license", "licenseUrl", "source")}}
-               for k, v in items.items()]
+               for k, v in items.items() if not v.get("own")]
     out_json = os.path.join(ROOT, "apps", "korean-cards", "credits-data.json")
     with open(out_json, "w", encoding="utf-8", newline="\n") as f:  # Windows에서도 LF 고정
         f.write(json.dumps(credits, ensure_ascii=False, indent=1) + "\n")

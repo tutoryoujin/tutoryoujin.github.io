@@ -6,10 +6,10 @@ const deck: Deck = {
   emoji: "☕",
   cover: "americano",
   color: "orange",
-  // 겉면 그림은 투명 배경이어야 한다. 이 덱의 cover 는 사진이라 쓸 수 없다.
   folderArt: "cup",
   unit: { ko: "카페 표현", en: "café phrases" },
-  art: "photo",
+  // 그림은 직접 만든 일러스트 — 원본 tools/korean-cards/art/cafe/*.png
+  art: "icon",
   groups: {
     order: { ko: "주문하기", en: "Ordering", color: "orange" },
     option: { ko: "옵션", en: "Options", color: "mint" },
