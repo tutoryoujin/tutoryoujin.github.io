@@ -135,6 +135,41 @@ describe("speak()", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
+  it("iOS 첫 speak 에 audioSession 과 무음 <audio> 를 같이 건다 (한 번만, 동기로)", async () => {
+    const s = setup([ko]);
+    const nav = { userAgent: "iPhone", platform: "iPhone", maxTouchPoints: 5, audioSession: { type: "auto" } };
+    vi.stubGlobal("navigator", nav);
+    const play = vi.fn(() => Promise.resolve());
+    vi.stubGlobal("Audio", vi.fn(() => ({ play })));
+    vi.stubGlobal("URL", { createObjectURL: () => "blob:silent" });
+    const { speak } = await import("./speech");
+    speak("가");
+    expect(nav.audioSession.type).toBe("playback");
+    expect(play).toHaveBeenCalledTimes(1);
+    expect(s.speak).toHaveBeenCalledTimes(1);
+    speak("나");
+    expect(play).toHaveBeenCalledTimes(1);
+  });
+
+  it("iOS 가 아니면 무음 <audio> 를 틀지 않는다", async () => {
+    setup([ko]);
+    const A = vi.fn();
+    vi.stubGlobal("Audio", A);
+    const { speak } = await import("./speech");
+    speak("가");
+    expect(A).not.toHaveBeenCalled();
+  });
+
+  it("play() 가 거절돼도 speak 는 그대로 말한다", async () => {
+    const s = setup([ko]);
+    vi.stubGlobal("navigator", { userAgent: "iPhone", platform: "iPhone", maxTouchPoints: 5 });
+    vi.stubGlobal("Audio", vi.fn(() => ({ play: () => Promise.reject(new Error("NotAllowedError")) })));
+    vi.stubGlobal("URL", { createObjectURL: () => "blob:silent" });
+    const { speak } = await import("./speech");
+    speak("가");
+    expect(s.speak).toHaveBeenCalledTimes(1);
+  });
+
   it("목록이 아직 비었으면 hasKoreanVoice 는 null", async () => {
     setup([]);
     const { hasKoreanVoice } = await import("./speech");

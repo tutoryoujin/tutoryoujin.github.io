@@ -43,10 +43,37 @@ function koVoice(): SpeechSynthesisVoice | undefined {
   return ko.find((v) => v.lang.replace("_", "-").toLowerCase() === "ko-kr" && v.localService) ?? ko[0];
 }
 
+/** 0.1초 무음 WAV (8kHz · 8bit · mono). 파일 없이 만든다 */
+function silentWavUrl(): string {
+  const n = 800;
+  const b = new DataView(new ArrayBuffer(44 + n));
+  const str = (o: number, s: string) => [...s].forEach((c, i) => b.setUint8(o + i, c.charCodeAt(0)));
+  str(0, "RIFF");
+  b.setUint32(4, 36 + n, true);
+  str(8, "WAVEfmt ");
+  b.setUint32(16, 16, true);
+  b.setUint16(20, 1, true); // PCM
+  b.setUint16(22, 1, true); // mono
+  b.setUint32(24, 8000, true);
+  b.setUint32(28, 8000, true);
+  b.setUint16(32, 1, true);
+  b.setUint16(34, 8, true);
+  str(36, "data");
+  b.setUint32(40, n, true);
+  for (let i = 0; i < n; i++) b.setUint8(44 + i, 128); // 8bit 의 0 은 128
+  return URL.createObjectURL(new Blob([b.buffer], { type: "audio/wav" }));
+}
+/** 재생 중에 GC 되지 않게 잡아 둔다 */
+let silent: HTMLAudioElement | null = null;
+
 /**
- * iOS 17+ : 오디오 세션을 playback 으로 두면 무음 스위치를 넘는다(미디어 채널).
- * speechSynthesis 에도 듣는지는 실제 iPhone 에서 확인 중 — 없는 브라우저에선 아무 일도 안 한다.
- * #39 의 mp3(<audio>) 도 이걸 쓴다.
+ * 무음 스위치 넘기 — 첫 speak 때 두 방법을 **같이** 건다.
+ * 무음이어도 TTS 이벤트가 정상으로 와서 어느 쪽이 통했는지 코드로 알 수 없기 때문이다.
+ * 하나라도 통하면 들리고, 둘 다 안 되면 아무 일도 없다 (SoundHint 가 안내).
+ *  1. iOS 17+ navigator.audioSession = "playback" — 웹판 AVAudioSession
+ *  2. iOS 에서만: 무음 <audio> 를 한 번 재생해 페이지 오디오를 미디어 채널로 돌린다
+ * 둘 다 speechSynthesis 에 듣는지는 실제 iPhone 에서 확인할 것. #39 의 mp3 도 이걸 쓴다.
+ * 탭 핸들러 안에서 동기로 불려야 한다 (play() 가 제스처를 요구).
  */
 export function playThroughSilentSwitch() {
   if (sessionTried) return;
@@ -56,6 +83,15 @@ export function playThroughSilentSwitch() {
     if (nav.audioSession) nav.audioSession.type = "playback";
   } catch {
     /* 지원 안 함 */
+  }
+  if (!isIOS() || typeof Audio === "undefined") return;
+  try {
+    silent = new Audio(silentWavUrl());
+    silent.play()?.catch(() => {}).finally(() => {
+      silent = null;
+    });
+  } catch {
+    silent = null;
   }
 }
 
