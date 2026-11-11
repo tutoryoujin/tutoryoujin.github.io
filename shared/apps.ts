@@ -52,6 +52,23 @@ export const APPS: AppInfo[] = [
       { ko: "받침과 겹받침 읽기", en: "Reading final consonants (batchim), including double ones" },
     ],
   },
+  // 그다음 자기 이름 — 처음 쓰는 한글 낱말
+  {
+    slug: "hangul-name",
+    ko: "한국어 이름",
+    en: "Your Name in Hangul",
+    emoji: "🧾",
+    about: { ko: "영어 이름을 넣으면 한글 영수증이 나와요", en: "Type your name, get it in Hangul on a receipt" },
+    tagline: { ko: "이름 쓰기, 매일 조금씩.", en: "Write your name in Hangul, one block at a time." },
+    description: "Type your English name and print it in Hangul — letter by letter, with how to say “I’m ___” in Korean. 영어 이름을 한글로 바꿔 영수증으로 뽑아 줘요.",
+    searchTitle: "Your Name in Korean (Hangul)",
+    learn: [
+      { ko: "영어 이름을 한글로 쓰는 법 (외래어 표기법)", en: "How your English name is written in Hangul, following Korea’s official loanword rules" },
+      { ko: "글자마다 첫소리 · 모음 · 받침 풀어 보기", en: "Each block broken into its first sound, vowel and final consonant" },
+      { ko: "저는 ___예요 / 이에요 — 받침에 따라 고르기", en: "Introducing yourself: 저는 ___예요 or 이에요, depending on the last letter" },
+      { ko: "이름과 자기소개 문장 들어 보기", en: "Hear your name and your self-introduction read aloud" },
+    ],
+  },
   {
     slug: "korean-cards",
     ko: "한국어 카드",
@@ -98,22 +115,6 @@ export const APPS: AppInfo[] = [
       { ko: "분은 한자어: 십 분, 삼십 분", en: "Minutes use Sino-Korean numbers: 십 분, 삼십 분" },
       { ko: "시곗바늘을 돌리면 소리로 읽어 줘요", en: "Turn the hands and hear the time read aloud" },
       { ko: "퀴즈로 시각 읽기 연습", en: "A time-reading quiz" },
-    ],
-  },
-  {
-    slug: "hangul-name",
-    ko: "한국어 이름",
-    en: "Your Name in Hangul",
-    emoji: "🧾",
-    about: { ko: "영어 이름을 넣으면 한글 영수증이 나와요", en: "Type your name, get it in Hangul on a receipt" },
-    tagline: { ko: "이름 쓰기, 매일 조금씩.", en: "Write your name in Hangul, one block at a time." },
-    description: "Type your English name and print it in Hangul — letter by letter, with how to say “I’m ___” in Korean. 영어 이름을 한글로 바꿔 영수증으로 뽑아 줘요.",
-    searchTitle: "Your Name in Korean (Hangul)",
-    learn: [
-      { ko: "영어 이름을 한글로 쓰는 법 (외래어 표기법)", en: "How your English name is written in Hangul, following Korea’s official loanword rules" },
-      { ko: "글자마다 첫소리 · 모음 · 받침 풀어 보기", en: "Each block broken into its first sound, vowel and final consonant" },
-      { ko: "저는 ___예요 / 이에요 — 받침에 따라 고르기", en: "Introducing yourself: 저는 ___예요 or 이에요, depending on the last letter" },
-      { ko: "이름과 자기소개 문장 들어 보기", en: "Hear your name and your self-introduction read aloud" },
     ],
   },
 ];
