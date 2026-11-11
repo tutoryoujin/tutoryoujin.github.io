@@ -16,8 +16,9 @@ export type Names = Record<string, Entry>;
  * - common: 표준은 아니지만 널리 쓰이는 표기
  * - rule: 발음 사전의 발음에 표기 규칙을 그대로 적용한 것 (용례로는 아직 확인 안 함)
  * - guessed: 사전에 없어서 철자로 추측한 것
+ * - edited: 사람이 한글로 직접 고친 것 (fixes.ts)
  */
-export type Status = "standard" | "common" | "rule" | "guessed";
+export type Status = "standard" | "common" | "rule" | "guessed" | "edited";
 export type Option = { text: string; status: Status };
 
 let names: Promise<Names> | null = null;
@@ -51,7 +52,7 @@ export function clean(input: string): Cleaned {
   return { ok: true, words, display: s };
 }
 
-const RANK: Record<Status, number> = { standard: 0, common: 1, rule: 2, guessed: 3 };
+const RANK: Record<Status, number> = { standard: 0, edited: 0, common: 1, rule: 2, guessed: 3 };
 const worst = (a: Status, b: Status) => (RANK[a] >= RANK[b] ? a : b);
 
 /** 낱말 하나의 표기들. 첫째가 기본 */

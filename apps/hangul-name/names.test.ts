@@ -3,7 +3,8 @@ import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { arpabetToHangul } from "./arpabet";
 import { clean, convert, type Names } from "./convert";
-import { breakdown, buildSteps, introduce } from "./model";
+import { breakdown, buildSteps, introduce, STAMP, STATUS_NOTE } from "./model";
+import { cleanHangul, fixLink, readLink, withFix } from "./fixes";
 
 const here = new URL(".", import.meta.url);
 const raw = readFileSync(new URL("names.json", here));
@@ -60,6 +61,42 @@ describe("이름 데이터 (완료 조건)", () => {
       if (f === "convert.ts") expect(refs.every((l) => /import\(\s*["']\.\/names\.json["']\s*\)/.test(l)), refs.join("\n")).toBe(true);
       else expect(refs, f).toEqual([]);
     }
+  });
+});
+
+describe("추측 안내", () => {
+  it("유진에게 확인하라고 안내한다", () => {
+    expect(STATUS_NOTE.guessed.en).toBe("Spelling guessed — double-check with Youjin.");
+  });
+});
+
+describe("영수증 고치기 (Anne → 안)", () => {
+  it("한글 글자와 띄어쓰기만 받는다", () => {
+    expect(cleanHangul("  안 ")).toEqual({ ok: true, text: "안" });
+    expect(cleanHangul("메리  제인")).toEqual({ ok: true, text: "메리 제인" });
+    expect(cleanHangul("ㅇㅏㄴ")).toEqual({ ok: false }); // 낱자모는 글자가 아니다
+    expect(cleanHangul("Anne")).toEqual({ ok: false });
+    expect(cleanHangul("")).toEqual({ ok: false });
+    expect(cleanHangul("가".repeat(21))).toEqual({ ok: false });
+  });
+  it("고친 표기가 맨 앞, 원래 후보는 뒤에 남는다", () => {
+    const opts = withFix(convert(["Anne"], names), "안");
+    expect(opts).toEqual([
+      { text: "안", status: "edited" },
+      { text: "앤", status: "standard" },
+    ]);
+    expect(STAMP[opts[0].status]).toEqual({ ko: "직접 고침", en: "Edited" });
+    expect(introduce("안").ending).toBe("이에요");
+  });
+  it("고친 표기가 원래 후보와 같으면 하나만", () => {
+    expect(withFix(convert(["Jasmine"], names), "자스민").map((o) => o.text)).toEqual(["자스민", "재스민"]);
+  });
+  it("링크로 주고받는다", () => {
+    const url = fixLink("https://tutoryoujin.github.io/hangul-name/", "Anne", "안");
+    expect(readLink(new URL(url).search)).toEqual({ input: "Anne", text: "안" });
+    expect(readLink("?name=Anne")).toBeNull();
+    expect(readLink("?name=Anne&ko=<script>")).toBeNull();
+    expect(readLink("?name=%EC%95%88&ko=%EC%95%88")).toBeNull(); // 이름은 영문자만
   });
 });
 

@@ -105,6 +105,7 @@ export const STAMP = {
   common: { ko: "흔한 표기", en: "Common" },
   rule: { ko: "규칙 표기", en: "By the rules" },
   guessed: { ko: "추측", en: "Guessed" },
+  edited: { ko: "직접 고침", en: "Edited" },
 } as const;
 
 /** 도장 아래 설명 한 줄 (영어 먼저 — 학습자가 바로 읽어야 하는 안내) */
@@ -112,5 +113,7 @@ export const STATUS_NOTE = {
   standard: { en: "The official Korean spelling for this name.", ko: "국립국어원 표기예요." },
   common: { en: "Not the official spelling, but many people write it this way.", ko: "표준은 아니지만 많이 쓰는 표기예요." },
   rule: { en: "Spelled from a pronunciation dictionary using Korea’s loanword rules.", ko: "발음 사전의 발음을 외래어 표기법대로 옮겼어요." },
-  guessed: { en: "Spelling guessed — double-check with a Korean speaker.", ko: "철자로 추측했어요. 한국어 화자에게 확인해 보세요." },
+  // 「Youjin」은 주인이 정한 예외 — 수업 안내 금지 규칙(site/CLAUDE.md)과 별개로 둔다 (#43)
+  guessed: { en: "Spelling guessed — double-check with Youjin.", ko: "철자로 추측했어요. 유진 선생님께 확인해 보세요." },
+  edited: { en: "Spelling typed in by hand.", ko: "한글로 직접 고친 표기예요." },
 } as const;

@@ -33,6 +33,8 @@ export function Btn(props: {
   ko: ReactNode;
   en: ReactNode;
   onClick?: () => void;
+  /** 폼 안에서 제출 버튼으로 쓸 때 "submit" */
+  type?: "button" | "submit";
   variant?: "ghost";
   tone?: Tone;
   id?: string;
@@ -44,7 +46,7 @@ export function Btn(props: {
   return (
     <button
       id={props.id}
-      type="button"
+      type={props.type ?? "button"}
       onClick={props.onClick}
       disabled={props.disabled}
       aria-busy={props["aria-busy"]}

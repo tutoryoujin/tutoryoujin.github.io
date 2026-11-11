@@ -136,6 +136,11 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   만든 글자 아래 영어 뜻은 받침 있는 글자만 (`apps/hangul-blocks/words.ts`, 동사 줄기는 넣지 않는다).
   색 별칭: 첫 자음 = blue, 모음 = pink, 받침 = mint, 더한 칸 = yellow.
 
+- **한국어 이름** — 이름 데이터 `apps/hangul-name/names.json` 은 생성물. `tools/hangul-name/overrides.json`(용례)을 고치고 `npm run names`.
+  도장: 표준(overrides) · 흔한 표기 · 규칙 표기(발음 사전 + 표기법) · 추측(철자) · 직접 고침.
+  추측 안내 「double-check with Youjin」은 주인이 정한 예외 — 아래 「수업 안내 금지」로 되돌리지 않는다.
+  고친 표기는 `hn:fixes`, 다른 기기로는 링크 `?name=Anne&ko=안`. 저장 열쇠는 `hn:*` 만.
+
 ## 사이트 설정 · SEO
 
 - index.html 에 `<title>` · description · og 를 적지 마세요. `vite.config.ts` 가 `shared/seo.ts` 로 넣습니다.

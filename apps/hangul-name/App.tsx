@@ -3,12 +3,15 @@ import { Box, Btn, canSpeak, hasKoreanVoice, Ieung, Note, onVoicesChanged, Page,
 import { clean, convert, loadNames, MAX_LENGTH, type Names, type Option } from "./convert";
 import { introduce, STAMP } from "./model";
 import { Receipt, stepPlan, type Issued } from "./Receipt";
+import { cleanHangul, FIX_MAX, fixKey, fixLink, readLink, withFix } from "./fixes";
 import { renderPng, saveReceipt } from "./save";
 import "./hangul-name.css";
 
 /* 기기에만 남긴다. kcards:* · yj:* 와 섞이지 않게 hn: 아래 */
 const LAST_KEY = "hn:last";
 const SERIAL_KEY = "hn:serial";
+/** 고친 표기 — { "anne": "안" } */
+const FIX_KEY = "hn:fixes";
 const read = (k: string) => {
   try {
     return localStorage.getItem(k);
@@ -23,6 +26,15 @@ const write = (k: string, v: string) => {
     /* 저장 못 해도 화면은 그대로 */
   }
 };
+
+const readFixes = (): Record<string, string> => {
+  try {
+    return JSON.parse(read(FIX_KEY) ?? "{}") ?? {};
+  } catch {
+    return {};
+  }
+};
+const saveFix = (display: string, text: string) => write(FIX_KEY, JSON.stringify({ ...readFixes(), [fixKey(display)]: text }));
 
 const TRY = ["Sophie", "Michael", "Jasmine", "Sara", "Emma"];
 const PRINT_MS = 1550; // 영수증이 다 나오는 데 걸리는 시간 (hn-print 1.5s)
@@ -66,13 +78,20 @@ export function App() {
     }
   };
 
-  // 지난번 이름이 있으면 그 영수증을 (움직임 없이) 다시 보여 준다
+  // 고친 영수증 링크(?name=Anne&ko=안)로 왔으면 그 영수증을, 아니면 지난번 영수증을 (움직임 없이) 보여 준다
   useEffect(() => {
-    const last = read(LAST_KEY);
+    const link = readLink(location.search);
+    if (link) {
+      saveFix(link.input, link.text);
+      write(LAST_KEY, link.input);
+      setInput(link.input);
+      history.replaceState(null, "", location.pathname + location.hash); // 다시 열면 기기에 남은 것으로
+    }
+    const last = link?.input ?? read(LAST_KEY);
     const c = last ? clean(last) : null;
     if (!c?.ok) return;
     void ensure().then((d) => {
-      const opts = d && convert(c.words, d);
+      const opts = d && withFix(convert(c.words, d), readFixes()[fixKey(c.display)]);
       if (!opts?.length) return;
       setOptions(opts);
       setIssued({ input: c.display, option: opts[0], serial: Number(read(SERIAL_KEY)) || 1, at: new Date() });
@@ -86,7 +105,7 @@ export function App() {
     setMsg(null);
     const d = await ensure();
     if (!d) return;
-    const opts = convert(c.words, d);
+    const opts = withFix(convert(c.words, d), readFixes()[fixKey(c.display)]);
     if (!opts.length) return setMsg(MSG.letters);
     const serial = (Number(read(SERIAL_KEY)) || 0) + 1;
     write(SERIAL_KEY, String(serial));
@@ -125,6 +144,17 @@ export function App() {
     setPrinting(false);
     setRevealed(Infinity);
     speak(o.text);
+  };
+
+  /** 영수증 고치기 — 고친 표기를 기기에 남기고 후보 맨 앞에 */
+  const edit = (text: string) => {
+    if (!issued) return;
+    saveFix(issued.input, text);
+    const opts = withFix(options.filter((o) => o.status !== "edited"), text);
+    setOptions(opts);
+    setIssued({ ...issued, option: opts[0] });
+    setPrinting(false);
+    setRevealed(Infinity);
   };
 
   const done = !!issued && revealed === Infinity;
@@ -226,13 +256,13 @@ export function App() {
         )}
       </div>
 
-      {issued && done && <After issued={issued} options={options} onPick={pick} />}
+      {issued && done && <After issued={issued} options={options} onPick={pick} onEdit={edit} />}
     </Page>
   );
 }
 
 /* ---------- 영수증 아래 — 후보 · 듣기 · 복사 · 저장 · 예요/이에요 ---------- */
-function After({ issued, options, onPick }: { issued: Issued; options: Option[]; onPick: (o: Option) => void }) {
+function After({ issued, options, onPick, onEdit }: { issued: Issued; options: Option[]; onPick: (o: Option) => void; onEdit: (text: string) => void }) {
   const text = issued.option.text;
   const intro = introduce(text);
   const voice = useKoreanVoice();
@@ -240,6 +270,9 @@ function After({ issued, options, onPick }: { issued: Issued; options: Option[];
   const [note, setNote] = useState<Msg | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [draftBad, setDraftBad] = useState(false);
 
   // 공유 시트는 누른 직후에만 열려서, 그림을 미리 만들어 둔다
   const png = useRef<{ key: Issued; blob: Blob } | null>(null);
@@ -264,6 +297,29 @@ function After({ issued, options, onPick }: { issued: Issued; options: Option[];
       setTimeout(() => setCopied(false), 1600);
     } catch {
       setNote({ en: `Copy this: ${text}`, ko: "길게 눌러 복사해 주세요." });
+    }
+  };
+
+  const openEdit = () => {
+    setDraft(text);
+    setDraftBad(false);
+    setEditing(true);
+  };
+  const applyEdit = (e: FormEvent) => {
+    e.preventDefault();
+    const c = cleanHangul(draft);
+    if (!c.ok) return setDraftBad(true);
+    setEditing(false);
+    onEdit(c.text);
+  };
+
+  const copyLink = async () => {
+    const url = fixLink(location.origin + location.pathname, issued.input, text);
+    try {
+      await navigator.clipboard.writeText(url);
+      setNote({ en: "Link copied. Whoever opens it gets this receipt.", ko: "링크를 복사했어요. 열면 이 영수증이 나와요." });
+    } catch {
+      setNote({ en: `Copy this link: ${url}`, ko: "링크를 길게 눌러 복사해 주세요." });
     }
   };
 
@@ -323,7 +379,40 @@ function After({ issued, options, onPick }: { issued: Issued; options: Option[];
           )}
           <Btn className="mt-0" variant="ghost" ko={copied ? "복사했어요" : "📋 복사"} en={copied ? "Copied!" : "Copy name"} onClick={() => void copy()} />
           <Btn className="mt-0" variant="ghost" ko="💾 저장" en={saving ? "Making the image…" : "Save image"} onClick={() => void save()} disabled={saving} aria-busy={saving} />
+          <Btn className="mt-0" variant="ghost" ko="✏️ 고치기" en="Edit spelling" onClick={openEdit} />
+          {issued.option.status === "edited" && <Btn className="mt-0" variant="ghost" ko="🔗 링크 복사" en="Copy link" onClick={() => void copyLink()} />}
         </div>
+        {editing && (
+          <form className="mt-3 rounded-md border-2 border-line bg-bg p-3" onSubmit={applyEdit}>
+            <label htmlFor="hn-fix" className="block leading-[1.25]">
+              <span className="block font-bold">Type the Hangul spelling you want.</span>
+              <span className="text-[0.75rem] font-bold text-muted">원하는 한글 표기를 넣어 주세요. ({issued.input})</span>
+            </label>
+            <input
+              id="hn-fix"
+              lang="ko"
+              className="mt-2 min-h-14 w-full rounded-md border-2 border-line bg-surface px-3 font-display text-[1.6rem] text-ink"
+              value={draft}
+              maxLength={FIX_MAX + 5}
+              autoComplete="off"
+              autoFocus
+              onChange={(e) => {
+                setDraft(e.target.value);
+                setDraftBad(false);
+              }}
+            />
+            {draftBad && (
+              <p className="mt-1.5 leading-[1.25]" role="alert">
+                <span className="block font-bold">Use Hangul blocks only (up to {FIX_MAX}), like 안.</span>
+                <span className="text-[0.75rem] font-bold text-muted">한글 글자만 넣어 주세요. ({FIX_MAX}자까지)</span>
+              </p>
+            )}
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Btn className="mt-0" variant="ghost" ko="취소" en="Cancel" onClick={() => setEditing(false)} />
+              <Btn className="mt-0" type="submit" ko="고치기" en="Apply" />
+            </div>
+          </form>
+        )}
         {voice === false && (
           <Note
             tone="gray"
