@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
 import { cn } from "./cn";
+import { SoundHint } from "./SoundHint";
 import { useTheme } from "./theme";
 
 /* ============================================================
@@ -71,6 +72,7 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
           </div>
         </div>
       </Footer>
+      <SoundHint />
     </>
   );
 }

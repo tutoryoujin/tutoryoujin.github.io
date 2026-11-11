@@ -93,7 +93,10 @@ const sylClass = "font-reading text-[4rem] leading-none text-ink min-[480px]:tex
 const lines = "flex flex-col gap-0.5 leading-[1.3]";
 const tip = "flex flex-col items-center text-center leading-[1.3]";
 const title = "mt-2 flex items-baseline gap-2 text-[1.05rem] font-normal";
-const press = "active:scale-[0.96]";
+const press =
+  "transition-transform duration-80 ease-[ease] active:scale-[0.96] " +
+  // 동작 줄이기: 움직임 대신 살짝 어두워지기만
+  "motion-reduce:transition-none motion-reduce:active:scale-100 motion-reduce:active:brightness-95";
 const sayBtn = cn("flex min-h-24 flex-col items-center justify-center gap-0.5 rounded-lg px-1.5 py-px", press);
 const sayRow = "grid grid-cols-2 gap-2";
 const sayChar = "font-reading text-[2.2rem] leading-[1.1] font-medium";
