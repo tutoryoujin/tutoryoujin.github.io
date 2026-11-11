@@ -8,7 +8,7 @@
      다크 값은 원본이 tokens.css 의 세 블록에서 바뀌므로 따라온다.
      영수증 전용 토큰(receipt-paper · receipt-ink · receipt-red)은 아직 만들지 않았다 —
      지금 쌍으로 먼저 만들고 화면을 보고 정한다 (#43 열린 질문 4). */
-  --hn-machine-bg: var(--primary); /* 발급기 몸체 — primary 쌍 */
+  --hn-machine-bg: var(--primary); /* 기계 몸체 — primary 쌍 */
   --hn-machine-ink: var(--primary-ink);
   --hn-print-bg: var(--pink-bg); /* 뽑기 버튼 — pink 쌍 */
   --hn-print-ink: var(--pink-ink);
