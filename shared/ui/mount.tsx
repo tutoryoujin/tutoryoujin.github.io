@@ -8,6 +8,8 @@ import { IeungDefs } from "./Ieung";
  * <Ieung> 을 써도 몸통이 빠지지 않는다.
  */
 export function mount(node: ReactNode) {
+  // iOS Safari 는 touch 리스너가 없으면 :active 를 안 건다 (#41). passive 라 스크롤을 막지 않는다
+  document.addEventListener("touchstart", () => {}, { passive: true });
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <IeungDefs />

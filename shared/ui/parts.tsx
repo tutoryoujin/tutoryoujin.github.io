@@ -37,7 +37,7 @@ export function Btn(props: { ko: ReactNode; en: ReactNode; onClick?: () => void;
       onClick={props.onClick}
       className={cn(
         "mt-3.5 flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[18px] border-2 leading-[1.2]",
-        "motion-safe:active:scale-[0.98]",
+        "transition-transform duration-80 ease-[ease] motion-safe:active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:brightness-95",
         props.variant === "ghost" ? "border-line bg-surface text-ink" : "border-primary bg-primary text-primary-ink",
         props.className,
       )}

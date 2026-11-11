@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vitest *)",
+      "Bash(gh issue comment 40 --body '작업 범위 추가: 무음 스위치 넘기에 `navigator.audioSession = \"playback\"` 과 **무음 `<audio>` 한 번 재생\\(iOS 에서만\\)** 을 첫 `speak\\(\\)` 때 같이 겁니다. 무음이어도 TTS 이벤트가 정상으로 와서 1번이 통했는지 코드로 알 수 없어 순서대로 시도하는 fallback 은 불가능합니다. *)"
+    ]
+  }
+}
