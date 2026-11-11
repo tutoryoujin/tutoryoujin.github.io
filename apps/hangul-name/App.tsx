@@ -180,12 +180,12 @@ export function App() {
         </>
       }
     >
-      {/* 이름 기계 */}
-      <section className="relative z-[2] rounded-t-[24px] rounded-b-[12px] bg-(--hn-machine-bg) px-4 pt-4 text-(--hn-machine-ink)" aria-label="한글 이름 기계 / Hangul Name Machine">
+      {/* 이름 가게 — 영수증이 나오는 기계 */}
+      <section className="relative z-[2] rounded-t-[24px] rounded-b-[12px] bg-(--hn-machine-bg) px-4 pt-4 text-(--hn-machine-ink)" aria-label="한글 이름 가게 / Hangul Name Shop">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1 leading-[1.15]">
-            <h2 className="font-display text-[1.6rem] font-normal">한글 이름 기계</h2>
-            <p className="text-[0.72rem] font-bold tracking-[0.12em] opacity-80">HANGUL NAME MACHINE</p>
+            <h2 className="font-display text-[1.6rem] font-normal">한글 이름 가게</h2>
+            <p className="text-[0.72rem] font-bold tracking-[0.12em] opacity-80">HANGUL NAME SHOP</p>
           </div>
           <span className="block size-16 shrink-0 [&_svg]:size-full">
             <Ieung mood={mood} />
