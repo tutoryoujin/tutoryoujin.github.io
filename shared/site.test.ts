@@ -132,7 +132,7 @@ describe("SEO", () => {
   it("검색 제목은 영어 검색어 + 브랜드, 잘리지 않는 길이", () => {
     for (const slug of ["", ...APPS.map((a) => a.slug)]) {
       const t = pageMeta(slug).title;
-      expect(t, t).toMatch(/^[A-Z][\w ]+ \| .*(with Youjin|한국어 with Youjin)$/);
+      expect(t, t).toMatch(/^[A-Z][\w ()]+ \| .*(with Youjin|한국어 with Youjin)$/);
       expect(t.length, t).toBeLessThanOrEqual(65);
     }
   });
@@ -200,6 +200,6 @@ describe("GEO — 자바스크립트 없이 읽히는 것", () => {
 
 describe("주소", () => {
   it("앱 주소(slug)는 그대로", () => {
-    expect(APPS.map((a) => a.slug)).toEqual(["hangul-blocks", "korean-cards", "calendar-practice", "korean-clock"]);
+    expect(APPS.map((a) => a.slug)).toEqual(["hangul-blocks", "korean-cards", "calendar-practice", "korean-clock", "hangul-name"]);
   });
 });

@@ -11,7 +11,8 @@
     "tokens": "node scripts/build-tokens.mjs",
     "tokens:check": "node scripts/build-tokens.mjs --check",
     "check:classes": "node scripts/check-classes.mjs",
-    "new": "node scripts/new-app.mjs"
+    "new": "node scripts/new-app.mjs",
+    "names": "vite-node tools/hangul-name/build.ts"
   },
   "dependencies": {
     "react": "18.3.1",
