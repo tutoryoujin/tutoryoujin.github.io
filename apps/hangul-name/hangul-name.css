@@ -1,0 +1,79 @@
+/* ============================================================
+   한국어 이름 — 색 별칭 · 키프레임만. 모양은 App.tsx · Receipt.tsx 의 className 에 있다.
+   ============================================================ */
+:root {
+  --shell-width: 480px;
+
+  /* 뜻 이름은 기존 토큰의 별칭이다. 여기에 hex 를 다시 적지 말 것.
+     다크 값은 원본이 tokens.css 의 세 블록에서 바뀌므로 따라온다.
+     영수증 전용 토큰(receipt-paper · receipt-ink · receipt-red)은 아직 만들지 않았다 —
+     지금 쌍으로 먼저 만들고 화면을 보고 정한다 (#43 열린 질문 4). */
+  --hn-machine-bg: var(--primary); /* 기계 몸체 — primary 쌍 */
+  --hn-machine-ink: var(--primary-ink);
+  --hn-print-bg: var(--pink-bg); /* 뽑기 버튼 — pink 쌍 */
+  --hn-print-ink: var(--pink-ink);
+  --hn-paper: var(--surface); /* 영수증 종이 */
+  --hn-paper-ink: var(--ink); /* 영수증 검정 */
+  --hn-paper-soft: var(--muted);
+  --hn-red: var(--pink-ink); /* 영수증 빨강 — 도장 · 모음 · 어미 */
+
+  /* 투입구 그늘 — 색이 아니라 검정을 겹치는 세기라 hex 가 없다 */
+  --hn-slot-shade: 0.4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hn-slot-shade: 0.55;
+  }
+}
+:root[data-theme="dark"] {
+  --hn-slot-shade: 0.55;
+}
+
+/* 투입구에서 영수증이 한 줄씩 밀려 나온다 (motion-safe 에만 건다) */
+@keyframes hn-print {
+  from {
+    transform: translateY(-102%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* 조립되는 글자 하나 */
+@keyframes hn-pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* 도장 — 쿵 */
+@keyframes hn-stamp {
+  from {
+    transform: rotate(-6deg) scale(1.6);
+    opacity: 0;
+  }
+  60% {
+    transform: rotate(-6deg) scale(0.94);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(-6deg);
+  }
+}
+
+/* 움직임 줄이기 — 자리는 그대로, 나타나며 잠깐 밝아지기만 */
+@keyframes hn-glow {
+  from {
+    opacity: 0;
+    filter: brightness(1.6);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+  }
+}

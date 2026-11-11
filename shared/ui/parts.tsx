@@ -26,19 +26,36 @@ export const Box = ({ children, className, ...rest }: { children: ReactNode; cla
 );
 
 /**
- * 큰 버튼. variant="ghost" 는 흰 바탕.
- * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant 로.
+ * 큰 버튼. variant="ghost" 는 흰 바탕. tone 을 주면 그 쌍(-bg 바탕 · -ink 글자 · -ink 테)으로 칠한다.
+ * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant · tone 으로.
  */
-export function Btn(props: { ko: ReactNode; en: ReactNode; onClick?: () => void; variant?: "ghost"; id?: string; className?: string }) {
+export function Btn(props: {
+  ko: ReactNode;
+  en: ReactNode;
+  onClick?: () => void;
+  /** 폼 안에서 제출 버튼으로 쓸 때 "submit" */
+  type?: "button" | "submit";
+  variant?: "ghost";
+  tone?: Tone;
+  id?: string;
+  className?: string;
+  disabled?: boolean;
+  "aria-busy"?: boolean;
+}) {
+  const toned = !props.variant && props.tone;
   return (
     <button
       id={props.id}
-      type="button"
+      type={props.type ?? "button"}
       onClick={props.onClick}
+      disabled={props.disabled}
+      aria-busy={props["aria-busy"]}
+      style={toned ? { ...toneStyle(props.tone!), borderColor: `var(--${props.tone}-ink)` } : undefined}
       className={cn(
         "mt-3.5 flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[18px] border-2 leading-[1.2]",
         "transition-transform duration-80 ease-[ease] motion-safe:active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:brightness-95",
-        props.variant === "ghost" ? "border-line bg-surface text-ink" : "border-primary bg-primary text-primary-ink",
+        "disabled:opacity-60",
+        props.variant === "ghost" ? "border-line bg-surface text-ink" : toned ? "" : "border-primary bg-primary text-primary-ink",
         props.className,
       )}
     >

@@ -5,3 +5,4 @@ dist/
 __pycache__/
 tools/korean-cards/.fontcache/
 tools/home/.cache/
+tools/hangul-name/.cache/
