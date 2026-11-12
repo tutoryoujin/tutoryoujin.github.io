@@ -15,6 +15,10 @@ export type StudyState = {
   missed: string[];
   learnedThisRound: number;
   phase: "card" | "end";
+  /** 이 기록이 아는 덱 카드 id. 나중에 더한 필드라 예전 기록에는 없다 (#53).
+      2회차부터는 queue 에 틀린 카드만 있어서, 이게 없으면 「외운 카드」와
+      「덱에 새로 더한 카드」를 가릴 수 없다 */
+  cards?: string[];
 };
 
 const key = (id: string) => "kcards:" + id;
@@ -86,10 +90,36 @@ export function validState(deck: Deck, s: unknown): s is StudyState {
   );
 }
 
+/**
+ * 저장된 상태를 지금 덱에 맞춘다. 맞지 않으면 null.
+ * 덱에 카드가 늘었으면 새 카드를 남은 카드에 넣는다 — 회차 중이면 queue 뒤(이번 회차),
+ * 회차가 끝났으면 missed(다음 회차). 그래야 새 카드가 「외움」으로 세어지지 않는다.
+ *
+ * cards 가 없는 예전 기록: 1회차는 queue 가 덱 전체였으니 queue 로 안다.
+ * 2회차부터는 알 길이 없어 지금 덱을 다 안다고 본다 — 이 필드가 들어간 뒤로
+ * 덱에 카드를 더한 적이 없으니 맞다. 홈이 열릴 때 progress() 가 cards 를 적어 둔다.
+ */
+export function restore(deck: Deck, raw: unknown): StudyState | null {
+  if (!validState(deck, raw)) return null;
+  const ids = deck.cards.map((c) => c.id);
+  const known = new Set(
+    Array.isArray(raw.cards) ? raw.cards : raw.round === 1 || raw.round === undefined ? [...raw.queue, ...raw.missed] : ids,
+  );
+  const added = ids.filter((id) => !known.has(id));
+  const s: StudyState = { ...raw, cards: ids };
+  if (!added.length) return s;
+  if (s.phase === "card") s.queue = [...s.queue, ...added];
+  else s.missed = [...s.missed, ...added];
+  return s;
+}
+
 export function progress(deck: Deck) {
   const total = deck.cards.length;
-  const s = load(deck.id);
-  if (!validState(deck, s)) return { done: 0, total, started: false };
+  const raw = load(deck.id);
+  const s = restore(deck, raw);
+  if (!s) return { done: 0, total, started: false };
+  // 예전 기록이거나 덱이 바뀌었으면 맞춘 상태를 적어 둔다 — 다음에 카드가 늘어도 가릴 수 있게
+  if (JSON.stringify(s) !== JSON.stringify(raw)) save(deck.id, s);
   const remaining = s.phase === "card" ? s.missed.length + (s.queue.length - s.index) : s.missed.length;
   return { done: total - remaining, total, started: true, round: s.round };
 }
