@@ -14,7 +14,7 @@ export const bevel =
 const cellClass = cn(
   "absolute box-border",
   bevel,
-  "transition-[left,top,width,height,opacity] duration-300 ease-[ease]",
+  "transition-[left,top,width,height] duration-300 ease-[ease]",
   // 키프레임 blk-drop 은 hangul-blocks.css. 지연 --d 는 줄마다 조금씩
   "animate-[blk-drop_0.38s_cubic-bezier(0.3,1.3,0.5,1)_var(--d,0ms)_both]",
   "motion-reduce:transition-none motion-reduce:animate-none",
@@ -30,8 +30,6 @@ export type BlockCell = {
   ghost?: boolean;
   /** 떨어진 뒤 한 번 진하게 깜빡 (모음의 긴 획). 새로 생긴 칸에서만 돈다 */
   flash?: boolean;
-  /** 다른 조각을 고르고 있어서 뒤로 물러난 칸 */
-  dim?: boolean;
 };
 
 /** 누른 자리에서 가장 가까운 칸 — 칸 사이 빈 곳을 눌러도 무언가 잡히게 */
@@ -86,7 +84,7 @@ export function Blocks({
       {cells.map((c) => (
         <span
           key={c.key}
-          className={cn(cellClass, c.ghost && "opacity-45", c.dim && "opacity-50", c.flash && flashClass)}
+          className={cn(cellClass, c.ghost && "opacity-45", c.flash && flashClass)}
           style={
             {
               left: c.x * size,
