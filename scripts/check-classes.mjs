@@ -20,7 +20,7 @@ const scanner = new Scanner({
 });
 const candidates = scanner.scan();
 
-// 테마에 기대는 유틸리티만 본다. 그 밖의 낱말(주석·문자열)은 너무 많다
+// 테마에 기대는 유틸리티만 본다. 그 밖의 단어(주석·문자열)는 너무 많다
 const THEMED =
   /^(?:[a-z-]+:|\[[^\]]+\]:)*!?-?(?:text|bg|from|via|to|rounded(?:-[trblse]{1,2})?|shadow|inset-shadow|font|border(?:-[xytrblse])?|outline|ring|fill|stroke|decoration|accent|caret|divide|placeholder)-[a-z0-9-]+(?:\/\d+)?$/;
 const BREAKPOINT = /^(?:[a-z-]+:)*(?:xs|md|lg|xl|2xl):/;

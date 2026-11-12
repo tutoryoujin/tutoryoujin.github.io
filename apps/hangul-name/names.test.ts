@@ -35,7 +35,7 @@ describe("이름 데이터 (완료 조건)", () => {
     expect(o.text).toMatch(/^[가-힣]+$/);
   });
 
-  it("여러 낱말이면 띄어 쓰고, 도장은 가장 약한 쪽", () => {
+  it("여러 단어면 띄어 쓰고, 도장은 가장 약한 쪽", () => {
     expect(convert(words("Mary-Jane"), names)).toEqual([{ text: "메리 제인", status: "standard" }]);
     expect(convert(words("Sophie Brakmorvin"), names)[0].status).toBe("guessed");
   });

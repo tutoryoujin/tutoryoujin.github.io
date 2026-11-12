@@ -62,7 +62,7 @@ for (const line of (await source("ssa-names.csv")).split("\n").slice(1)) {
 }
 const ranked = [...score.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => k);
 
-// 2. 발음 — 한 낱말에 발음이 여럿이면 순서대로 (jasmine, jasmine(2))
+// 2. 발음 — 한 단어에 발음이 여럿이면 순서대로 (jasmine, jasmine(2))
 const prons = new Map<string, string[][]>();
 for (const line of (await source("cmudict.dict")).split("\n")) {
   const [head, ...phones] = line.split("#")[0].trim().split(/\s+/);
