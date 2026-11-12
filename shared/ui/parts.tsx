@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "./cn";
 import { canSpeak, speak } from "./speech";
 
@@ -116,14 +116,18 @@ export function useHashTab<K extends string>(tabs: TabDef<K>[]): [K, (k: K) => v
     return tabs.some((t) => t.key === h) ? h : tabs[0].key;
   };
   const [tab, setTab] = useState<K>(read);
+  // 최신 read 를 ref 로 — 리스너는 한 번만 건다
+  const readRef = useRef(read);
+  readRef.current = read;
   useEffect(() => {
-    const on = () => setTab(read());
+    const on = () => setTab(readRef.current());
     addEventListener("hashchange", on);
     return () => removeEventListener("hashchange", on);
-  });
+  }, []);
   const go = (k: K) => {
     setTab(k);
-    history.replaceState(null, "", k === tabs[0].key ? location.pathname : "#" + k);
+    // 첫 탭은 주소에 아무것도 안 붙인다. ?query 는 남긴다 (?name= 같은 공유 링크)
+    history.replaceState(null, "", location.pathname + location.search + (k === tabs[0].key ? "" : "#" + k));
   };
   return [tab, go];
 }

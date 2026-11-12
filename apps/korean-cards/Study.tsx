@@ -125,20 +125,23 @@ export function Study({ deck }: { deck: Deck }) {
   }, [state]);
 
   const flipRef = useRef<() => void>(() => {});
+  // 키 처리는 매 렌더 최신 state 를 보게 ref 로 바꿔 끼우고, 리스너는 한 번만 건다
+  const keyRef = useRef<(e: KeyboardEvent) => void>(() => {});
+  keyRef.current = (e) => {
+    const t = e.target as Element;
+    if (t.closest?.("button, a") && (e.key === " " || e.key === "Enter")) return;
+    if (state.phase !== "card") return;
+    if (e.key === " ") {
+      e.preventDefault();
+      flipRef.current();
+    } else if (e.key === "ArrowLeft") answer(false);
+    else if (e.key === "ArrowRight") answer(true);
+  };
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as Element;
-      if (t.closest?.("button, a") && (e.key === " " || e.key === "Enter")) return;
-      if (state.phase !== "card") return;
-      if (e.key === " ") {
-        e.preventDefault();
-        flipRef.current();
-      } else if (e.key === "ArrowLeft") answer(false);
-      else if (e.key === "ArrowRight") answer(true);
-    };
+    const onKey = (e: KeyboardEvent) => keyRef.current(e);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  });
+  }, []);
 
   const restart = () => {
     stopConfetti();
