@@ -141,7 +141,12 @@ const themeCss = `/* 한국어 with Youjin — Tailwind 테마.
 @theme inline {
   --color-*: initial;
 ${colors.map((t) => `  --color-${t.name}: var(--${t.name});`).join("\n")}
+}
 
+/* 그림자 — 토큰 이름(--shadow-card)이 Tailwind 테마 이름과 같다. 테마 쪽 변수를
+   내보내면 --shadow-card: var(--shadow-card) 자기 참조가 되니, reference 로
+   유틸리티(shadow-card)만 만들고 변수는 tokens.css 한 곳에만 둔다. */
+@theme inline reference {
   --shadow-*: initial;
 ${shadows.map((t) => `  --shadow-${t.name.replace(/^shadow-/, "")}: var(--${t.name});`).join("\n")}
 }

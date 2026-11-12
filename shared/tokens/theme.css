@@ -59,7 +59,12 @@
   --color-ok-ink: var(--ok-ink);
   --color-bad-bg: var(--bad-bg);
   --color-bad-ink: var(--bad-ink);
+}
 
+/* 그림자 — 토큰 이름(--shadow-card)이 Tailwind 테마 이름과 같다. 테마 쪽 변수를
+   내보내면 --shadow-card: var(--shadow-card) 자기 참조가 되니, reference 로
+   유틸리티(shadow-card)만 만들고 변수는 tokens.css 한 곳에만 둔다. */
+@theme inline reference {
   --shadow-*: initial;
   --shadow-card: var(--shadow-card);
   --shadow-folder: var(--shadow-folder);
