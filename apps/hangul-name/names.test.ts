@@ -153,6 +153,11 @@ describe("발음 → 한글 (외래어 표기법)", () => {
     ["EH1 L AH0", "ella", "엘라"], // 모음 사이 l
     ["F IH1 L M", "film", "필름"],
     ["K W IH1 N", "quinn", "퀸"], // [kw] 한 음절
+    ["B AA1 R B ER0 AH0", "barbara", "바버라"], // [ɚ] + 모음 → r 이 다음 첫소리로
+    ["M AA1 R G ER0 IH0 T", "margaret", "마거릿"],
+    ["Z AE1 K ER0 IY0", "zachary", "재커리"],
+    ["EY1 V ER0 IY0", "avery", "에이버리"],
+    ["T AY1 L ER0", "tyler", "타일러"], // 뒤에 모음이 없으면 '어' 만
     ["M AY1 K AH0 L", "michael", "마이컬"], // 규칙대로면 이렇다 — 그래서 덮어쓰기 표가 있다
   ])("%s (%s) → %s", (phones, spelling, want) => {
     expect(t(phones, spelling)).toBe(want);
