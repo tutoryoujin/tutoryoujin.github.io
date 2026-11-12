@@ -23,16 +23,27 @@ export const WEEK = [
 export const MONTH_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 /* 양력 고정 공휴일 (설날·추석처럼 음력인 날은 해마다 달라서 뺐어요) */
-export const HOLIDAYS: Record<string, [string, string]> = {
+/* 「공휴일에 관한 법률」 기준 (2026-11 확인). 2026년 개정으로 노동절(5월 1일, 5월 1일 시행)과
+   제헌절(7월 17일, 2008년에 빠졌다가 18년 만에 다시)이 공휴일이 됐다.
+   두 날은 해마다 달라서 years 로 거른다. 나머지는 지금 법대로 모든 해에 표시한다 */
+const HOLIDAY_TABLE: Record<string, [string, string, ((y: number) => boolean)?]> = {
   "1-1": ["신정", "New Year’s Day"],
   "3-1": ["삼일절", "Independence Movement Day"],
+  "5-1": ["노동절", "Labor Day", (y) => y >= 2026],
   "5-5": ["어린이날", "Children’s Day"],
   "6-6": ["현충일", "Memorial Day"],
+  "7-17": ["제헌절", "Constitution Day", (y) => y <= 2007 || y >= 2026],
   "8-15": ["광복절", "Liberation Day"],
   "10-3": ["개천절", "National Foundation Day"],
   "10-9": ["한글날", "Hangeul Day"],
   "12-25": ["크리스마스", "Christmas"],
 };
+
+/** 그 날이 양력 고정 공휴일이면 [한국어, English] */
+export function holiday(y: number, m: number, d: number): [string, string] | undefined {
+  const h = HOLIDAY_TABLE[`${m}-${d}`];
+  return h && (!h[2] || h[2](y)) ? [h[0], h[1]] : undefined;
+}
 
 export const RELATIVE: Record<number, [string, string]> = {
   [-2]: ["그저께", "the day before yesterday"],

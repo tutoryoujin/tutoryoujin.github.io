@@ -2,7 +2,7 @@
    학습 화면. 회차 방식 — 못 외운 카드만 모아 다음 회차에서 다시.
    ============================================================ */
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import { cn, Ieung, Subscribe, track, type Mood } from "@yj/ui";
+import { cn, Ieung, shuffle, Subscribe, track, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { celebrate, stopConfetti } from "./confetti";
 import { cardOf, colorOf, imgSrc } from "./decks";
@@ -20,14 +20,6 @@ const btnEn = "text-[0.78rem] leading-[1.2] font-bold opacity-75";
 
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function shuffle<T>(arr: T[]) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 const fresh = (deck: Deck): StudyState => ({
   queue: shuffle(deck.cards.map((c) => c.id)),
   index: 0,
