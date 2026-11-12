@@ -19,12 +19,19 @@ import { SITE, type SiteConfig } from "./site";
 
 export type HeadTag = { tag: "title" | "meta" | "link"; attrs?: Record<string, string>; children?: string };
 
+/** 홈 공유 그림 설명 — 그림(tools/home/build_og.py)과 같은 규칙: 여섯까지 이름, 더 많으면 다섯 + 나머지 수 */
+export function ogAlt(apps: AppInfo[]): string {
+  const shown = apps.length <= 6 ? apps : apps.slice(0, 5);
+  const rest = apps.length - shown.length;
+  return `이응이와 앱 ${apps.length}개 — ${shown.map((a) => a.ko).join(", ")}${rest ? ` 외 ${rest}개` : ""}`;
+}
+
 const HOME = {
   searchTitle: "Free Apps for Learning Korean",
   /** tools/home/build_og.py 로 만든다 (#18) */
-  og: { image: "/og.png", alt: "이응이와 네 가지 앱 — 한국어 블록, 한국어 카드, 한국어 달력, 한국어 시계" },
+  og: { image: "/og.png", alt: ogAlt(APPS) },
   description:
-    "Free little apps for learning Korean: build Hangul blocks, learn words with flashcards, read dates and tell time. Made by Youjin, a Korean teacher in Seoul. 한국어를 배우는 사람을 위한 작은 앱 모음.",
+    "Free little apps for learning Korean: build Hangul blocks, write your name in Hangul, learn words with flashcards, read dates and tell time. Made by Youjin, a Korean teacher in Seoul. 한국어를 배우는 사람을 위한 작은 앱 모음.",
 };
 /** 사이트를 만든 사람 — 구조화 데이터의 저자. 구독 폼 문구와 같은 사실만 */
 const AUTHOR = { name: "Youjin", jobTitle: "Korean teacher", description: "A Korean teacher in Seoul" }; // llmsTxt 에도 같은 말

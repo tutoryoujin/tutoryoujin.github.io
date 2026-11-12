@@ -39,17 +39,31 @@ ieung = read("shared", "ui", "ieung-data.ts")
 DEFS = ts_string(ieung, r'^export const IEUNG_DEFS = (".*");$')
 YAY = ts_string(ieung, r'^\s*yay: (".*"),?$')
 
-APPS = re.findall(r'slug: "([^"]+)",\s*ko: "([^"]+)",\s*en: "([^"]+)",\s*emoji: "([^"]+)"', read("shared", "apps.ts"))
-if len(APPS) < 4:
+def field(block, name):
+    m = re.search(rf'^\s*{name}: "([^"]+)",', block, re.M)
+    return m.group(1) if m else None
+
+
+# 앱 하나 = "slug:" 로 시작하는 덩어리. 필드 순서와 상관없이 읽는다
+APPS = [
+    (field(b, "slug"), field(b, "ko"), field(b, "en"), field(b, "emoji"))
+    for b in re.split(r'(?=^\s*slug: ")', read("shared", "apps.ts"), flags=re.M)[1:]
+]
+if not APPS or not all(all(a) for a in APPS):
     raise SystemExit("shared/apps.ts 에서 앱을 못 읽었어요")
+
+# 3열로 여섯까지. 더 많으면 다섯 + 「+N」 칸
+MAX = 6
+shown = APPS if len(APPS) <= MAX else APPS[: MAX - 1]
+more = len(APPS) - len(shown)
 
 tokens = "file://" + os.path.join(ROOT, "shared", "tokens", "tokens.css")
 ieung_css = "file://" + os.path.join(ROOT, "shared", "ui", "ieung.css")
 
 chips = "\n".join(
     f"""<li><span class="tile">{e}</span><span><b>{html.escape(ko)}</b><small>{html.escape(en)}</small></span></li>"""
-    for _, ko, en, e in APPS[:4]
-)
+    for _, ko, en, e in shown
+) + (f"""<li class="more"><b>+{more}</b><small>more apps</small></li>""" if more else "")
 
 PAGE = f"""<!doctype html>
 <html lang="ko" data-theme="light"><head><meta charset="utf-8">
@@ -75,11 +89,12 @@ PAGE = f"""<!doctype html>
   h1 em {{ font-style: normal; font-weight: 800; font-size: 54px; color: var(--primary); margin-left: 8px; }}
   .en {{ margin-top: 18px; font-size: 34px; font-weight: 800; }}
   .ko-sub {{ margin-top: 8px; font-family: "Jua"; font-size: 28px; color: var(--muted); }}
-  ul {{ list-style: none; margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }}
-  li {{ display: flex; align-items: center; gap: 14px; background: var(--surface); border-radius: 22px; padding: 12px 16px; box-shadow: var(--shadow-card); }}
-  .tile {{ display: grid; place-items: center; width: 56px; height: 56px; flex: none; border-radius: 14px; background: var(--sky); font-size: 32px; }}
-  li b {{ display: block; font-family: "Jua"; font-weight: 400; font-size: 26px; line-height: 1.1; }}
-  li small {{ display: block; font-size: 16px; font-weight: 800; color: var(--muted); }}
+  ul {{ list-style: none; margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }}
+  li {{ display: flex; align-items: center; gap: 10px; background: var(--surface); border-radius: 20px; padding: 10px 12px; box-shadow: var(--shadow-card); }}
+  .tile {{ display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 12px; background: var(--sky); font-size: 26px; }}
+  li b {{ display: block; font-family: "Jua"; font-weight: 400; font-size: 22px; line-height: 1.1; white-space: nowrap; }}
+  li small {{ display: block; font-size: 13px; font-weight: 800; line-height: 1.2; color: var(--muted); }}
+  li.more {{ flex-direction: column; justify-content: center; }}
   .stage {{ position: relative; height: 520px; }}
   /* 이응이가 서는 sky 바닥 */
   .floor {{ position: absolute; left: 30px; right: 10px; bottom: 30px; height: 380px; border-radius: 50%; background: var(--sky); }}
