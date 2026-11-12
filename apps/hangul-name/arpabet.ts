@@ -70,7 +70,11 @@ function units(phones: string[], spelling: string): Unit[] {
       case "AW": v("ㅏ"); v("ㅜ"); break;
       case "AY": v("ㅏ"); v("ㅣ"); break;
       case "EH": v("ㅔ", true); break;
-      case "ER": v("ㅓ"); break;
+      case "ER":
+        v("ㅓ");
+        // [ɚ] 는 r 을 품은 모음 — 뒤에 모음이 오면 그 r 이 첫소리 ㄹ 이 된다 (Barbara 바버라, Avery 에이버리)
+        if (VOWELS.has(next ?? "")) out.push({ t: "C", p: "R" });
+        break;
       case "EY": v("ㅔ"); v("ㅣ"); break;
       case "IH": v("ㅣ", true); break;
       case "IY": v("ㅣ"); break;
