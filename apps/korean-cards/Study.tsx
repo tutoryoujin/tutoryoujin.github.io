@@ -6,7 +6,8 @@ import { cn, Ieung, Subscribe, track, type Mood } from "@yj/ui";
 import { Art, TONE } from "./Art";
 import { celebrate, stopConfetti } from "./confetti";
 import { cardOf, colorOf, imgSrc } from "./decks";
-import { load, markOpened, save, touch, validState, type StudyState } from "./store";
+import { setStep } from "@yj/recent";
+import { load, markOpened, progress, save, touch, validState, type StudyState } from "./store";
 import type { Deck } from "./types";
 
 /* 큰 버튼 — 회차 끝 화면에도 같이 쓴다 */
@@ -47,6 +48,12 @@ export function Study({ deck }: { deck: Deck }) {
   const [reaction, setReaction] = useState<{ mood: Mood; miss: boolean; n: number } | null>(null);
 
   const total = deck.cards.length;
+  /** 덱 기록 저장 + 첫 화면 「이어서 하기」에 이 덱 · 진도를 남긴다 (shared/recent.ts) */
+  const persist = (s: StudyState) => {
+    save(deck.id, s);
+    const p = progress(deck);
+    setStep("korean-cards", deck.title, p.done, p.total);
+  };
   const onCard = state.phase === "card";
   const n = state.queue.length;
 
@@ -54,7 +61,7 @@ export function Study({ deck }: { deck: Deck }) {
   // 섞은 순서도 같이 남아 다시 열면 같은 순서로 이어진다
   useEffect(() => {
     markOpened(deck.id);
-    save(deck.id, state);
+    persist(state);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 연 순간 한 번만
   }, [deck.id]);
 
@@ -69,7 +76,7 @@ export function Study({ deck }: { deck: Deck }) {
   }, []);
 
   const commit = (next: StudyState) => {
-    save(deck.id, next);
+    persist(next);
     setState(next);
   };
 
@@ -89,7 +96,7 @@ export function Study({ deck }: { deck: Deck }) {
         track("deck-complete", { deck: deck.id, rounds: next.round });
       }
     }
-    save(deck.id, next);
+    persist(next);
     touch();
     // 회차가 끝나면 결과 화면에 이응이 따로 선다. 한 화면에 이응은 하나
     if (next.phase === "card") {

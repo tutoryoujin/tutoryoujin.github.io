@@ -80,6 +80,10 @@ const appsPath = `${root}shared/apps.ts`;
 const apps = readFileSync(appsPath, "utf8");
 const entry = `  {
     slug: "${slug}",
+    category: "hangul", // TODO hangul · words · numbers · life (CATEGORIES)
+    tone: "gray", // TODO 다른 앱과 겹치지 않는 악센트 쌍
+    access: "free",
+    added: "${new Date().toISOString().slice(0, 10)}",
     ko: "${ko}",
     en: "${en}",
     emoji: "${emoji}",
@@ -93,5 +97,6 @@ const entry = `  {
 writeFileSync(appsPath, apps.replace(/\n\];/, "\n" + entry));
 
 console.log(`만들었어요: apps/${slug}/`);
-console.log(`- shared/apps.ts 의 TODO(about, tagline, description, searchTitle, learn)를 채우세요`);
+console.log(`- shared/apps.ts 의 TODO(category, tone, about, tagline, description, searchTitle, learn)를 채우세요`);
+console.log(`- 첫 화면 썸네일: npm run build && npx vite preview 후 .venv/bin/python tools/home/build_shots.py ${slug}`);
 console.log(`- npm run dev 후 http://localhost:5173/${slug}/`);
