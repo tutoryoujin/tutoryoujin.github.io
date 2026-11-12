@@ -168,6 +168,9 @@ describe("GEO — 자바스크립트 없이 읽히는 것", () => {
     const home = prerenderHtml("");
     for (const a of APPS) expect(home).toContain(`href="/${a.slug}/"`);
   });
+  it("정적 본문은 data-prerender 로 표시해서 첫 그림에서 숨긴다 (#69)", () => {
+    for (const slug of ["", ...APPS.map((a) => a.slug)]) expect(prerenderHtml(slug)).toMatch(/^<main data-prerender /);
+  });
   it("정적 본문은 HTML 을 이스케이프한다", () => {
     const evil = [{ ...APPS[0], ko: "<script>x</script>" }];
     expect(prerenderHtml("", SITE, evil)).not.toContain("<script>x");

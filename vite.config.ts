@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite";
 import { analyticsScript } from "./shared/analytics";
-import { headTags, jsonLdText, llmsTxt, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
+import { headTags, jsonLdText, llmsTxt, PRERENDER_HIDE, PRERENDER_SHOW, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
 import { THEME_BOOT } from "./shared/ui/theme";
 
 // 앱 하나 = apps/<slug>/index.html 하나. 폴더만 만들면 빌드에 들어간다.
@@ -21,7 +21,12 @@ for (const d of readdirSync(apps, { withFileTypes: true })) {
 // 고른 테마를 첫 그림 전에 건다 — 모든 앱 index.html 에 자동으로. 새 앱도 따로 할 일 없다
 const themeBoot: Plugin = {
   name: "yj-theme-boot",
-  transformIndexHtml: () => [{ tag: "script", children: THEME_BOOT, injectTo: "head-prepend" }],
+  transformIndexHtml: () => [
+    { tag: "script", children: THEME_BOOT, injectTo: "head-prepend" },
+    // 크롤러용 정적 본문은 첫 그림부터 숨긴다 — 자바스크립트가 꺼져 있으면 보인다 (#69)
+    { tag: "style", children: PRERENDER_HIDE, injectTo: "head-prepend" },
+    { tag: "noscript", children: PRERENDER_SHOW, injectTo: "head-prepend" },
+  ],
 };
 
 // 검색·공유 메타 + 방문 분석 — 모든 index.html 에. 내용은 shared/apps.ts · shared/site.ts 에서.
