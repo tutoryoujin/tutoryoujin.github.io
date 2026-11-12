@@ -14,7 +14,7 @@ import {
   useHashTab,
   type TabDef,
 } from "@yj/ui";
-import { DOUBLE_JONG, MIXED_PARTS, canBeJong, compose, isCommon, joinJong, readJong, shapeOf, soundOf } from "@yj/korean/hangul";
+import { DOUBLE_JONG, MIXED_PARTS, canBeJong, compose, isCommon, joinJong, joinJung, readJong, shapeOf, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
 import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, Y_PAIRS, cellsOf, type StrokePair } from "./glyphs";
 import { layoutSyllable, longStroke, strokeDiff, type Role } from "./layout";
@@ -171,10 +171,14 @@ function BuildTab() {
       return setMsg({ ko: "ㄸ · ㅃ · ㅉ은 받침이 될 수 없어요.", en: "ㄸ, ㅃ and ㅉ never sit at the bottom." });
     apply({ ...parts, jong: c });
   };
-  const tapVowel = (v: string) => apply({ ...parts, jung: v });
-  // 겹받침을 빼면 뒤 자음만 빠진다 — ㄺ → ㄹ
-  const remove = (r: Role) =>
-    apply({ ...parts, [r]: r === "jong" && parts.jong && parts.jong in DOUBLE_JONG ? DOUBLE_JONG[parts.jong][0] : null });
+  // 가로 모음 뒤에 짝이 되는 세로 모음이면 섞인 모음 — ㅗ + ㅏ → ㅘ
+  const tapVowel = (v: string) => apply({ ...parts, jung: (parts.jung && joinJung(parts.jung, v)) || v });
+  // 겹받침 · 섞인 모음을 빼면 뒤의 것만 빠진다 — ㄺ → ㄹ, ㅘ → ㅗ
+  const remove = (r: Role) => {
+    const v = parts[r];
+    const front = r === "jong" && v && v in DOUBLE_JONG ? DOUBLE_JONG[v][0] : r === "jung" && v && v in MIXED_PARTS ? MIXED_PARTS[v][0] : null;
+    apply({ ...parts, [r]: front });
+  };
 
   const cho = choOf(parts);
   const ghost = !parts.cho && !!cho;
@@ -182,6 +186,8 @@ function BuildTab() {
   const jongTarget = !!(parts.cho && parts.jung);
   /** 지금 받침 뒤에 붙어 겹받침이 되는 자음 */
   const pairsWith = (c: string) => !!(parts.jong && joinJong(parts.jong, c));
+  /** 지금 모음 뒤에 붙어 섞인 모음이 되는 모음 */
+  const mixesWith = (v: string) => !!(parts.jung && joinJung(parts.jung, v));
   const notes = buildNotes(parts, syl, ghost);
 
   const kbTabs: { key: Kb; ko: string; en: string }[] = [
@@ -304,8 +310,25 @@ function BuildTab() {
               </button>
             ))
           : [...Object.keys(VOWELS), ...Object.keys(MIXED)].map((v) => (
-              <button key={v} type="button" className={cn(kbKey, TONE_CLASS["blk-jung"])} aria-label={v} onClick={() => tapVowel(v)}>
+              <button
+                key={v}
+                type="button"
+                className={cn(
+                  kbKey,
+                  "relative",
+                  TONE_CLASS["blk-jung"],
+                  // 섞인 모음이 되는 모음 — 테두리에 + 표시까지 (색만으로 구분하지 않는다)
+                  mixesWith(v) && "border-2 border-(--blk-jung-ink)",
+                )}
+                aria-label={mixesWith(v) ? `${v} · 섞인 모음 ${joinJung(parts.jung!, v)}` : v}
+                onClick={() => tapVowel(v)}
+              >
                 {v}
+                {mixesWith(v) && (
+                  <span className="absolute top-0 right-1 font-display text-[0.8rem] leading-none" aria-hidden="true">
+                    +
+                  </span>
+                )}
               </button>
             ))}
       </div>
@@ -331,6 +354,10 @@ function BuildTab() {
         <p className={tip}>
           <span className={ko}>받침 뒤에 + 자음을 누르면 겹받침이 돼요. (ㄹ + ㄱ → ㄺ)</span>
           <span className={en}>Tap a + key after the bottom letter to make a double bottom letter.</span>
+        </p>
+        <p className={tip}>
+          <span className={ko}>모음 뒤에 + 모음을 누르면 두 모음이 합쳐져요. (ㅗ + ㅏ → ㅘ)</span>
+          <span className={en}>Tap a + vowel after the vowel to join the two vowels.</span>
         </p>
         <p className={tip}>
           <span className={ko}>블록이나 위의 자리를 누르면 그 자모가 빠져요.</span>
