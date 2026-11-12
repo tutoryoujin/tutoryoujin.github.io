@@ -1,3 +1,14 @@
+
+/* 꼬리말(shared Footer)도 같은 1312px 선에 놓이게. 앱 색은 apps.ts 의 tone 으로 정한다 */
+:root {
+  --shell-width: 1344px;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
 /* 이응이 — 튀는 글자 키프레임만 여기. 말풍선 · 눌림은 shared/ui/ieung.css */
 /* 튀는 글자는 --x · --r 을 style 로 받는다 */
 @keyframes ieung-out {

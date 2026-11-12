@@ -47,6 +47,8 @@ main 에 올라가면 `.github/workflows/deploy.yml` 이 검사 → 빌드 → �
 ```
 shared/
   apps.ts            앱 목록 — 메뉴 · 첫 화면 · 꼬리말 · 검색/공유 메타(description · og)가 모두 여기서 나온다
+                     category(분류) · tone(카드 색) · access(free·member) · added(새로 나온 앱 순서)
+  recent.ts          이 기기에서 마지막으로 연 앱(yj:last-app — 바꾸지 않는다). <Page> 가 기록, 첫 화면 「이어서 하기」가 읽는다
   site.ts            사이트 설정 — 분석(provider · id) · Kit 구독 폼 id · 상품 배열 · 구독/상품 문구. 비우면 그 기능은 꺼진다
   analytics.ts       쿠키 없는 분석 스크립트(GoatCounter · Plausible · Umami) + track()
   seo.ts             <title> · description · OG · Twitter · favicon 메타, JSON-LD, #root 정적 본문, sitemap.xml · robots.txt · llms.txt (vite.config.ts 가 넣는다)
@@ -61,6 +63,7 @@ apps/
 scripts/             build-tokens.mjs · new-app.mjs · check-classes.mjs
 tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
 tools/home/          홈 공유 그림 build_og.py — 토큰 · 이응 · apps.ts 를 그대로 읽어 브라우저로 찍는다
+                     앱 썸네일 build_shots.py — public/home/<slug>.webp (새 앱을 더하면 한 번 돌린다)
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
 

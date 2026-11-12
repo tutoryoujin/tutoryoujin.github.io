@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
+import { markApp } from "../recent";
 import { cn } from "./cn";
 import { SoundHint } from "./SoundHint";
 import { useTheme } from "./theme";
@@ -48,6 +49,8 @@ const withYoujin = "text-[0.78em] not-italic text-primary";
 
 export function Page({ app, children, legal, h1 = true, width, links = [], mainClass: main = mainClass }: Props) {
   const me = appBySlug(app);
+  // 첫 화면 「이어서 하기」용 — 이 기기에서 마지막으로 연 앱 (shared/recent.ts)
+  useEffect(() => markApp(app), [app]);
   // 첫 그림 전에 건다. useEffect 면 한 프레임 640px 로 보였다가 줄어든다
   useLayoutEffect(() => {
     if (width) document.documentElement.style.setProperty("--shell-width", width + "px");
@@ -204,7 +207,7 @@ const iconBtn = "grid size-11 place-items-center rounded-sm border border-line b
 
 /* 밝게 ↔ 어둡게. 지금 보이는 화면의 아이콘(해 · 달)을 보여 준다.
    처음엔 기기 설정을 따르고(자동), 한 번 누르면 고른 값이 모든 앱에 남는다 (shared/ui/theme.ts) */
-function ThemeToggle() {
+export function ThemeToggle() {
   const { dark, setTheme } = useTheme();
   return (
     <button

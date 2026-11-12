@@ -9,8 +9,25 @@
    slug 는 주소다. https://tutoryoujin.github.io/<slug>/
    이미 학생들에게 나간 주소라 한번 정하면 바꾸지 않는다.
    ============================================================ */
+/** 앱 분류 — 첫 화면 「모든 앱」 탭. 늘릴 때는 CATEGORIES 에 같이 넣는다 */
+export type Category = "hangul" | "words" | "numbers" | "life";
+export const CATEGORIES: { id: Category; ko: string; en: string }[] = [
+  { id: "hangul", ko: "한글", en: "Hangul" },
+  { id: "words", ko: "낱말", en: "Words" },
+  { id: "numbers", ko: "숫자와 시간", en: "Numbers & time" },
+  { id: "life", ko: "생활", en: "Daily life" },
+];
+/** 앱 고유색 — 악센트 쌍 이름 (tokens.json). 카드 · 탭이 --<tone>-bg / --<tone>-ink 를 쓴다 */
+export type Tone = "blue" | "pink" | "yellow" | "mint" | "lavender" | "coral" | "orange" | "gray";
+
 export type AppInfo = {
   slug: string;
+  category: Category;
+  tone: Tone;
+  /** "member" = 로그인해야 열린다. 목록에는 잠금으로 보인다 (숨기지 않는다) */
+  access: "free" | "member";
+  /** 추가된 날 (YYYY-MM-DD) — 첫 화면 「새로 나온 앱」은 최근 것부터 */
+  added: string;
   ko: string; // 워드마크 가운데 낱말을 포함한 이름 — "한국어 시계"
   en: string;
   emoji: string;
@@ -38,6 +55,10 @@ export const APPS: AppInfo[] = [
   // 한글부터 — 다른 앱은 모두 한글을 읽을 줄 안다는 데서 시작한다
   {
     slug: "hangul-blocks",
+    category: "hangul",
+    tone: "blue",
+    access: "free",
+    added: "2026-11-08",
     ko: "한국어 블록",
     en: "Hangul Blocks",
     emoji: "🧱",
@@ -55,6 +76,10 @@ export const APPS: AppInfo[] = [
   // 그다음 자기 이름 — 처음 쓰는 한글 낱말
   {
     slug: "hangul-name",
+    category: "hangul",
+    tone: "pink",
+    access: "free",
+    added: "2026-11-11",
     ko: "한국어 이름",
     en: "Your Name in Hangul",
     emoji: "🧾",
@@ -71,6 +96,10 @@ export const APPS: AppInfo[] = [
   },
   {
     slug: "korean-cards",
+    category: "words",
+    tone: "yellow",
+    access: "free",
+    added: "2026-11-06",
     ko: "한국어 카드",
     en: "Korean Word Cards",
     emoji: "🃏",
@@ -87,6 +116,10 @@ export const APPS: AppInfo[] = [
   },
   {
     slug: "calendar-practice",
+    category: "numbers",
+    tone: "mint",
+    access: "free",
+    added: "2026-11-06",
     ko: "한국어 달력",
     en: "Korean Calendar",
     emoji: "📆",
@@ -103,6 +136,10 @@ export const APPS: AppInfo[] = [
   },
   {
     slug: "korean-clock",
+    category: "numbers",
+    tone: "lavender",
+    access: "free",
+    added: "2026-11-06",
     ko: "한국어 시계",
     en: "Korean Clock",
     emoji: "🕒",
