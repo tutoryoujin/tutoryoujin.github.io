@@ -41,6 +41,18 @@ const THEME_COLOR = { light: "#f5f8ff", dark: "#131a2c" };
 
 export type PageMeta = { url: string; title: string; description: string; image?: { url: string; alt: string } };
 
+const brand = (a: AppInfo) => `${a.ko} with Youjin`;
+const findApp = (slug: string, apps: AppInfo[]) => {
+  const a = apps.find((x) => x.slug === slug);
+  if (!a) throw new Error(`shared/apps.ts 에 없는 앱이에요: ${slug}`);
+  return a;
+};
+
+/** 앱 안 화면(덱 · 출처 …)의 브라우저 제목. sub 가 없으면 빌드가 넣은 검색 제목 그대로 (#51) */
+export function screenTitle(slug: string, sub?: string, apps: AppInfo[] = APPS): string {
+  return sub ? `${sub} · ${brand(findApp(slug, apps))}` : pageMeta(slug, SITE, apps).title;
+}
+
 /** slug 가 "" 이면 첫 화면 */
 export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APPS): PageMeta {
   if (!slug)
@@ -50,11 +62,10 @@ export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
       description: HOME.description,
       image: { url: c.url + HOME.og.image, alt: HOME.og.alt },
     };
-  const a = apps.find((x) => x.slug === slug);
-  if (!a) throw new Error(`shared/apps.ts 에 없는 앱이에요: ${slug}`);
+  const a = findApp(slug, apps);
   return {
     url: `${c.url}/${a.slug}/`,
-    title: `${a.searchTitle} | ${a.ko} with Youjin`,
+    title: `${a.searchTitle} | ${brand(a)}`,
     description: a.description,
     image: a.og && { url: c.url + a.og.image, alt: a.og.alt },
   };
