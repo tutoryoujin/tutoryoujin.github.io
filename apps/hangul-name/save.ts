@@ -85,7 +85,7 @@ function paint(ctx: CanvasRenderingContext2D, it: Issued, c: Colors, f: Fonts, d
     put(s, W - P, yy, "right", color);
     return W - P - width(s);
   };
-  /** 너비에 맞게 줄을 나눈다 (낱말 단위) */
+  /** 너비에 맞게 줄을 나눈다 (단어 단위) */
   const wrap = (s: string, max: number) => {
     const lines: string[] = [];
     let cur = "";

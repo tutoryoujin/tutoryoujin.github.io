@@ -55,7 +55,7 @@ export function clean(input: string): Cleaned {
 const RANK: Record<Status, number> = { standard: 0, edited: 0, common: 1, rule: 2, guessed: 3 };
 const worst = (a: Status, b: Status) => (RANK[a] >= RANK[b] ? a : b);
 
-/** 낱말 하나의 표기들. 첫째가 기본 */
+/** 단어 하나의 표기들. 첫째가 기본 */
 export function wordOptions(word: string, data: Names): Option[] {
   const e = data[keyOf(word)];
   if (!e) {
@@ -70,8 +70,8 @@ export function wordOptions(word: string, data: Names): Option[] {
 }
 
 /**
- * 이름 전체의 표기 후보. 낱말이 하나면 그 낱말의 후보 전부,
- * 여럿이면 낱말마다 기본 표기를 띄어 쓴 하나 (도장은 가장 약한 쪽).
+ * 이름 전체의 표기 후보. 단어가 하나면 그 단어의 후보 전부,
+ * 여럿이면 단어마다 기본 표기를 띄어 쓴 하나 (도장은 가장 약한 쪽).
  */
 export function convert(words: string[], data: Names): Option[] {
   const per = words.map((w) => wordOptions(w, data)).filter((o) => o.length);

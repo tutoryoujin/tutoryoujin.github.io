@@ -62,7 +62,7 @@ export const MIXED: Record<string, { ko: string; en: string }> = {
   ㅢ: { ko: "의", en: "ui" },
 };
 
-/** 획 하나 더 = 바람 한 번 (교재 CV02). 예시는 교재의 낱말 */
+/** 획 하나 더 = 바람 한 번 (교재 CV02). 예시는 교재의 단어 */
 /**
  * 획 하나 더 (교재 CV01 · CV02).
  *   자음: 획 하나 더 = 바람 한 번     ㄱ → ㅋ
@@ -73,7 +73,7 @@ export type StrokePair = {
   plain: string;
   more: string;
   syl: [string, string];
-  /** 소리 하나로 뜻이 바뀌는 낱말 — [한국어, 영어] */
+  /** 소리 하나로 뜻이 바뀌는 단어 — [한국어, 영어] */
   words?: [[string, string], [string, string]];
 };
 export const AIR_PAIRS: StrokePair[] = [
