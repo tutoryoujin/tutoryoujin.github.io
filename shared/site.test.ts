@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { analyticsScript, track } from "./analytics";
 import { APPS } from "./apps";
-import { headTags, jsonLd, jsonLdText, llmsTxt, ogAlt, pageMeta, prerenderHtml, robotsTxt, sitemapXml } from "./seo";
+import { headTags, jsonLd, jsonLdText, llmsTxt, ogAlt, pageMeta, prerenderHtml, screenTitle, robotsTxt, sitemapXml } from "./seo";
 import { SITE, SUBSCRIBE_COPY, type SiteConfig } from "./site";
 import { subscribeEmail, subscribeEndpoint } from "./subscribe";
 import { Products } from "./ui/Products";
@@ -135,6 +135,10 @@ describe("SEO", () => {
       expect(t, t).toMatch(/^[A-Z][\w ()]+ \| .*(with Youjin|한국어 with Youjin)$/);
       expect(t.length, t).toBeLessThanOrEqual(65);
     }
+  });
+  it("앱 안 화면 제목 — 홈은 검색 제목 그대로, 덱 · 출처는 앞에 붙인다 (#51)", () => {
+    expect(screenTitle("korean-cards")).toBe(pageMeta("korean-cards").title);
+    expect(screenTitle("korean-cards", "이미지 출처")).toBe("이미지 출처 · 한국어 카드 with Youjin");
   });
   it("설명은 영어 먼저, 한국어도 같이", () => {
     for (const slug of ["", ...APPS.map((a) => a.slug)]) {

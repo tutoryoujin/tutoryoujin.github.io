@@ -6,6 +6,7 @@
    ============================================================ */
 import { useEffect, useState } from "react";
 import { cn, Page } from "@yj/ui";
+import { screenTitle } from "@yj/seo";
 import { Credits } from "./Credits";
 import { loadDeck, peekDeck } from "./decks";
 import { Home } from "./Home";
@@ -60,11 +61,8 @@ export function App() {
   const credits = route === "/credits";
 
   useEffect(() => {
-    document.title = deck
-      ? `${deck.title.ko} · 한국어 카드 with Youjin`
-      : credits
-        ? "이미지 출처 · 한국어 카드 with Youjin"
-        : "한국어 카드 with Youjin";
+    // 홈은 빌드가 넣은 검색 제목 그대로 — 문구는 shared/seo.ts 한 곳에서 (#51)
+    document.title = screenTitle("korean-cards", deck ? deck.title.ko : credits ? "이미지 출처" : undefined);
     if (pending) return;
     if (!deck && !credits && route !== "/") history.replaceState(null, "", "#/");
     window.scrollTo(0, 0);
