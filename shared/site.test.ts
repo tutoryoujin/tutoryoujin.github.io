@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { analyticsScript, track } from "./analytics";
 import { APPS } from "./apps";
-import { headTags, jsonLd, jsonLdText, llmsTxt, pageMeta, prerenderHtml, robotsTxt, sitemapXml } from "./seo";
+import { headTags, jsonLd, jsonLdText, llmsTxt, ogAlt, pageMeta, prerenderHtml, robotsTxt, sitemapXml } from "./seo";
 import { SITE, SUBSCRIBE_COPY, type SiteConfig } from "./site";
 import { subscribeEmail, subscribeEndpoint } from "./subscribe";
 import { Products } from "./ui/Products";
@@ -201,5 +201,19 @@ describe("GEO — 자바스크립트 없이 읽히는 것", () => {
 describe("주소", () => {
   it("앱 주소(slug)는 그대로", () => {
     expect(APPS.map((a) => a.slug)).toEqual(["hangul-blocks", "hangul-name", "korean-cards", "calendar-practice", "korean-clock"]);
+  });
+});
+
+describe("홈 공유 그림 설명 (#46)", () => {
+  it("그림에 있는 앱을 모두 적는다 — 앱이 늘어도 그림과 같은 규칙", () => {
+    const alt = pageMeta("").image!.alt;
+    expect(alt).toContain(`앱 ${APPS.length}개`);
+    for (const a of APPS.slice(0, APPS.length <= 6 ? APPS.length : 5)) expect(alt).toContain(a.ko);
+    const many = Array.from({ length: 8 }, (_, i) => ({ ...APPS[0], ko: `앱${i}` }));
+    expect(ogAlt(many)).toBe("이응이와 앱 8개 — 앱0, 앱1, 앱2, 앱3, 앱4 외 3개");
+  });
+  it("홈 설명에 앱마다 하는 일이 들어 있다", () => {
+    const d = pageMeta("").description;
+    for (const w of ["Hangul blocks", "your name", "flashcards", "dates", "time"]) expect(d).toContain(w);
   });
 });
