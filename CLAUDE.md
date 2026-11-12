@@ -151,7 +151,7 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   (`.venv/bin/pip install playwright==1.49.1 && .venv/bin/playwright install chromium`). 토큰·앱 목록이 바뀌면 다시 돌린다.
 - 검색 제목·설명·배우는 것은 `apps.ts` 의 `searchTitle` · `description`(영어 먼저 + 한국어) · `learn`. 학습자는 영어로 검색해서 메타만 영어가 앞입니다 — 화면은 그대로 한국어 먼저.
   `learn` 에는 앱에 실제로 있는 것만. 구조화 데이터에 평점·리뷰처럼 없는 데이터를 넣지 마세요.
-- 빌드 때 각 페이지 `#root` 안에 정적 본문(h1 · 배우는 것 · 앱 링크)이 들어갑니다. 자바스크립트를 안 돌리는 AI 크롤러용이고 React 가 뜨면 덮습니다.
+- 빌드 때 각 페이지 `#root` 안에 정적 본문(h1 · 배우는 것 · 앱 링크)이 들어갑니다. 자바스크립트를 안 돌리는 AI 크롤러용이고 React 가 뜨면 덮습니다 사람에게는 첫 그림부터 숨깁니다(`data-prerender`, #69) — 자바스크립트가 꺼져 있을 때만 보여요.
   그래서 index.html 의 `<div id="root"></div>` 를 바꾸지 마세요 (없으면 빌드가 멈춥니다). 크롤러에만 보이는 말을 넣지 마세요.
 - 검색엔진 소유 확인 코드는 `site.ts` 의 `verify` (Google Search Console · 네이버 서치어드바이저).
 - 분석 · 구독 · 상품은 `shared/site.ts` 값만 바꿉니다. 꺼졌을 때 아무것도 안 나오는지는 `shared/site.test.ts` 가 봅니다.

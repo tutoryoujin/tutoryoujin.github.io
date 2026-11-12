@@ -192,6 +192,13 @@ export const jsonLdText = (slug: string, c: SiteConfig = SITE, apps: AppInfo[] =
   JSON.stringify(jsonLd(slug, c, apps)).replace(/</g, "\\u003c");
 
 /* ---------- 정적 본문 ---------- */
+/**
+ * 정적 본문은 크롤러용이라, 자바스크립트가 도는 브라우저에서는 첫 그림부터 숨긴다 (#69).
+ * 안 숨기면 React 가 뜨기 전까지 꾸밈 없는 글자 화면이 잠깐 보였다가 앱으로 바뀐다.
+ * 자바스크립트가 꺼진 브라우저(<noscript>)와 크롤러는 그대로 본다. vite.config.ts 가 <head> 에 넣는다
+ */
+export const PRERENDER_HIDE = "[data-prerender]{display:none}";
+export const PRERENDER_SHOW = "<style>[data-prerender]{display:block}</style>";
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const wrap = "mx-auto w-full max-w-(--shell-width) px-4 pt-6 pb-10 text-ink";
 const h1 = "font-display text-[1.7rem] leading-[1.2] font-normal";
@@ -205,7 +212,7 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.ko)} · ${esc(a.en)}</a> — ${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></li>`;
   if (!slug) {
     return (
-      `<main class="${wrap}">` +
+      `<main data-prerender class="${wrap}">` +
       `<h1 class="${h1}">${esc(c.name)}<span class="${sub}">${esc(HOME.searchTitle)}</span></h1>` +
       `<p class="mt-2">${esc(HOME.description)}</p>` +
       `<h2 class="${h2}">앱 · Apps</h2><ul>${apps.map(appLink).join("")}</ul>` +
@@ -215,7 +222,7 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
   const a = apps.find((x) => x.slug === slug)!;
   const others = apps.filter((x) => x.slug !== slug);
   return (
-    `<main class="${wrap}">` +
+    `<main data-prerender class="${wrap}">` +
     `<h1 class="${h1}">${esc(a.ko)} with Youjin<span class="${sub}">${esc(a.en)} — ${esc(a.searchTitle)}</span></h1>` +
     `<p class="mt-2">${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></p>` +
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
