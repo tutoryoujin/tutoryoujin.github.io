@@ -3,6 +3,7 @@ import { Ieung, type Mood } from "./Ieung";
 import { canSpeak, speak } from "./speech";
 import { Btn, boxClass } from "./parts";
 import { cn } from "./cn";
+import { shuffle } from "./shuffle";
 
 /* ============================================================
    보기 넷 중 하나 고르는 퀴즈 — 판 진행 · 채점 · 피드백 · 결과.
@@ -30,15 +31,6 @@ type Props = {
   make: (index: number, seen: string[]) => Question;
   length?: number;
   label: { ko: string; en: string };
-};
-
-const shuffle = <T,>(a: T[]) => {
-  a = a.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 };
 
 type Round = { q: Question; choices: Choice[]; picked: Choice | null };

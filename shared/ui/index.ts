@@ -12,6 +12,7 @@ export { Box, boxClass, Btn, ListenBtn, Seg, Segments, Note, Tabs, useHashTab, t
 export { speak, canSpeak, hasKoreanVoice, onVoicesChanged, onSpeak, isIOS, playThroughSilentSwitch } from "./speech";
 export { SoundHint, SOUND_HINT_KEY } from "./SoundHint";
 export { mount } from "./mount";
+export { shuffle } from "./shuffle";
 export { Subscribe } from "./Subscribe";
 export { Products } from "./Products";
 export { track, type EventName } from "../analytics";

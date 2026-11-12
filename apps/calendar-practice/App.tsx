@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
-import { HOLIDAYS, MONTH_EN, RELATIVE, SPECIAL_NOTE, WEEK, readDay, readMonth, readYear, wrongChoices } from "./reading";
+import { useEffect, useState } from "react";
+import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, shuffle, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
+import { MONTH_EN, holiday, RELATIVE, SPECIAL_NOTE, WEEK, readDay, readMonth, readYear, wrongChoices } from "./reading";
 import "./calendar.css";
 
 const TABS: TabDef<"cal" | "year" | "quiz">[] = [
@@ -24,12 +24,37 @@ const tagWord = "font-display text-[1rem] font-normal";
 const pickBtn = "mt-3 min-h-13 only:col-span-full";
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-const TODAY = startOfDay(new Date());
+
+/** 오늘 날짜. 탭을 열어 둔 채 자정을 넘기면 바뀐다.
+    잠든 탭은 타이머가 늦게 울 수 있어서, 다시 볼 때(visibilitychange · focus)도 확인한다 */
+function useToday() {
+  const [today, setToday] = useState(() => startOfDay(new Date()));
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const check = () => {
+      const now = startOfDay(new Date());
+      setToday((prev) => (+prev === +now ? prev : now));
+      clearTimeout(timer);
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      timer = setTimeout(check, +tomorrow - Date.now() + 1000);
+    };
+    check();
+    document.addEventListener("visibilitychange", check);
+    addEventListener("focus", check);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", check);
+      removeEventListener("focus", check);
+    };
+  }, []);
+  return today;
+}
 
 export function App() {
   const [tab, setTab] = useHashTab(TABS);
+  const today = useToday();
   // 달력 탭과 연간 탭이 함께 쓰는 "보고 있는 달"
-  const [view, setView] = useState({ y: TODAY.getFullYear(), m: TODAY.getMonth() + 1 });
+  const [view, setView] = useState({ y: today.getFullYear(), m: today.getMonth() + 1 });
 
   return (
     <Page
@@ -44,9 +69,10 @@ export function App() {
       }
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
-      {tab === "cal" && <CalendarTab view={view} setView={setView} />}
+      {tab === "cal" && <CalendarTab today={today} view={view} setView={setView} />}
       {tab === "year" && (
         <YearTab
+          today={today}
           open={(y, m) => {
             setView({ y, m });
             setTab("cal");
@@ -54,7 +80,7 @@ export function App() {
           }}
         />
       )}
-      {tab === "quiz" && <Quiz make={makeQuestion} label={{ ko: "어떻게 읽어요?", en: "How do you read this?" }} />}
+      {tab === "quiz" && <Quiz make={makeQuestion} length={QUIZ_LEN} label={{ ko: "어떻게 읽어요?", en: "How do you read this?" }} />}
     </Page>
   );
 }
@@ -62,8 +88,8 @@ export function App() {
 /* ---------- 달력 ---------- */
 type View = { y: number; m: number };
 
-function CalendarTab({ view, setView }: { view: View; setView: (v: View) => void }) {
-  const [selected, setSelected] = useState(TODAY);
+function CalendarTab({ today, view, setView }: { today: Date; view: View; setView: (v: View) => void }) {
+  const [selected, setSelected] = useState(today);
   const { y, m } = view;
   const shift = (delta: number) => {
     let nm = m + delta,
@@ -80,13 +106,13 @@ function CalendarTab({ view, setView }: { view: View; setView: (v: View) => void
   for (let d = 1; d <= days; d++) {
     const date = new Date(y, m - 1, d);
     const wd = date.getDay();
-    const hol = !!HOLIDAYS[`${m}-${d}`];
+    const hol = !!holiday(y, m, d);
     const isSel = +date === +selected;
     const cls = cn(
       "relative flex aspect-square min-h-10 flex-col items-center justify-center rounded-sm text-[1rem] font-extrabold",
       (wd === 0 || hol) && "text-sun",
       wd === 6 && "text-sat",
-      +date === +TODAY &&
+      +date === +today &&
         "shadow-[inset_0_0_0_2px_var(--primary)] after:mt-px after:font-display after:text-[0.58rem] after:leading-none after:text-primary after:content-['오늘']",
       hol && "before:absolute before:top-1.5 before:right-[7px] before:size-[5px] before:rounded-full before:bg-sun before:content-['']",
       isSel ? "bg-primary text-primary-ink before:bg-primary-ink after:text-primary-ink" : "hover:bg-bg",
@@ -130,28 +156,28 @@ function CalendarTab({ view, setView }: { view: View; setView: (v: View) => void
           className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-line bg-bg"
           type="button"
           onClick={() => {
-            setView({ y: TODAY.getFullYear(), m: TODAY.getMonth() + 1 });
-            setSelected(TODAY);
+            setView({ y: today.getFullYear(), m: today.getMonth() + 1 });
+            setSelected(today);
           }}
         >
           <span className="font-display">오늘로 가기</span>
           <span className="text-[0.75rem] font-bold text-muted">Go to today</span>
         </button>
       </Box>
-      <DayPanel date={selected} />
+      <DayPanel today={today} date={selected} />
     </section>
   );
 }
 
-function DayPanel({ date }: { date: Date }) {
+function DayPanel({ today, date }: { today: Date; date: Date }) {
   const y = date.getFullYear(),
     m = date.getMonth() + 1,
     d = date.getDate(),
     wd = date.getDay();
   const weekKo = WEEK[wd][0] + "요일";
   const special = SPECIAL_NOTE[m];
-  const hol = HOLIDAYS[`${m}-${d}`];
-  const rel = RELATIVE[Math.round((+date - +TODAY) / 86400000)];
+  const hol = holiday(y, m, d);
+  const rel = RELATIVE[Math.round((+date - +today) / 86400000)];
   const en = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   return (
@@ -196,11 +222,11 @@ function DayPanel({ date }: { date: Date }) {
 }
 
 /* ---------- 연간 ---------- */
-function YearTab({ open }: { open: (y: number, m: number) => void }) {
-  const [year, setYear] = useState(TODAY.getFullYear());
-  const [picked, setPicked] = useState(TODAY.getMonth() + 1);
+function YearTab({ today, open }: { today: Date; open: (y: number, m: number) => void }) {
+  const [year, setYear] = useState(today.getFullYear());
+  const [picked, setPicked] = useState(today.getMonth() + 1);
   const special = SPECIAL_NOTE[picked];
-  const isThisYear = year === TODAY.getFullYear();
+  const isThisYear = year === today.getFullYear();
 
   return (
     <section className={section}>
@@ -235,7 +261,7 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
         {Array.from({ length: 12 }, (_, i) => i + 1).map((mm) => {
           const first = new Date(year, mm - 1, 1).getDay();
           const days = new Date(year, mm, 0).getDate();
-          const isNow = isThisYear && mm === TODAY.getMonth() + 1;
+          const isNow = isThisYear && mm === today.getMonth() + 1;
           const mini = [
             ...WEEK.map((w) => (
               <span key={"h" + w[0]} className="font-display font-normal text-muted">
@@ -247,9 +273,9 @@ function YearTab({ open }: { open: (y: number, m: number) => void }) {
               const d = k + 1;
               const wd = (first + d - 1) % 7;
               const cls = cn(
-                (wd === 0 || HOLIDAYS[`${mm}-${d}`]) && "text-sun",
+                (wd === 0 || holiday(year, mm, d)) && "text-sun",
                 wd === 6 && "text-sat",
-                isNow && d === TODAY.getDate() && "rounded-full bg-primary text-primary-ink",
+                isNow && d === today.getDate() && "rounded-full bg-primary text-primary-ink",
               );
               return (
                 <span key={d} className={cls}>
@@ -300,9 +326,9 @@ let plan: number[] = [];
 
 function makeQuestion(index: number): Question {
   if (index === 0 || plan.length !== QUIZ_LEN) {
-    plan = [6, 10];
-    while (plan.length < QUIZ_LEN) plan.push(Math.random() < 0.3 ? (Math.random() < 0.5 ? 6 : 10) : rand(12) + 1);
-    plan.sort(() => Math.random() - 0.5);
+    const months = [6, 10];
+    while (months.length < QUIZ_LEN) months.push(Math.random() < 0.3 ? (Math.random() < 0.5 ? 6 : 10) : rand(12) + 1);
+    plan = shuffle(months);
   }
   const m = plan[index];
   // 평년(2023) 기준이라 2월은 28일까지만 나와요 (2/29 제외)
