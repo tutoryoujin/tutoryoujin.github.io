@@ -150,11 +150,14 @@ function BuildTab() {
   const [parts, setParts] = useState<Parts>({ cho: "ㄱ", jung: "ㅏ", jong: null });
   const [msg, setMsg] = useState<Msg | null>(null);
   const [kb, setKb] = useState<Kb>("cons");
+  /** 바꾸려고 고른 자리. 블록이나 자리를 누르면 정해지고, 자모를 하나 고르면 풀린다 */
+  const [edit, setEdit] = useState<Role | null>(null);
   const notesRef = useRef<HTMLDivElement>(null);
 
   const apply = (next: Parts) => {
     setParts(next);
     setMsg(null);
+    setEdit(null);
     setKb(nextKb(next));
     const s = syllableOf(next);
     if (s) speak(s);
@@ -162,6 +165,13 @@ function BuildTab() {
   };
 
   const tapConsonant = (c: string) => {
+    // 첫 자음 자리를 골랐으면 그 자리를 바꾼다
+    if (edit === "cho") return apply({ ...parts, cho: c });
+    // 받침 자리를 골랐으면 받침을 통째로 바꾼다 (겹받침으로 합치지 않는다)
+    if (edit === "jong") {
+      if (!canBeJong(c)) return setMsg({ ko: "ㄸ · ㅃ · ㅉ은 받침이 될 수 없어요.", en: "ㄸ, ㅃ and ㅉ never sit at the bottom." });
+      return apply({ ...parts, jong: c });
+    }
     // 모음 앞이면 첫 자음, 모음 뒤면 받침
     if (!parts.cho || !parts.jung) return apply({ ...parts, cho: c });
     // 받침 하나 뒤에 짝이 되는 자음이면 겹받침 — ㄹ + ㄱ → ㄺ
@@ -175,13 +185,25 @@ function BuildTab() {
   // 겹받침을 빼면 뒤 자음만 빠진다 — ㄺ → ㄹ
   const remove = (r: Role) =>
     apply({ ...parts, [r]: r === "jong" && parts.jong && parts.jong in DOUBLE_JONG ? DOUBLE_JONG[parts.jong][0] : null });
+  /** 자리 고르기 — 같은 자리를 다시 누르면 그만둔다 */
+  const choose = (r: Role) => {
+    setMsg(null);
+    if (edit === r) {
+      setEdit(null);
+      setKb(nextKb(parts));
+      return;
+    }
+    setEdit(r);
+    setKb(r === "jung" ? "vowel" : "cons");
+  };
 
   const cho = choOf(parts);
   const ghost = !parts.cho && !!cho;
   const syl = syllableOf(parts);
-  const jongTarget = !!(parts.cho && parts.jung);
-  /** 지금 받침 뒤에 붙어 겹받침이 되는 자음 */
-  const pairsWith = (c: string) => !!(parts.jong && joinJong(parts.jong, c));
+  /** 자음 키가 지금 채울 자리 — 고른 자리가 먼저, 아니면 모음 뒤는 받침 */
+  const jongTarget = edit === "jong" || (edit !== "cho" && !!(parts.cho && parts.jung));
+  /** 지금 받침 뒤에 붙어 겹받침이 되는 자음 (받침을 바꾸는 중이면 합치지 않는다) */
+  const pairsWith = (c: string) => !edit && !!(parts.jong && joinJong(parts.jong, c));
   const notes = buildNotes(parts, syl, ghost);
 
   const kbTabs: { key: Kb; ko: string; en: string }[] = [
@@ -192,7 +214,7 @@ function BuildTab() {
   return (
     <section className={section}>
       <div className={stage}>
-        <BuildBlock parts={parts} ghost={ghost} />
+        <BuildBlock parts={parts} ghost={ghost} edit={edit} onPick={choose} />
         <div className={glyph} aria-live="polite">
           {syl ? (
             <>
@@ -233,46 +255,64 @@ function BuildTab() {
         {(["cho", "jung", "jong"] as Role[]).map((r) => {
           const ch = r === "cho" ? cho : parts[r];
           const isGhost = r === "cho" && ghost;
+          const on = edit === r;
           return (
             <button
               key={r}
               type="button"
               className={cn(
                 "flex min-h-15 flex-col items-center justify-center rounded-md px-1 py-1 leading-[1.1]",
+                press,
                 ch ? TONE_CLASS[TONE[r]] : "border-2 border-dashed border-line bg-surface text-muted",
+                // 고른 자리 — 테두리 + 아래 글자 「바꾸는 중」 (색만으로 알리지 않는다)
+                on && "ring-3 ring-primary ring-offset-2 ring-offset-bg",
               )}
-              disabled={!parts[r]}
-              onClick={() => remove(r)}
-              aria-label={parts[r] ? `${ROLE_NAME[r].ko} ${ch} 빼기 · remove` : ROLE_NAME[r].ko}
+              disabled={!ch}
+              aria-pressed={on}
+              onClick={() => choose(r)}
+              aria-label={ch ? `${ROLE_NAME[r].ko} ${ch} 바꾸기 · change` : ROLE_NAME[r].ko}
             >
               <small className="font-display text-[0.75rem]">{ROLE_NAME[r].ko}</small>
               <b className={cn("font-display text-[1.4rem] font-normal", isGhost && "opacity-55")}>{ch ?? "—"}</b>
-              <em className="text-[0.62rem] font-bold not-italic">{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
+              <em className="text-[0.62rem] font-bold not-italic">
+                {on ? "바꾸는 중 · changing" : isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}
+              </em>
             </button>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="자모 · Letters">
-        {kbTabs.map((k) => (
-          <button
-            key={k.key}
-            type="button"
-            role="tab"
-            aria-selected={kb === k.key}
-            className={cn(
-              "group flex min-h-11 flex-col items-center justify-center rounded-full px-1 py-1 leading-[1.1]",
-              kb === k.key && TONE_CLASS[k.key === "cons" ? (jongTarget ? "blk-jong" : "blk-cho") : "blk-jung"],
-            )}
-            onClick={() => setKb(k.key)}
-          >
-            <span className="font-display text-[1rem]">{k.ko}</span>
-            <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85">
-              {k.en}
-            </span>
-          </button>
-        ))}
-      </div>
+      {/* 자리를 고른 동안에는 자음/모음 전환 대신 안내 — 고른 자리가 키보드를 정하고, 키보드가 아래로 밀리지 않는다 */}
+      {edit ? (
+        <EditBar
+          role={edit}
+          ch={(edit === "cho" ? cho : parts[edit]) ?? ""}
+          canRemove={!!parts[edit]}
+          onRemove={() => remove(edit)}
+          onDone={() => choose(edit)}
+        />
+      ) : (
+        <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="자모 · Letters">
+          {kbTabs.map((k) => (
+            <button
+              key={k.key}
+              type="button"
+              role="tab"
+              aria-selected={kb === k.key}
+              className={cn(
+                "group flex min-h-11 flex-col items-center justify-center rounded-full px-1 py-1 leading-[1.1]",
+                kb === k.key && TONE_CLASS[k.key === "cons" ? (jongTarget ? "blk-jong" : "blk-cho") : "blk-jung"],
+              )}
+              onClick={() => setKb(k.key)}
+            >
+              <span className="font-display text-[1rem]">{k.ko}</span>
+              <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85">
+                {k.en}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={kbKeys} role="tabpanel">
         {kb === "cons"
@@ -331,15 +371,15 @@ function BuildTab() {
           <span className={en}>Tap a + key after the bottom letter to make a double bottom letter.</span>
         </p>
         <p className={tip}>
-          <span className={ko}>넣은 자모를 누르면 빠져요.</span>
-          <span className={en}>Tap a letter in the row above to take it out.</span>
+          <span className={ko}>블록이나 자리를 누르면 그 자모를 바꾸거나 뺄 수 있어요.</span>
+          <span className={en}>Tap the block or a slot to change or remove that letter.</span>
         </p>
       </div>
     </section>
   );
 }
 
-function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
+function BuildBlock({ parts, ghost, edit, onPick }: { parts: Parts; ghost: boolean; edit: Role | null; onPick: (r: Role) => void }) {
   const wide = useWide();
   const box = wide ? 190 : 130;
   const cho = choOf(parts);
@@ -357,12 +397,53 @@ function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
       tone: TONE[p.role],
       ghost: p.role === "cho" && ghost,
       flash: p.role === "jung" && long.has(`${x},${y}`),
+      dim: !!edit && p.role !== edit,
     })),
   );
   const syl = syllableOf(parts);
   return (
     <div className="flex items-center justify-center">
-      <Blocks cells={cells} w={l.w} h={l.h} size={fitSize(l.w, l.h, box, 30)} label={syl ?? cho} />
+      <Blocks
+        cells={cells}
+        w={l.w}
+        h={l.h}
+        size={fitSize(l.w, l.h, box, 30)}
+        label={syl ?? cho}
+        onPick={(c) => onPick(c.key.split("-")[0] as Role)}
+      />
+    </div>
+  );
+}
+
+/** 자리를 고른 동안 — 무엇을 바꾸는지 글로 알리고, 빼기 · 그만두기 */
+function EditBar({ role, ch, canRemove, onRemove, onDone }: { role: Role; ch: string; canRemove: boolean; onRemove: () => void; onDone: () => void }) {
+  const what = role === "jung" ? "모음" : "자음";
+  return (
+    <div className="flex min-h-[54px] items-center gap-2 rounded-md border border-line bg-surface py-1 pr-1 pl-3" aria-live="polite">
+      <span className={cn(lines, "min-w-0 flex-1")}>
+        <span className={ko}>
+          {ch} 대신 넣을 {what}{tail(what, "을", "를")} 골라요
+        </span>
+        <span className={en}>Pick a new {ROLE_NAME[role].en.toLowerCase()}</span>
+      </span>
+      {canRemove && (
+        <button
+          type="button"
+          className={cn("flex min-h-11 flex-col items-center justify-center rounded-sm border border-line px-3 leading-[1.1]", press)}
+          onClick={onRemove}
+        >
+          <span className="font-display">빼기</span>
+          <span className="text-[0.62rem] font-bold text-muted">Remove</span>
+        </button>
+      )}
+      <button
+        type="button"
+        className={cn("grid size-11 flex-none place-items-center rounded-full text-[1.2rem] text-muted", press)}
+        aria-label="그만두기 · Done"
+        onClick={onDone}
+      >
+        ✕
+      </button>
     </div>
   );
 }
