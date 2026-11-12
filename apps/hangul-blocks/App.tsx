@@ -192,7 +192,9 @@ function BuildTab() {
   return (
     <section className={section}>
       <div className={stage}>
-        <BuildBlock parts={parts} ghost={ghost} />
+        {/* 블록 조각을 누르면 그 자모가 빠지고, 키보드가 그 자리에 맞게 넘어간다 (nextKb).
+            빈자리 ㅇ 은 뺄 것이 없으니 자음 키보드로만 */}
+        <BuildBlock parts={parts} ghost={ghost} onPick={(r) => (parts[r] ? remove(r) : setKb("cons"))} />
         <div className={glyph} aria-live="polite">
           {syl ? (
             <>
@@ -331,15 +333,15 @@ function BuildTab() {
           <span className={en}>Tap a + key after the bottom letter to make a double bottom letter.</span>
         </p>
         <p className={tip}>
-          <span className={ko}>넣은 자모를 누르면 빠져요.</span>
-          <span className={en}>Tap a letter in the row above to take it out.</span>
+          <span className={ko}>블록이나 위의 자리를 누르면 그 자모가 빠져요.</span>
+          <span className={en}>Tap the block or a slot above to take that letter out.</span>
         </p>
       </div>
     </section>
   );
 }
 
-function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
+function BuildBlock({ parts, ghost, onPick }: { parts: Parts; ghost: boolean; onPick: (r: Role) => void }) {
   const wide = useWide();
   const box = wide ? 190 : 130;
   const cho = choOf(parts);
@@ -362,7 +364,14 @@ function BuildBlock({ parts, ghost }: { parts: Parts; ghost: boolean }) {
   const syl = syllableOf(parts);
   return (
     <div className="flex items-center justify-center">
-      <Blocks cells={cells} w={l.w} h={l.h} size={fitSize(l.w, l.h, box, 30)} label={syl ?? cho} />
+      <Blocks
+        cells={cells}
+        w={l.w}
+        h={l.h}
+        size={fitSize(l.w, l.h, box, 30)}
+        label={syl ?? cho}
+        onPick={(c) => onPick(c.key.split("-")[0] as Role)}
+      />
     </div>
   );
 }
