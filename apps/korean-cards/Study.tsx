@@ -7,7 +7,7 @@ import { Art, TONE } from "./Art";
 import { celebrate, stopConfetti } from "./confetti";
 import { cardOf, colorOf, imgSrc } from "./decks";
 import { setStep } from "@yj/recent";
-import { load, markOpened, progress, save, touch, validState, type StudyState } from "./store";
+import { load, markOpened, progress, restore, save, touch, type StudyState } from "./store";
 import type { Deck } from "./types";
 
 /* 큰 버튼 — 회차 끝 화면에도 같이 쓴다 */
@@ -35,12 +35,12 @@ const fresh = (deck: Deck): StudyState => ({
   missed: [],
   learnedThisRound: 0,
   phase: "card",
+  cards: deck.cards.map((c) => c.id),
 });
 
 export function Study({ deck }: { deck: Deck }) {
   const [state, setState] = useState<StudyState>(() => {
-    const saved = load(deck.id);
-    return validState(deck, saved) ? saved : fresh(deck);
+    return restore(deck, load(deck.id)) ?? fresh(deck);
   });
   const [leaving, setLeaving] = useState<"left" | "right" | null>(null);
   const celebrateNext = useRef(false);
@@ -249,7 +249,7 @@ export function Study({ deck }: { deck: Deck }) {
               className={cn(btn, known, "w-full")}
               type="button"
               onClick={() =>
-                commit({ queue: shuffle(state.missed), index: 0, round: state.round + 1, missed: [], learnedThisRound: 0, phase: "card" })
+                commit({ queue: shuffle(state.missed), index: 0, round: state.round + 1, missed: [], learnedThisRound: 0, phase: "card", cards: state.cards })
               }
             >
               <span className={btnKo}>남은 {state.missed.length}개 다시 보기</span>
