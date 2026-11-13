@@ -850,6 +850,17 @@ function Maker() {
               만든 사람: 유진, 서울의 한국어 선생님
             </span>
           </p>
+          {/* 워드마크의 파란 You 를 여기서 한 번 말로 풀어 준다 (#83). 색만 두면 말장난을 못 알아본다 */}
+          <p className="mt-4 text-[1.05rem] font-bold">
+            Spot the “You” in{" "}
+            <span>
+              <span className="text-primary">You</span>jin
+            </span>
+            ? It’s Korean with Youjin — and Korean with you.
+            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
+              Youjin 안에 You 가 있어요. 유진이랑, 그리고 여러분이랑 같이 배워요.
+            </span>
+          </p>
         </div>
         {/* 사진 자리 (data-slot) — 정사각 사진을 public/home/youjin.webp 로 넣으면 이응이 대신 보인다 */}
         <div
