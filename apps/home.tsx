@@ -2,7 +2,10 @@
    구성: 첫 화면(처음: 소개 · 다시 온 사람: 이어서 하기) + 이응이 무대
         → 처음이라면(기기 기록이 없을 때만) → 새로 나온 앱 → 모든 앱(분류 · 검색) → 만든 사람 → 꼬리말
    앱은 shared/apps.ts 한 줄 + public/home/<slug>.webp(tools/home/build_shots.py) 로 모든 칸에 들어간다.
-   로그인 · 회원 전용 잠금은 아직 없다 (#49). */
+   로그인 · 회원 전용 잠금은 아직 없다 (#49).
+   글 순서 (#84): 홈만 설명 글은 영어가 크고 한국어가 아래 작다 — 처음 온 사람은 아직 한글을 못 읽는다.
+   앱 이름도 영어 이름이 크고 한국어 이름이 아래 작다. 헤더 · 히어로 제목 · 꼬리말 워드마크도 「Korean with Youjin」.
+   한국어를 크게 두는 것: 이응이 말풍선 · 표어. 앱 안은 그대로 한국어 먼저. */
 import {
   APPS,
   CATEGORIES,
@@ -81,14 +84,14 @@ function Home() {
           <div className="flex items-center gap-2.5 self-start">
             <MarkDot className="size-9" />
             <b className="font-display text-[1.25rem] font-normal text-ink">
-              한국어 <WithYoujin />
+              Korean <WithYoujin />
             </b>
           </div>
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 min-[960px]:grid-cols-4">
             {USED.map((c) => (
               <div key={c.id}>
                 <h3 className="text-[0.85rem] font-bold text-muted">
-                  {c.ko} <span className="font-semibold">{c.en}</span>
+                  {c.en} <span className="font-semibold">{c.ko}</span>
                 </h3>
                 <ul className="mt-1">
                   {APPS.filter((a) => a.category === c.id).map((a) => (
@@ -100,7 +103,7 @@ function Home() {
                         )}
                         href={hrefOf(a)}
                       >
-                        {a.ko}
+                        {a.en}
                       </a>
                     </li>
                   ))}
@@ -146,7 +149,7 @@ function Nav() {
         >
           <MarkDot className="size-9" />
           <span className="font-display text-[1.15rem] whitespace-nowrap">
-            한국어 <WithYoujin />
+            Korean <WithYoujin />
           </span>
         </a>
         <nav className="flex items-center gap-1.5" aria-label="메뉴 / Menu">
@@ -158,9 +161,9 @@ function Nav() {
             )}
             href="#apps"
           >
-            모든 앱
+            Apps
             <span className="ml-1.5 text-[0.8rem] font-semibold text-muted">
-              Apps
+              모든 앱
             </span>
           </a>
           <ThemeToggle />
@@ -179,13 +182,13 @@ function HeroNew() {
     <section className={cn(wrap, heroGrid)}>
       <div className="break-keep">
         <h1 className="min-w-0 font-display text-[clamp(3.25rem,6.2vw,5.5rem)] leading-[1.02] font-normal [overflow-wrap:break-word]">
-          <span className="block">한국어</span>
+          <span className="block">Korean</span>
           <WithYoujin className="block" />
         </h1>
         <p className="mt-6 text-[1.3rem] leading-[1.45] font-bold">
-          한국어를 배우는 작은 앱, 매일 조금씩.
+          Small apps for learning Korean, a little every day.
           <span className="mt-1 block text-[1rem] font-semibold text-muted">
-            Small apps for learning Korean, a little every day.
+            한국어를 배우는 작은 앱, 매일 조금씩.
           </span>
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -198,7 +201,7 @@ function HeroNew() {
           <BigLink
             href="#apps"
             ko={`앱 ${APPS.length}개 모두 보기`}
-            en="See all apps"
+            en={`See all ${APPS.length} apps`}
           />
         </div>
       </div>
@@ -216,9 +219,9 @@ function HeroBack({ app, r }: { app: AppInfo; r: Recent }) {
     <section className={cn(wrap, heroGrid)}>
       <div className="break-keep">
         <h1 className="font-display text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.05] font-normal">
-          다시 오셨네요!
+          Welcome back!
           <span className="mt-2 block font-app text-[1.1rem] font-bold text-muted">
-            Welcome back! Pick up where you left off.
+            다시 오셨네요! 하던 데서 이어서 해요.
           </span>
         </h1>
         <a
@@ -237,13 +240,13 @@ function HeroBack({ app, r }: { app: AppInfo; r: Recent }) {
           </span>
           <span className="block min-w-0">
             <span className="block text-[0.85rem] font-bold text-muted">
-              이어서 하기 <span className="font-semibold">Continue</span>
+              Continue <span className="font-semibold">이어서 하기</span>
             </span>
             <b className="mt-0.5 block font-display text-[1.6rem] leading-[1.15] font-normal">
-              {app.ko}
+              {app.en}
             </b>
             <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
-              {r.step ? `${r.step.ko} ${r.step.en}` : app.about.ko}
+              {app.ko} · {r.step ? `${r.step.en} ${r.step.ko}` : app.about.en}
             </span>
             {hasProgress && (
               <span className="mt-3 flex items-center gap-3">
@@ -306,7 +309,7 @@ function BigLink({
           primary ? "text-[1.2rem]" : "text-[1.1rem]",
         )}
       >
-        {ko}
+        {en}
       </b>
       <span
         className={cn(
@@ -314,7 +317,7 @@ function BigLink({
           primary ? "opacity-85" : "text-muted",
         )}
       >
-        {en}
+        {ko}
       </span>
     </a>
   );
@@ -493,7 +496,7 @@ function IeungStage() {
         aria-hidden="true"
       >
         {n < 0
-          ? "이응이를 눌러 보세요 / Tap Ieung‑i"
+          ? "Tap Ieung‑i / 이응이를 눌러 보세요"
           : `${n + 1} / ${LINES.length}`}
       </p>
     </div>
@@ -507,9 +510,9 @@ function FirstSteps() {
   return (
     <section className={cn(wrap, section)} aria-labelledby="first-title">
       <h2 id="first-title" className={h2}>
-        처음이라면 이 순서로
+        New here? Try them in this order
         <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
-          New here? Try them in this order
+          처음이라면 이 순서로
         </span>
       </h2>
       <ol className="mt-12 grid gap-4 min-[860px]:grid-cols-3">
@@ -532,10 +535,10 @@ function FirstSteps() {
               </span>
               <span className="block min-w-0">
                 <b className="block font-display text-[1.35rem] leading-[1.2] font-normal">
-                  {a.ko}
+                  {a.en}
                 </b>
                 <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
-                  {a.about.ko}
+                  {a.ko} · {a.about.en}
                 </span>
               </span>
             </a>
@@ -555,9 +558,9 @@ function NewApps() {
       aria-labelledby="new-title"
     >
       <h2 id="new-title" className={h2}>
-        새로 나온 앱
+        New apps
         <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
-          New apps
+          새로 나온 앱
         </span>
       </h2>
       <div className="mt-12 grid gap-6 min-[1100px]:grid-cols-12">
@@ -605,15 +608,15 @@ function FeatureTile({
               : "text-[1.9rem] leading-[1.15]",
           )}
         >
-          {a.ko}
-        </b>
-        <small className="mt-1 block text-[0.85rem] font-bold opacity-80">
           {a.en}
+        </b>
+        <small className="mt-1 block text-[1rem] font-bold opacity-80">
+          {a.ko}
         </small>
         <span className="mt-4 block text-[1.05rem] font-bold">
-          {a.about.ko}
+          {a.about.en}
           <em className="mt-0.5 block text-[0.85rem] font-semibold not-italic opacity-80">
-            {a.about.en}
+            {a.about.ko}
           </em>
         </span>
       </span>
@@ -661,7 +664,7 @@ function Shot({
   return (
     <img
       src={`/home/${a.slug}.webp`}
-      alt={decorative ? "" : `${a.ko} 화면 / ${a.en} screen`}
+      alt={decorative ? "" : `${a.en} screen / ${a.ko} 화면`}
       width={390}
       height={520}
       loading="lazy"
@@ -699,9 +702,9 @@ function AllApps() {
       <div className={wrap}>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[960px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] min-[960px]:items-end">
           <h2 id="apps-title" className={h2}>
-            모든 앱
+            All apps, {APPS.length} so far
             <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
-              All apps, {APPS.length} so far
+              모든 앱
             </span>
           </h2>
           <label className="flex min-h-13 items-center gap-3 rounded-full border-2 border-muted bg-bg px-5 focus-within:border-primary min-[960px]:ml-auto min-[960px]:w-[min(100%,420px)]">
@@ -716,12 +719,12 @@ function AllApps() {
               <circle cx="9" cy="9" r="6" />
               <path d="m14 14 4 4" strokeLinecap="round" />
             </svg>
-            <span className="sr-only">앱 찾기 / Search apps</span>
+            <span className="sr-only">Search apps / 앱 찾기</span>
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="앱 찾기 / Search apps"
+              placeholder="Search apps / 앱 찾기"
               className="min-w-0 flex-1 bg-transparent py-3 font-bold text-ink outline-none placeholder:text-muted"
             />
           </label>
@@ -746,14 +749,14 @@ function AllApps() {
                 focus,
               )}
             >
-              {c.ko}{" "}
+              {c.en}{" "}
               <span
                 className={cn(
                   "text-[0.8rem] font-semibold",
                   cat === c.id ? "opacity-80" : "text-muted",
                 )}
               >
-                {c.en}
+                {c.ko}
               </span>
             </button>
           ))}
@@ -772,9 +775,9 @@ function AllApps() {
             className="mt-10 rounded-xl border-2 border-dashed border-line px-6 py-12 text-center font-bold"
             role="status"
           >
-            찾는 앱이 없어요.
+            No apps match. Try another word.
             <span className="mt-1 block text-[0.9rem] font-semibold text-muted">
-              No apps match. Try another word.
+              찾는 앱이 없어요.
             </span>
           </p>
         )}
@@ -805,15 +808,15 @@ function AppCard({ a }: { a: AppInfo }) {
       </span>
       <span className="flex flex-1 flex-col p-5">
         <b className="block font-display text-[1.4rem] leading-[1.2] font-normal">
-          {a.ko}
-        </b>
-        <small className="block text-[0.8rem] font-bold text-muted">
           {a.en}
+        </b>
+        <small className="block text-[0.95rem] font-bold text-muted">
+          {a.ko}
         </small>
         <span className="mt-3 block text-[0.95rem] font-semibold">
-          {a.about.ko}
+          {a.about.en}
           <em className="mt-0.5 block text-[0.8rem] font-semibold not-italic text-muted">
-            {a.about.en}
+            {a.about.ko}
           </em>
         </span>
       </span>
@@ -842,9 +845,9 @@ function Maker() {
             One seat at a time, a little every day.
           </p>
           <p className="mt-10 text-[1.05rem] font-bold">
-            만든 사람: <br /> 유진, 서울의 한국어 선생님
+            Made by Youjin, a Korean teacher in Seoul
             <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
-              Made by Youjin, a Korean teacher in Seoul
+              만든 사람: 유진, 서울의 한국어 선생님
             </span>
           </p>
         </div>
