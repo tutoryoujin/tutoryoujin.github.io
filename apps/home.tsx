@@ -29,6 +29,7 @@ import {
   Products,
   Subscribe,
   ThemeToggle,
+  WithYoujin,
   type Mood,
 } from "@yj/ui";
 import "./home.css";
@@ -80,7 +81,7 @@ function Home() {
           <div className="flex items-center gap-2.5 self-start">
             <MarkDot className="size-9" />
             <b className="font-display text-[1.25rem] font-normal text-ink">
-              한국어 with Youjin
+              한국어 <WithYoujin />
             </b>
           </div>
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 min-[960px]:grid-cols-4">
@@ -145,7 +146,7 @@ function Nav() {
         >
           <MarkDot className="size-9" />
           <span className="font-display text-[1.15rem] whitespace-nowrap">
-            한국어 with Youjin
+            한국어 <WithYoujin />
           </span>
         </a>
         <nav className="flex items-center gap-1.5" aria-label="메뉴 / Menu">
@@ -179,7 +180,7 @@ function HeroNew() {
       <div className="break-keep">
         <h1 className="min-w-0 font-display text-[clamp(3.25rem,6.2vw,5.5rem)] leading-[1.02] font-normal [overflow-wrap:break-word]">
           <span className="block">한국어</span>
-          <span className="block">with Youjin</span>
+          <WithYoujin className="block" />
         </h1>
         <p className="mt-6 text-[1.3rem] leading-[1.45] font-bold">
           한국어를 배우는 작은 앱, 매일 조금씩.

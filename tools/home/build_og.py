@@ -86,7 +86,9 @@ PAGE = f"""<!doctype html>
   }}
   h1 {{ font-weight: 400; line-height: 1; }}
   h1 .ko {{ font-family: "Jua"; font-size: 116px; }}
-  h1 em {{ font-style: normal; font-weight: 800; font-size: 54px; color: var(--primary); margin-left: 8px; }}
+  h1 em {{ font-style: normal; font-weight: 800; font-size: 54px; margin-left: 8px; }}
+  /* 이름 속 You — shared/ui/Page.tsx 의 WithYoujin 과 같은 모양 (#83) */
+  h1 u {{ text-decoration: none; color: var(--primary); }}
   .en {{ margin-top: 18px; font-size: 34px; font-weight: 800; }}
   .ko-sub {{ margin-top: 8px; font-family: "Jua"; font-size: 28px; color: var(--muted); }}
   ul {{ list-style: none; margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }}
@@ -107,7 +109,7 @@ PAGE = f"""<!doctype html>
 <body>
   {DEFS}
   <main>
-    <h1><span class="ko">한국어</span><em>with Youjin</em></h1>
+    <h1><span class="ko">한국어</span><em>with <u>You</u>jin</em></h1>
     <p class="en">Small apps for learning Korean</p>
     <p class="ko-sub">한국어를 배우는 사람을 위한 작은 앱 모음</p>
     <ul>{chips}</ul>
