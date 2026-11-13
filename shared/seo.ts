@@ -15,6 +15,8 @@
    - 제목은 학습자가 영어로 검색하는 말(searchTitle) + 브랜드
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
+import { docHtml } from "./doc";
+import { pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
 export type HeadTag = { tag: "title" | "meta" | "link"; attrs?: Record<string, string>; children?: string };
@@ -60,6 +62,14 @@ export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
       url: c.url + "/",
       title: `${HOME.searchTitle} | ${c.name}`,
       description: HOME.description,
+      image: { url: c.url + HOME.og.image, alt: HOME.og.alt },
+    };
+  const p = pageBySlug(slug);
+  if (p)
+    return {
+      url: `${c.url}/${p.slug}/`,
+      title: `${p.searchTitle} | ${c.name}`,
+      description: p.description,
       image: { url: c.url + HOME.og.image, alt: HOME.og.alt },
     };
   const a = findApp(slug, apps);
@@ -113,7 +123,7 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
 }
 
 export function sitemapXml(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
-  const urls = [pageMeta("", c, apps).url, ...apps.map((a) => pageMeta(a.slug, c, apps).url)];
+  const urls = [pageMeta("", c, apps).url, ...apps.map((a) => pageMeta(a.slug, c, apps).url), ...PAGES.map((p) => pageMeta(p.slug, c, apps).url)];
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
@@ -153,6 +163,17 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
       ],
     };
   }
+  const p = pageBySlug(slug);
+  if (p) {
+    const m = pageMeta(slug, c, apps);
+    return {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: ["en", "ko"], isPartOf: site, author },
+        breadcrumb(c, [[p.ko, m.url]]),
+      ],
+    };
+  }
   const a = apps.find((x) => x.slug === slug)!;
   const m = pageMeta(slug, c, apps);
   return {
@@ -176,14 +197,16 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
         author,
         isPartOf: site,
       },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: c.name, item: home },
-          { "@type": "ListItem", position: 2, name: a.ko, item: m.url },
-        ],
-      },
+      breadcrumb(c, [[a.ko, m.url]]),
     ],
+  };
+}
+
+/** 첫 화면 → … 경로. trail 은 [이름, 주소] 차례대로 */
+function breadcrumb(c: SiteConfig, trail: [string, string][]) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: [[c.name, c.url + "/"], ...trail].map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item })),
   };
 }
 
@@ -219,6 +242,8 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
       `</main>`
     );
   }
+  const p = pageBySlug(slug);
+  if (p) return pageHtml(p, c);
   const a = apps.find((x) => x.slug === slug)!;
   const others = apps.filter((x) => x.slug !== slug);
   return (
@@ -230,6 +255,19 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     `<ul>${a.learn.map((l) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`).join("")}</ul>` +
     `<h2 class="${h2}">다른 앱 · More apps</h2><ul>${others.map(appLink).join("")}` +
     `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul>` +
+    `</main>`
+  );
+}
+
+/** 앱이 아닌 페이지 — 화면과 같은 글 (shared/doc.ts) */
+function pageHtml(p: SitePage, c: SiteConfig): string {
+  const [big, small] = p.lead === "ko" ? [p.ko, p.en] : [p.en, p.ko];
+  return (
+    `<main data-prerender class="${wrap}">` +
+    `<h1 class="${h1}">${esc(big)}<span class="${sub}">${esc(small)}</span></h1>` +
+    `<p class="mt-2 text-muted">Updated ${esc(p.updated)}</p>` +
+    docHtml(p.blocks(c), p.lead) +
+    `<p class="mt-8"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></p>` +
     `</main>`
   );
 }

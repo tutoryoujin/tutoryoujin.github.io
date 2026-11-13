@@ -35,7 +35,7 @@ export type NavLink = { href: string; ko: string; en: string; active?: boolean }
 
 /* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
    preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
-const Mark = ({ className }: { className?: string }) => (
+export const Mark = ({ className }: { className?: string }) => (
   <span
     className={cn("block size-9 shrink-0 overflow-hidden rounded-full bg-sky transition-transform duration-150 [&_svg]:size-full", className)}
     aria-hidden="true"
@@ -101,8 +101,17 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Reac
         {children}
         {legal && <p className="text-[0.74rem] sm:col-span-full">{legal}</p>}
         {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}
-        <p className={cn("text-[0.74rem] font-bold sm:col-span-full", (children || legal) && "border-t border-line pt-3.5")}>
-          © {new Date().getFullYear()} Made by Youjin. All rights reserved.
+        <p
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-x-4 text-[0.74rem] font-bold sm:col-span-full",
+            (children || legal) && "border-t border-line pt-1.5",
+          )}
+        >
+          <span>© {new Date().getFullYear()} Made by Youjin. All rights reserved.</span>
+          {/* 모든 페이지에서 처방침으로 (#79). 누르는 자리 44px */}
+          <a className="inline-flex min-h-11 items-center text-muted underline underline-offset-2 hover:text-ink" href="/privacy/">
+            개인정보 처리방침 · Privacy
+          </a>
         </p>
       </div>
     </footer>
