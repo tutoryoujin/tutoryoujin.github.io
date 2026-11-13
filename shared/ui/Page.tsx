@@ -45,7 +45,20 @@ const Mark = ({ className }: { className?: string }) => (
     </svg>
   </span>
 );
-const withYoujin = "text-[0.78em] not-italic text-primary";
+const withYoujin = "text-[0.78em]";
+
+/**
+ * 워드마크의 「with Youjin」 — 이름 속 You 를 드러낸다 (#83). Korean with You·jin = 너와 함께.
+ * You 만 primary 색, 나머지(with · jin)는 둘레 글자색 그대로. 밑줄 · 굵기는 쓰지 않는다 (주인이 정함).
+ * 꾸밈이라 색만 써도 된다 — 뜻을 알려 주는 표시가 아니다. Jua 는 굵기가 하나라 굵기로는 못 한다.
+ * You 와 jin 사이에 빈칸을 두지 않는다 — 화면 낭독기는 「Youjin」 한 단어로 읽어야 한다.
+ * 문장 속 이름(© Made by Youjin)에는 쓰지 않는다. 워드마크에만.
+ */
+export const WithYoujin = ({ className }: { className?: string }) => (
+  <em className={cn("not-italic", className)}>
+    with <span className="text-primary">You</span>jin
+  </em>
+);
 
 export function Page({ app, children, legal, h1 = true, width, links = [], mainClass: main = mainClass }: Props) {
   const me = appBySlug(app);
@@ -65,7 +78,7 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
           <Mark className="size-8" />
           <div>
             <b className="block text-[0.95rem] font-extrabold text-ink">
-              {me.ko} <em className={withYoujin}>with Youjin</em>
+              {me.ko} <WithYoujin className={withYoujin} />
             </b>
             <span>
               {me.tagline.ko}
@@ -146,7 +159,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             aria-label={`${me.ko} with Youjin 처음으로 / ${me.en} start`}
           >
             <Tag className="text-[1.05rem] leading-[1.1] font-extrabold whitespace-nowrap">
-              {me.ko} <em className={withYoujin}>with Youjin</em>
+              {me.ko} <WithYoujin className={withYoujin} />
               <small className="block text-[0.7rem] font-semibold text-muted">{me.en}</small>
             </Tag>
           </a>

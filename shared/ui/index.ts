@@ -2,7 +2,7 @@
      import { mount, Page, Tabs, Quiz } from "@yj/ui";            */
 import "./styles.css";
 
-export { Page, Footer, ThemeToggle, mainClass, type NavLink } from "./Page";
+export { Page, Footer, ThemeToggle, WithYoujin, mainClass, type NavLink } from "./Page";
 export { cn } from "./cn";
 export { useTheme, THEME_KEY, type ThemePref } from "./theme";
 export { Ieung, type Mood } from "./Ieung";
