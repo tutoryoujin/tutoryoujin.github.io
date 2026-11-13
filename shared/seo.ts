@@ -16,6 +16,7 @@
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
 import { docHtml } from "./doc";
+import { NOTES, NOTES_TITLE, notesForApp, type Note } from "./notes";
 import { pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -166,13 +167,43 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
   const p = pageBySlug(slug);
   if (p) {
     const m = pageMeta(slug, c, apps);
-    return {
-      "@context": "https://schema.org",
-      "@graph": [
-        { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: ["en", "ko"], isPartOf: site, author },
-        breadcrumb(c, [[p.ko, m.url]]),
-      ],
-    };
+    const list = pageMeta("notes", c, apps).url;
+    const main =
+      p.kind === "note"
+        ? {
+            "@type": "Article",
+            "@id": m.url + "#article",
+            url: m.url,
+            headline: p.note!.searchTitle,
+            name: `${p.ko} (${p.en})`,
+            description: p.description,
+            datePublished: p.note!.added,
+            dateModified: p.updated,
+            inLanguage: ["ko", "en"],
+            ...(m.image && { image: m.image.url }),
+            author,
+            publisher: author,
+            isPartOf: site,
+            mainEntityOfPage: m.url,
+          }
+        : p.kind === "notes"
+          ? {
+              "@type": "CollectionPage",
+              "@id": m.url + "#page",
+              url: m.url,
+              name: `${p.ko} (${p.en})`,
+              description: p.description,
+              inLanguage: ["ko", "en"],
+              isPartOf: site,
+              author,
+              mainEntity: {
+                "@type": "ItemList",
+                itemListElement: NOTES.map((n, i) => ({ "@type": "ListItem", position: i + 1, url: pageMeta(`notes/${n.slug}`, c, apps).url, name: n.title.ko })),
+              },
+            }
+          : { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: ["en", "ko"], isPartOf: site, author };
+    const trail: [string, string][] = p.kind === "note" ? [[NOTES_TITLE.ko, list], [p.ko, m.url]] : [[p.ko, m.url]];
+    return { "@context": "https://schema.org", "@graph": [main, breadcrumb(c, trail)] };
   }
   const a = apps.find((x) => x.slug === slug)!;
   const m = pageMeta(slug, c, apps);
@@ -243,7 +274,7 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     );
   }
   const p = pageBySlug(slug);
-  if (p) return pageHtml(p, c);
+  if (p) return pageHtml(p, c, apps);
   const a = apps.find((x) => x.slug === slug)!;
   const others = apps.filter((x) => x.slug !== slug);
   return (
@@ -253,21 +284,48 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
     `<h2 class="${h2}">이 앱에서 배우는 것 · What you’ll learn</h2>` +
     `<ul>${a.learn.map((l) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`).join("")}</ul>` +
+    (notesForApp(a.slug).length ? `<h2 class="${h2}">관련 글 · Notes</h2><ul>${notesForApp(a.slug).map(noteLink).join("")}</ul>` : "") +
     `<h2 class="${h2}">다른 앱 · More apps</h2><ul>${others.map(appLink).join("")}` +
     `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul>` +
     `</main>`
   );
 }
 
+/** 글 링크 한 줄 — 글 목록 · 앱 아래 관련 글 */
+const noteLink = (n: Note) =>
+  `<li class="${li}"><a class="${link}" href="/notes/${n.slug}/">${esc(n.title.ko)} · ${esc(n.title.en)}</a> — ${esc(n.summary.ko)} <span class="text-muted">${esc(n.summary.en)}</span></li>`;
+
 /** 앱이 아닌 페이지 — 화면과 같은 글 (shared/doc.ts) */
-function pageHtml(p: SitePage, c: SiteConfig): string {
+function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
   const [big, small] = p.lead === "ko" ? [p.ko, p.en] : [p.en, p.ko];
+  const home = `<p class="mt-8"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></p>`;
+  const title = `<h1 class="${h1}">${esc(big)}<span class="${sub}">${esc(small)}</span></h1>`;
+  if (p.kind === "notes")
+    return `<main data-prerender class="${wrap}">${title}<p class="mt-2">${esc(p.description)}</p><ul class="mt-4">${NOTES.map(noteLink).join("")}</ul>${home}</main>`;
+  if (p.kind === "note") {
+    const n = p.note!;
+    const practice = n.apps
+      .map((s) => apps.find((a) => a.slug === s))
+      .filter((a): a is AppInfo => !!a)
+      .map((a) => `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.ko)} · ${esc(a.en)}</a> — ${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></li>`)
+      .join("");
+    return (
+      `<main data-prerender class="${wrap}">` +
+      `<p><a class="${link}" href="/notes/">${esc(NOTES_TITLE.ko)} · ${esc(NOTES_TITLE.en)}</a></p>` +
+      title +
+      `<p class="mt-2 text-muted">${esc(n.added)} · Youjin</p>` +
+      docHtml(n.blocks, "ko") +
+      (practice ? `<h2 class="${h2}">앱에서 연습하기 · Practice in the app</h2><ul>${practice}</ul>` : "") +
+      home +
+      `</main>`
+    );
+  }
   return (
     `<main data-prerender class="${wrap}">` +
-    `<h1 class="${h1}">${esc(big)}<span class="${sub}">${esc(small)}</span></h1>` +
+    title +
     `<p class="mt-2 text-muted">Updated ${esc(p.updated)}</p>` +
     docHtml(p.blocks(c), p.lead) +
-    `<p class="mt-8"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></p>` +
+    home +
     `</main>`
   );
 }
@@ -287,6 +345,10 @@ export function llmsTxt(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
   for (const a of apps) {
     lines.push(`- [${a.en} (${a.ko})](${pageMeta(a.slug, c, apps).url}): ${a.searchTitle}. ${a.about.en}.`);
     for (const l of a.learn) lines.push(`  - ${l.en}`);
+  }
+  if (NOTES.length) {
+    lines.push(``, `## Notes`, ``);
+    for (const n of NOTES) lines.push(`- [${n.searchTitle}](${pageMeta(`notes/${n.slug}`, c, apps).url}): ${n.summary.en}`);
   }
   lines.push(``, `## Optional`, ``, `- [Sitemap](${c.url}/sitemap.xml)`, ``);
   return lines.join("\n");

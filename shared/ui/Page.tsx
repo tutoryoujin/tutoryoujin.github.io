@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
+import { notesForApp, NOTES_TITLE } from "../notes";
 import { markApp } from "../recent";
 import { cn } from "./cn";
 import { SoundHint } from "./SoundHint";
@@ -73,6 +74,7 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
     <>
       <Header slug={app} h1={h1} links={links} />
       <main className={main}>{children}</main>
+      <RelatedNotes app={app} />
       <Footer legal={legal}>
         <div className="flex items-start gap-2.5">
           <Mark className="size-8" />
@@ -90,6 +92,38 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
       </Footer>
       <SoundHint />
     </>
+  );
+}
+
+/** 앱 맨 아래 — 이 앱과 관련된 글 /notes/ (#50). 없으면 그리지 않는다 */
+function RelatedNotes({ app }: { app: string }) {
+  const notes = notesForApp(app);
+  if (!notes.length) return null;
+  return (
+    <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
+      <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
+        같이 읽어 보세요
+        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">Read more</span>
+      </h2>
+      <ul className="mt-2.5 flex flex-col gap-2.5">
+        {notes.map((n) => (
+          <li key={n.slug}>
+            <a
+              href={`/notes/${n.slug}/`}
+              className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block font-display text-[1.1rem] leading-[1.25]">{n.title.ko}</span>
+                <span className="block text-[0.85rem] font-bold text-muted">{n.title.en}</span>
+              </span>
+              <span aria-hidden="true" className="font-bold text-muted">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -213,6 +247,10 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
                 <small className={navSmall}>{l.en}</small>
               </a>
             ))}
+            <a href="/notes/" className={navLink()}>
+              {NOTES_TITLE.ko}
+              <small className={navSmall}>{NOTES_TITLE.en}</small>
+            </a>
             <a href="/" className={navLink()}>
               모든 앱<small className={navSmall}>All apps</small>
             </a>

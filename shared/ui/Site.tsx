@@ -56,7 +56,14 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
   }, [title]);
   return (
     <>
-      <SiteHeader>{nav ?? <SiteNavLink href="/#apps" en="Apps" ko="모든 앱" />}</SiteHeader>
+      <SiteHeader>
+        {nav ?? (
+          <>
+            <SiteNavLink href="/#apps" en="Apps" ko="모든 앱" className="hidden sm:inline-flex" />
+            <SiteNavLink href="/notes/" en="Notes" ko="메모" />
+          </>
+        )}
+      </SiteHeader>
       <main className={cn(siteWrap, "flex-[1_0_auto] pt-8")}>{children}</main>
       <Footer>
         <div className="flex items-start gap-2.5">
@@ -81,7 +88,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
 export function SiteTitle({ big, small, children }: { big: string; small: string; children?: ReactNode }) {
   return (
     <header className="break-keep">
-      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal">
+      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal text-balance">
         {big}
         <span className="mt-1.5 block font-app text-[1.05rem] font-bold text-muted">{small}</span>
       </h1>

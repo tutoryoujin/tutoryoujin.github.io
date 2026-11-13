@@ -141,6 +141,7 @@ function Nav() {
     <SiteHeader wide>
       {/* 폰에서는 숨긴다 — 첫 화면의 「앱 N개 모두 보기」가 같은 곳으로 간다 */}
       <SiteNavLink href="#apps" en="Apps" ko="모든 앱" className="hidden sm:inline-flex" />
+      <SiteNavLink href="/notes/" en="Notes" ko="메모" />
     </SiteHeader>
   );
 }

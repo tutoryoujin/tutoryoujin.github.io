@@ -33,7 +33,7 @@ describe("페이지 목록", () => {
       expect(headTags(p.slug).find((t) => t.tag === "title")?.children).toBe(m.title);
       expect(sitemapXml()).toContain(`<loc>${m.url}</loc>`);
       const types = (jsonLd(p.slug) as { "@graph": { "@type": string }[] })["@graph"].map((g) => g["@type"]);
-      expect(types).toEqual(["WebPage", "BreadcrumbList"]);
+      expect(types).toEqual([{ page: "WebPage", notes: "CollectionPage", note: "Article" }[p.kind], "BreadcrumbList"]);
       const html = prerenderHtml(p.slug);
       expect(html).toMatch(/^<main data-prerender /);
       expect(html).toContain("<h1");
