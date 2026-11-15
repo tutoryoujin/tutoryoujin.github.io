@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { arpabetToHangul } from "./arpabet";
 import { clean, convert, type Names } from "./convert";
 import { breakdown, buildSteps, introduce, STAMP, STATUS_NOTE } from "./model";
-import { cleanHangul, fixLink, readLink, withFix } from "./fixes";
+import { cleanHangul, readLink, receiptLink, shareText, withFix } from "./fixes";
 
 const here = new URL(".", import.meta.url);
 const raw = readFileSync(new URL("names.json", here));
@@ -92,11 +92,21 @@ describe("영수증 고치기 (Anne → 안)", () => {
     expect(withFix(convert(["Jasmine"], names), "자스민").map((o) => o.text)).toEqual(["자스민", "재스민"]);
   });
   it("링크로 주고받는다", () => {
-    const url = fixLink("https://tutoryoujin.github.io/hangul-name/", "Anne", "안");
+    const url = receiptLink("https://tutoryoujin.github.io/hangul-name/", "Anne", "안");
     expect(readLink(new URL(url).search)).toEqual({ input: "Anne", text: "안" });
     expect(readLink("?name=Anne")).toBeNull();
     expect(readLink("?name=Anne&ko=<script>")).toBeNull();
     expect(readLink("?name=%EC%95%88&ko=%EC%95%88")).toBeNull(); // 이름은 영문자만
+  });
+  it("공유 링크는 고른 표기도 그대로 — 원래 후보면 고친 표기가 아니다 (#90)", () => {
+    const url = receiptLink("https://tutoryoujin.github.io/hangul-name/", "Jasmine", "재스민");
+    expect(url).toBe("https://tutoryoujin.github.io/hangul-name/?name=Jasmine&ko=%EC%9E%AC%EC%8A%A4%EB%AF%BC");
+    const link = readLink(new URL(url).search)!;
+    expect(convert(["Jasmine"], names).some((o) => o.text === link.text)).toBe(true);
+  });
+  it("공유 문구 — 한국어 먼저, 예요 / 이에요, 영어 줄 (#90)", () => {
+    expect(shareText("소피")).toBe("제 한국어 이름은 소피예요 🧾\nMy name in Korean is 소피. What’s yours?");
+    expect(shareText("마이클").split("\n")[0]).toBe("제 한국어 이름은 마이클이에요 🧾");
   });
 });
 

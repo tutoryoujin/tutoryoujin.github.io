@@ -87,6 +87,7 @@ export const APPS: AppInfo[] = [
     tagline: { ko: "이름 쓰기, 매일 조금씩.", en: "Write your name in Hangul, one block at a time." },
     description: "Type your English name and print it in Hangul — letter by letter, with how to say “I’m ___” in Korean. 영어 이름을 한글로 바꿔 영수증으로 뽑아 줘요.",
     searchTitle: "Your Name in Korean (Hangul)",
+    og: { image: "/hangul-name/og.png", alt: "SOPHIE 를 한글 소피로 바꾼 한글 이름 영수증" },
     learn: [
       { ko: "영어 이름을 한글로 쓰는 법 (외래어 표기법)", en: "How your English name is written in Hangul, following Korea’s official loanword rules" },
       { ko: "글자마다 첫소리 · 모음 · 받침 풀어 보기", en: "Each block broken into its first sound, vowel and final consonant" },
