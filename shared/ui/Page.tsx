@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
+import { notesForApp, NOTES_TITLE } from "../notes";
 import { markApp } from "../recent";
 import { cn } from "./cn";
 import { SoundHint } from "./SoundHint";
@@ -35,7 +36,7 @@ export type NavLink = { href: string; ko: string; en: string; active?: boolean }
 
 /* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
    preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
-const Mark = ({ className }: { className?: string }) => (
+export const Mark = ({ className }: { className?: string }) => (
   <span
     className={cn("block size-9 shrink-0 overflow-hidden rounded-full bg-sky transition-transform duration-150 [&_svg]:size-full", className)}
     aria-hidden="true"
@@ -73,6 +74,7 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
     <>
       <Header slug={app} h1={h1} links={links} />
       <main className={main}>{children}</main>
+      <RelatedNotes app={app} />
       <Footer legal={legal}>
         <div className="flex items-start gap-2.5">
           <Mark className="size-8" />
@@ -93,6 +95,38 @@ export function Page({ app, children, legal, h1 = true, width, links = [], mainC
   );
 }
 
+/** 앱 맨 아래 — 이 앱과 관련된 글 /notes/ (#50). 없으면 그리지 않는다 */
+function RelatedNotes({ app }: { app: string }) {
+  const notes = notesForApp(app);
+  if (!notes.length) return null;
+  return (
+    <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
+      <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
+        같이 읽어 보세요
+        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">Read more</span>
+      </h2>
+      <ul className="mt-2.5 flex flex-col gap-2.5">
+        {notes.map((n) => (
+          <li key={n.slug}>
+            <a
+              href={`/notes/${n.slug}/`}
+              className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block font-display text-[1.1rem] leading-[1.25]">{n.title.ko}</span>
+                <span className="block text-[0.85rem] font-bold text-muted">{n.title.en}</span>
+              </span>
+              <span aria-hidden="true" className="font-bold text-muted">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /** 꼬리말. children 은 위쪽 브랜드 칸 (첫 화면은 비운다) */
 export function Footer({ children, legal }: { children?: ReactNode; legal?: ReactNode }) {
   return (
@@ -101,8 +135,17 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Reac
         {children}
         {legal && <p className="text-[0.74rem] sm:col-span-full">{legal}</p>}
         {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}
-        <p className={cn("text-[0.74rem] font-bold sm:col-span-full", (children || legal) && "border-t border-line pt-3.5")}>
-          © {new Date().getFullYear()} Made by Youjin. All rights reserved.
+        <p
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-x-4 text-[0.74rem] font-bold sm:col-span-full",
+            (children || legal) && "border-t border-line pt-1.5",
+          )}
+        >
+          <span>© {new Date().getFullYear()} Made by Youjin. All rights reserved.</span>
+          {/* 모든 페이지에서 처방침으로 (#79). 누르는 자리 44px */}
+          <a className="inline-flex min-h-11 items-center text-muted underline underline-offset-2 hover:text-ink" href="/privacy/">
+            개인정보 처리방침 · Privacy
+          </a>
         </p>
       </div>
     </footer>
@@ -204,6 +247,10 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
                 <small className={navSmall}>{l.en}</small>
               </a>
             ))}
+            <a href="/notes/" className={navLink()}>
+              {NOTES_TITLE.ko}
+              <small className={navSmall}>{NOTES_TITLE.en}</small>
+            </a>
             <a href="/" className={navLink()}>
               모든 앱<small className={navSmall}>All apps</small>
             </a>

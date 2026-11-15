@@ -107,7 +107,10 @@ export function Subscribe({ source, className, config = SITE }: { source: string
         </form>
       )}
       <p id={`${id}-fine`} className="mt-2.5 text-caption text-muted">
-        {t.fine}
+        {t.fine}{" "}
+        <a className="underline underline-offset-2" href="/privacy/">
+          {t.privacy}
+        </a>
       </p>
     </section>
   );

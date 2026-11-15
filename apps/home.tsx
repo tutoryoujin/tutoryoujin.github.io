@@ -26,12 +26,14 @@ import {
   Bubble,
   cn,
   Footer,
+  homeWrap,
   Ieung,
   mount,
   pokeClass,
   Products,
+  SiteHeader,
+  SiteNavLink,
   Subscribe,
-  ThemeToggle,
   WithYoujin,
   type Mood,
 } from "@yj/ui";
@@ -40,7 +42,7 @@ import "./home.css";
 /** 앱이 하나라도 있는 분류만 — 빈 칩 · 빈 꼬리말 열을 만들지 않는다 */
 const USED = CATEGORIES.filter((c) => APPS.some((a) => a.category === c.id));
 
-const wrap = "mx-auto w-full max-w-[1440px] px-4 sm:px-10 min-[1200px]:px-16";
+const wrap = homeWrap;
 const section = "py-20 min-[960px]:py-28";
 const h2 =
   "min-w-0 font-display text-[clamp(2.25rem,3.8vw,3.25rem)] leading-[1.1] font-normal break-keep [overflow-wrap:break-word]";
@@ -136,40 +138,11 @@ function MarkDot({ className }: { className?: string }) {
 /* 상단 메뉴. 오른쪽 끝은 로그인 · 「내 학습」 자리 (#49) */
 function Nav() {
   return (
-    <header className="sticky top-0 z-10 border-b border-line bg-bg/85 backdrop-blur-[14px]">
-      <div
-        className={cn(wrap, "flex min-h-16 items-center justify-between gap-3")}
-      >
-        <a
-          className={cn(
-            "flex items-center gap-2.5 rounded-full text-ink no-underline",
-            focus,
-          )}
-          href="/"
-        >
-          <MarkDot className="size-9" />
-          <span className="font-display text-[1.15rem] whitespace-nowrap">
-            Korean <WithYoujin />
-          </span>
-        </a>
-        <nav className="flex items-center gap-1.5" aria-label="메뉴 / Menu">
-          {/* 폰에서는 숨긴다 — 첫 화면의 「앱 N개 모두 보기」가 같은 곳으로 간다 */}
-          <a
-            className={cn(
-              "hidden min-h-11 items-center rounded-full px-4 font-bold text-ink no-underline hover:bg-surface sm:inline-flex",
-              focus,
-            )}
-            href="#apps"
-          >
-            Apps
-            <span className="ml-1.5 text-[0.8rem] font-semibold text-muted">
-              모든 앱
-            </span>
-          </a>
-          <ThemeToggle />
-        </nav>
-      </div>
-    </header>
+    <SiteHeader wide>
+      {/* 폰에서는 숨긴다 — 첫 화면의 「앱 N개 모두 보기」가 같은 곳으로 간다 */}
+      <SiteNavLink href="#apps" en="Apps" ko="모든 앱" className="hidden sm:inline-flex" />
+      <SiteNavLink href="/notes/" en="Notes" ko="메모" />
+    </SiteHeader>
   );
 }
 

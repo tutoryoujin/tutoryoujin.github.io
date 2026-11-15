@@ -55,6 +55,7 @@ export const SUBSCRIBE_COPY = {
   title: "Get a free Korean deck every month",
   body: "New flashcard decks for real, everyday Korean, made by Youjin, a Korean teacher in Seoul. Plus short tips you can use right away.",
   fine: "No spam. Unsubscribe anytime.",
+  privacy: "Privacy policy",
   button: "Send me the free deck",
   sending: "Sending…",
   label: "Email address",
