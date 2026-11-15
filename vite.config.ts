@@ -57,10 +57,13 @@ const notesPages: Plugin = {
   name: "yj-notes-pages",
   enforce: "post",
   // 개발 서버: /notes/<slug>/ 도 목록 페이지가 받는다 (화면은 주소를 보고 글을 고른다)
+  // 그 HTML 의 ./main.tsx 같은 상대 주소는 글 주소 기준으로 풀리니 /notes/ 로 돌린다 (#93)
   configureServer(server) {
+    const slugs = new Set(NOTES.map((n) => n.slug));
     server.middlewares.use((req, _res, next) => {
       const [path, q] = (req.url ?? "").split("?");
-      if (/^\/notes\/[a-z0-9-]+\/?$/.test(path)) req.url = "/notes/index.html" + (q ? "?" + q : "");
+      const m = /^\/notes\/([a-z0-9-]+)(?:\/(.*))?$/.exec(path);
+      if (m && slugs.has(m[1])) req.url = "/notes/" + (m[2] || "index.html") + (q ? "?" + q : "");
       next();
     });
   },
