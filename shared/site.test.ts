@@ -206,8 +206,10 @@ describe("GEO — 자바스크립트 없이 읽히는 것", () => {
 });
 
 describe("주소", () => {
-  it("앱 주소(slug)는 그대로", () => {
-    expect(APPS.map((a) => a.slug)).toEqual(["hangul-blocks", "hangul-name", "korean-cards", "calendar-practice", "korean-clock"]);
+  it("앱 주소(slug)는 그대로 — 나간 주소는 빠지거나 바뀌지 않는다 (새 앱은 더해도 된다, #52)", () => {
+    const slugs = APPS.map((a) => a.slug);
+    expect(slugs).toEqual(expect.arrayContaining(["hangul-blocks", "hangul-name", "korean-cards", "calendar-practice", "korean-clock"]));
+    expect(new Set(slugs).size).toBe(slugs.length);
   });
 });
 
