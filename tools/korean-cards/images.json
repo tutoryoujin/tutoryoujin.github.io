@@ -907,5 +907,217 @@
     "license": "MIT",
     "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
     "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Cactus"
+  },
+  "cafe/americano": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/americano.png",
+    "title": "americano",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/juseyo": {
+    "kind": "icon",
+    "own": true,
+    "close": ["bottom"],
+    "file": "art/cafe/juseyo.png",
+    "title": "juseyo",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/chucheon": {
+    "kind": "icon",
+    "own": true,
+    "close": ["bottom"],
+    "file": "art/cafe/chucheon.png",
+    "title": "chucheon",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/ice": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/ice.png",
+    "title": "ice",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/tteutteutan": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/tteutteutan.png",
+    "title": "tteutteutan",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/shot-chuga": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/shot-chuga.png",
+    "title": "shot-chuga",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/yeonhage": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/yeonhage.png",
+    "title": "yeonhage",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/decaf": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/decaf.png",
+    "title": "decaf",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/eoreum": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/eoreum.png",
+    "title": "eoreum",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/ppae-juseyo": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/ppae-juseyo.png",
+    "title": "ppae-juseyo",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/bakkwo-juseyo": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/bakkwo-juseyo.png",
+    "title": "bakkwo-juseyo",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/pojang": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/pojang.png",
+    "title": "pojang",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/meokgo-galgeyo": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/meokgo-galgeyo.png",
+    "title": "meokgo-galgeyo",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/eolmayeyo": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/eolmayeyo.png",
+    "title": "eolmayeyo",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/kadeu": {
+    "kind": "icon",
+    "own": true,
+    "close": ["left"],
+    "file": "art/cafe/kadeu.png",
+    "title": "kadeu",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/jeongnip": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/jeongnip.png",
+    "title": "jeongnip",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/yeongsujeung": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/yeongsujeung.png",
+    "title": "yeongsujeung",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/jindongbel": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/jindongbel.png",
+    "title": "jindongbel",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/jari": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/jari.png",
+    "title": "jari",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/hwajangsil": {
+    "kind": "icon",
+    "own": true,
+    "file": "art/cafe/hwajangsil.png",
+    "title": "hwajangsil",
+    "author": "Youjin",
+    "license": "",
+    "licenseUrl": "",
+    "source": ""
+  },
+  "cafe/cup": {
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Hot%20beverage/3D/hot_beverage_3d.png",
+    "title": "Hot beverage",
+    "author": "Microsoft",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE",
+    "source": "https://github.com/microsoft/fluentui-emoji/tree/main/assets/Hot%20beverage"
   }
 }

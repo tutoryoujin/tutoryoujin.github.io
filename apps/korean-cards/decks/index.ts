@@ -2,6 +2,7 @@
    유료 덱은 paid.ts 에 겉면만. */
 import { SITE, visibleProducts, type Product, type SiteConfig } from "@yj/site";
 import type { Card, Deck, DeckInfo } from "../types";
+import cafe from "./cafe";
 import emotions from "./emotions";
 import family from "./family";
 import food from "./food";
@@ -10,7 +11,7 @@ import places from "./places";
 import weather from "./weather";
 
 /** 무료 덱 — 카드까지 번들에 들어 있다 */
-export const DECKS: Deck[] = [emotions, food, family, places, weather];
+export const DECKS: Deck[] = [emotions, food, family, places, weather, cafe];
 
 export const infoOf = (d: Deck): DeckInfo => ({
   id: d.id,

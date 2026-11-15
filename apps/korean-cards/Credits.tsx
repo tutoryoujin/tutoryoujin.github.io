@@ -22,7 +22,7 @@ export function Credits() {
       <Hero ko="이미지 출처" en="Image credits" />
       <p className="text-[0.88rem] leading-[1.5] text-muted">
         Photos are cropped and resized from the originals. Each image keeps its original license. Illustrations: Microsoft Fluent
-        Emoji (MIT).
+        Emoji (MIT). Café deck illustrations by Youjin.
       </p>
       {DECKS.map((deck) => {
         const items = ALL.filter((c) => c.key.startsWith(deck.id + "/"));
