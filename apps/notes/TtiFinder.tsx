@@ -17,9 +17,12 @@ export function TtiFinder() {
 
   return (
     <div className="mt-4 rounded-xl bg-surface p-4 shadow-card">
-      <label htmlFor={id} className="block font-display text-[1.15rem]">
-        태어난 해
-        <span className="ml-1.5 font-app text-[0.85rem] font-bold text-muted">Year you were born</span>
+      {/* 안내는 영어 먼저 (#94). 「저는 ○띠예요」처럼 배우는 한국어는 크게 */}
+      <label htmlFor={id} className="block text-[1.05rem] font-extrabold">
+        Year you were born
+        <span className="ml-1.5 font-display text-[0.95rem] font-normal text-muted" lang="ko">
+          태어난 해
+        </span>
       </label>
       <input
         id={id}
@@ -44,9 +47,9 @@ export function TtiFinder() {
                 {year} · Year of the {t.en}
               </span>
               <span className="mt-1 block text-[0.8rem] font-semibold">
-                1·2월 설날 전에 태어났다면 {ttiName(prev)}예요.
-                <br />
                 Born before Seollal in Jan/Feb? Then you’re a {prev.en}.
+                <br />
+                <span lang="ko">1·2월 설날 전에 태어났다면 {ttiName(prev)}예요.</span>
               </span>
             </span>
             {canSpeak && (
@@ -62,8 +65,10 @@ export function TtiFinder() {
           </div>
         ) : (
           <p className="text-[0.9rem] font-bold text-muted">
-            네 자리로 넣어 보세요.
-            <span className="block font-semibold">Type a four-digit year, like 1995.</span>
+            Type a four-digit year, like 1995.
+            <span className="block font-semibold" lang="ko">
+              네 자리로 넣어 보세요.
+            </span>
           </p>
         )}
       </div>

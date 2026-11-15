@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "../apps";
 import { docHtml } from "../doc";
 import { jsonLd, llmsTxt, pageMeta, prerenderHtml, sitemapXml } from "../seo";
-import { NOTES, notesForApp } from "./index";
+import { NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate } from "./index";
 
 const HANJA = /[一-鿿]/;
 
@@ -65,12 +65,37 @@ describe("글 페이지 — 검색 · 정적 본문", () => {
     for (const n of NOTES) {
       const html = prerenderHtml(`notes/${n.slug}`);
       expect(html).toMatch(/^<main data-prerender /);
-      expect(html).toContain(docHtml(n.blocks, "ko"));
+      expect(html).toContain(docHtml(n.blocks, "en")); // 블로그는 영어 먼저 (#94)
       expect(html).toContain(`href="/notes/"`);
       for (const s of n.apps) expect(html).toContain(`href="/${s}/"`);
     }
     const list = prerenderHtml("notes");
-    for (const n of NOTES) expect(list).toContain(`href="/notes/${n.slug}/"`);
+    for (const n of paginate(NOTES, 1).items) expect(list).toContain(`href="/notes/${n.slug}/"`); // 화면 첫 쪽과 같게
+  });
+  it("이름 · 영어 먼저 (#94)", () => {
+    expect(NOTES_TITLE).toEqual({ ko: "한국어 공부 블로그", en: "Korean Learning Blog" });
+    expect(prerenderHtml("notes")).toMatch(/Korean Learning Blog<span[^>]*>한국어 공부 블로그</);
+    expect(pageMeta("notes").title).toContain("Korean Learning Blog");
+  });
+});
+
+describe("쪽 나누기 (#94)", () => {
+  const xs = Array.from({ length: 23 }, (_, i) => i + 1);
+  it("한 쪽에 열 개, 범위 밖은 가까운 끝 쪽", () => {
+    expect(NOTES_PER_PAGE).toBe(10);
+    expect(paginate(xs, 1)).toEqual({ items: xs.slice(0, 10), page: 1, pages: 3 });
+    expect(paginate(xs, 3).items).toEqual([21, 22, 23]);
+    expect(paginate(xs, 99).page).toBe(3);
+    expect(paginate(xs, 0).page).toBe(1);
+    expect(paginate(xs, NaN).page).toBe(1);
+    expect(paginate([], 2)).toEqual({ items: [], page: 1, pages: 1 });
+  });
+  it("쪽 번호 줄 — 일곱 쪽까지는 모두, 넘으면 …", () => {
+    expect(pageList(1, 1)).toEqual([1]);
+    expect(pageList(4, 7)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(pageList(1, 20)).toEqual([1, 2, null, 20]);
+    expect(pageList(10, 20)).toEqual([1, null, 9, 10, 11, null, 20]);
+    expect(pageList(20, 20)).toEqual([1, null, 19, 20]);
   });
   it("관련 앱의 정적 본문에도 글 링크", () => {
     for (const a of APPS) for (const n of notesForApp(a.slug)) expect(prerenderHtml(a.slug)).toContain(`href="/notes/${n.slug}/"`);
