@@ -48,6 +48,12 @@ export const MIXED_PARTS: Record<string, [flat: string, tall: string]> = {
   ㅢ: ["ㅡ", "ㅣ"],
 };
 
+/** 가로 모음 + 세로 모음을 섞인 모음 하나로. 짝이 없으면 null — ㅗ + ㅏ → ㅘ */
+export function joinJung(flat: string, tall: string): string | null {
+  for (const [m, [f, t]] of Object.entries(MIXED_PARTS)) if (f === flat && t === tall) return m;
+  return null;
+}
+
 export function shapeOf(jung: string): Shape {
   if (TALL.has(jung)) return "tall";
   if (FLAT.has(jung)) return "flat";

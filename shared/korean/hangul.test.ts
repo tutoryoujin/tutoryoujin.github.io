@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DOUBLE_JONG, canBeJong, commonSyllables, compose, decompose, isCommon, joinJong, readJong, shapeOf, soundOf } from "./hangul";
+import { DOUBLE_JONG, canBeJong, commonSyllables, compose, decompose, isCommon, joinJong, joinJung, MIXED_PARTS, readJong, shapeOf, soundOf } from "./hangul";
 
 // 틀린 글자는 학생이 그대로 외운다. 헷갈리는 자리만 골라 못 박아 둔다.
 describe("compose", () => {
@@ -70,6 +70,17 @@ describe("겹받침", () => {
       expect(joinJong(f, b)).toBe(j);
       expect(compose("ㄱ", "ㅏ", j)).not.toBeNull();
     }
+  });
+  it("섞인 모음 7개는 가로 모음 + 세로 모음으로 다시 만들어진다 (ㅗ + ㅏ → ㅘ)", () => {
+    expect(Object.keys(MIXED_PARTS)).toHaveLength(7);
+    for (const [m, [f, t]] of Object.entries(MIXED_PARTS)) {
+      expect(joinJung(f, t)).toBe(m);
+      expect(shapeOf(f)).toBe("flat");
+      expect(shapeOf(t)).toBe("tall");
+    }
+    expect(joinJung("ㅗ", "ㅓ")).toBeNull();
+    expect(joinJung("ㅏ", "ㅗ")).toBeNull();
+    expect(joinJung("ㅛ", "ㅏ")).toBeNull();
   });
   it("짝이 없거나 순서가 바뀌면 null", () => {
     expect(joinJong("ㄱ", "ㄹ")).toBeNull();
