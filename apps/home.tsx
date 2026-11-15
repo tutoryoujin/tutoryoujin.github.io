@@ -14,6 +14,7 @@ import {
   type Tone,
 } from "@yj/apps";
 import { readRecent, type Recent } from "@yj/recent";
+import { NOTES_NAV } from "@yj/notes";
 import {
   useEffect,
   useMemo,
@@ -141,7 +142,7 @@ function Nav() {
     <SiteHeader wide>
       {/* 폰에서는 숨긴다 — 첫 화면의 「앱 N개 모두 보기」가 같은 곳으로 간다 */}
       <SiteNavLink href="#apps" en="Apps" ko="모든 앱" className="hidden sm:inline-flex" />
-      <SiteNavLink href="/notes/" en="Notes" ko="메모" />
+      <SiteNavLink href="/notes/" en={NOTES_NAV.en} ko={NOTES_NAV.ko} />
     </SiteHeader>
   );
 }

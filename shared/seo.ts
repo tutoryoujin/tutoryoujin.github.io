@@ -16,7 +16,7 @@
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
 import { docHtml } from "./doc";
-import { NOTES, NOTES_TITLE, notesForApp, type Note } from "./notes";
+import { NOTES, NOTES_TITLE, notesForApp, paginate, type Note } from "./notes";
 import { pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -198,11 +198,12 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
               author,
               mainEntity: {
                 "@type": "ItemList",
-                itemListElement: NOTES.map((n, i) => ({ "@type": "ListItem", position: i + 1, url: pageMeta(`notes/${n.slug}`, c, apps).url, name: n.title.ko })),
+                itemListElement: NOTES.map((n, i) => ({ "@type": "ListItem", position: i + 1, url: pageMeta(`notes/${n.slug}`, c, apps).url, name: n.title.en })),
               },
             }
           : { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: ["en", "ko"], isPartOf: site, author };
-    const trail: [string, string][] = p.kind === "note" ? [[NOTES_TITLE.ko, list], [p.ko, m.url]] : [[p.ko, m.url]];
+    const name = (x: { ko: string; en: string }) => (p.lead === "en" ? x.en : x.ko);
+    const trail: [string, string][] = p.kind === "note" ? [[name(NOTES_TITLE), list], [name(p), m.url]] : [[name(p), m.url]];
     return { "@context": "https://schema.org", "@graph": [main, breadcrumb(c, trail)] };
   }
   const a = apps.find((x) => x.slug === slug)!;
@@ -284,16 +285,19 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
     `<h2 class="${h2}">이 앱에서 배우는 것 · What you’ll learn</h2>` +
     `<ul>${a.learn.map((l) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`).join("")}</ul>` +
-    (notesForApp(a.slug).length ? `<h2 class="${h2}">관련 글 · Notes</h2><ul>${notesForApp(a.slug).map(noteLink).join("")}</ul>` : "") +
+    (notesForApp(a.slug).length ? `<h2 class="${h2}">관련 글 · Related posts</h2><ul>${notesForApp(a.slug).map((n) => noteLink(n, "ko")).join("")}</ul>` : "") +
     `<h2 class="${h2}">다른 앱 · More apps</h2><ul>${others.map(appLink).join("")}` +
     `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul>` +
     `</main>`
   );
 }
 
-/** 글 링크 한 줄 — 글 목록 · 앱 아래 관련 글 */
-const noteLink = (n: Note) =>
-  `<li class="${li}"><a class="${link}" href="/notes/${n.slug}/">${esc(n.title.ko)} · ${esc(n.title.en)}</a> — ${esc(n.summary.ko)} <span class="text-muted">${esc(n.summary.en)}</span></li>`;
+/** 글 링크 한 줄 — 블로그 목록(영어 먼저) · 앱 아래 관련 글(한국어 먼저) */
+const noteLink = (n: Note, lead: "ko" | "en") => {
+  const [t1, t2] = lead === "en" ? [n.title.en, n.title.ko] : [n.title.ko, n.title.en];
+  const [s1, s2] = lead === "en" ? [n.summary.en, n.summary.ko] : [n.summary.ko, n.summary.en];
+  return `<li class="${li}"><a class="${link}" href="/notes/${n.slug}/">${esc(t1)} · ${esc(t2)}</a> — ${esc(s1)} <span class="text-muted">${esc(s2)}</span></li>`;
+};
 
 /** 앱이 아닌 페이지 — 화면과 같은 글 (shared/doc.ts) */
 function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
@@ -301,21 +305,21 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
   const home = `<p class="mt-8"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></p>`;
   const title = `<h1 class="${h1}">${esc(big)}<span class="${sub}">${esc(small)}</span></h1>`;
   if (p.kind === "notes")
-    return `<main data-prerender class="${wrap}">${title}<p class="mt-2">${esc(p.description)}</p><ul class="mt-4">${NOTES.map(noteLink).join("")}</ul>${home}</main>`;
+    return `<main data-prerender class="${wrap}">${title}<p class="mt-2">${esc(p.description)}</p><ul class="mt-4">${paginate(NOTES, 1).items.map((n) => noteLink(n, "en")).join("")}</ul>${home}</main>`; // 화면 첫 쪽과 같게
   if (p.kind === "note") {
     const n = p.note!;
     const practice = n.apps
       .map((s) => apps.find((a) => a.slug === s))
       .filter((a): a is AppInfo => !!a)
-      .map((a) => `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.ko)} · ${esc(a.en)}</a> — ${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></li>`)
+      .map((a) => `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.en)} · ${esc(a.ko)}</a> — ${esc(a.about.en)} <span class="text-muted">${esc(a.about.ko)}</span></li>`)
       .join("");
     return (
       `<main data-prerender class="${wrap}">` +
-      `<p><a class="${link}" href="/notes/">${esc(NOTES_TITLE.ko)} · ${esc(NOTES_TITLE.en)}</a></p>` +
+      `<p><a class="${link}" href="/notes/">${esc(NOTES_TITLE.en)} · ${esc(NOTES_TITLE.ko)}</a></p>` +
       title +
       `<p class="mt-2 text-muted">${esc(n.added)} · Youjin</p>` +
-      docHtml(n.blocks, "ko") +
-      (practice ? `<h2 class="${h2}">앱에서 연습하기 · Practice in the app</h2><ul>${practice}</ul>` : "") +
+      docHtml(n.blocks, "en") +
+      (practice ? `<h2 class="${h2}">Practice in the app · 앱에서 연습하기</h2><ul>${practice}</ul>` : "") +
       home +
       `</main>`
     );
@@ -347,7 +351,7 @@ export function llmsTxt(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
     for (const l of a.learn) lines.push(`  - ${l.en}`);
   }
   if (NOTES.length) {
-    lines.push(``, `## Notes`, ``);
+    lines.push(``, `## ${NOTES_TITLE.en}`, ``);
     for (const n of NOTES) lines.push(`- [${n.searchTitle}](${pageMeta(`notes/${n.slug}`, c, apps).url}): ${n.summary.en}`);
   }
   lines.push(``, `## Optional`, ``, `- [Sitemap](${c.url}/sitemap.xml)`, ``);

@@ -1,9 +1,10 @@
 import { useEffect, type ReactNode } from "react";
+import { NOTES_NAV } from "../notes";
 import { cn } from "./cn";
 import { Footer, Mark, ThemeToggle, WithYoujin } from "./Page";
 
 /* ============================================================
-   앱이 아닌 페이지의 겉 — 첫 화면(/) · 개인정보 처리방침 · 글(/notes/).
+   앱이 아닌 페이지의 겉 — 첫 화면(/) · 개인정보 처리방침 · 블로그(/notes/).
    앱은 <Page> 를 쓴다 (헤더에 앱 이름 · 형제 앱 메뉴).
 
    헤더 = 이응 + 「Korean with Youjin」(첫 화면으로) + 오른쪽 링크 + 테마.
@@ -60,7 +61,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
         {nav ?? (
           <>
             <SiteNavLink href="/#apps" en="Apps" ko="모든 앱" className="hidden sm:inline-flex" />
-            <SiteNavLink href="/notes/" en="Notes" ko="메모" />
+            <SiteNavLink href="/notes/" en={NOTES_NAV.en} ko={NOTES_NAV.ko} />
           </>
         )}
       </SiteHeader>
@@ -84,13 +85,15 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
   );
 }
 
-/** 페이지 제목 (h1). lead 쪽이 크고 다른 말이 아래 작게 */
-export function SiteTitle({ big, small, children }: { big: string; small: string; children?: ReactNode }) {
+/** 페이지 제목 (h1). lead 쪽이 크고 다른 말이 아래 작게. lead 를 주면 두 줄에 lang 을 붙인다 */
+export function SiteTitle({ big, small, lead, children }: { big: string; small: string; lead?: "ko" | "en"; children?: ReactNode }) {
   return (
     <header className="break-keep">
-      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal text-balance">
+      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal text-balance" lang={lead}>
         {big}
-        <span className="mt-1.5 block font-app text-[1.05rem] font-bold text-muted">{small}</span>
+        <span className="mt-1.5 block font-app text-[1.05rem] font-bold text-muted" lang={lead && (lead === "ko" ? "en" : "ko")}>
+          {small}
+        </span>
       </h1>
       {children}
     </header>
