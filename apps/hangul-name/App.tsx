@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Box, Btn, canSpeak, hasKoreanVoice, Ieung, Note, onVoicesChanged, Page, speak, type Mood } from "@yj/ui";
+import { Box, Btn, canSpeak, hasKoreanVoice, Ieung, Note, onVoicesChanged, Page, speak, track, type Mood } from "@yj/ui";
 import { clean, convert, loadNames, MAX_LENGTH, type Names, type Option } from "./convert";
 import { introduce, STAMP } from "./model";
 import { Receipt, stepPlan, type Issued } from "./Receipt";
-import { cleanHangul, FIX_MAX, fixKey, fixLink, readLink, withFix } from "./fixes";
-import { renderPng, saveReceipt } from "./save";
+import { cleanHangul, FIX_MAX, fixKey, readLink, receiptLink, shareText, withFix } from "./fixes";
+import { renderPng, saveReceipt, shareReceipt } from "./save";
 import "./hangul-name.css";
 
 /* 기기에만 남긴다. kcards:* · yj:* 와 섞이지 않게 hn: 아래 */
@@ -78,23 +78,34 @@ export function App() {
     }
   };
 
-  // 고친 영수증 링크(?name=Anne&ko=안)로 왔으면 그 영수증을, 아니면 지난번 영수증을 (움직임 없이) 보여 준다
+  // 영수증 링크(?name=Anne&ko=안)로 왔으면 그 영수증을, 아니면 지난번 영수증을 (움직임 없이) 보여 준다
   useEffect(() => {
     const link = readLink(location.search);
     if (link) {
-      saveFix(link.input, link.text);
       write(LAST_KEY, link.input);
       setInput(link.input);
-      history.replaceState(null, "", location.pathname + location.hash); // 다시 열면 기기에 남은 것으로
     }
     const last = link?.input ?? read(LAST_KEY);
     const c = last ? clean(last) : null;
     if (!c?.ok) return;
     void ensure().then((d) => {
-      const opts = d && withFix(convert(c.words, d), readFixes()[fixKey(c.display)]);
-      if (!opts?.length) return;
+      if (!d) return; // 링크는 주소에 남겨 둔다 — 다시 열면 된다
+      let opts = withFix(convert(c.words, d), readFixes()[fixKey(c.display)]);
+      let pick = opts[0];
+      if (link) {
+        // 원래 후보 중 하나면 그걸 고르고, 없을 때만 고친 표기로 남긴다 (공유 링크는 늘 ko 를 붙인다)
+        const found = opts.find((o) => o.text === link.text);
+        if (found) pick = found;
+        else {
+          saveFix(link.input, link.text);
+          opts = withFix(convert(c.words, d), link.text);
+          pick = opts[0];
+        }
+        history.replaceState(null, "", location.pathname + location.hash); // 다시 열면 기기에 남은 것으로
+      }
+      if (!pick) return;
       setOptions(opts);
-      setIssued({ input: c.display, option: opts[0], serial: Number(read(SERIAL_KEY)) || 1, at: new Date() });
+      setIssued({ input: c.display, option: pick, serial: Number(read(SERIAL_KEY)) || 1, at: new Date() });
     });
   }, []);
 
@@ -313,14 +324,15 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
     onEdit(c.text);
   };
 
-  const copyLink = async () => {
-    const url = fixLink(location.origin + location.pathname, issued.input, text);
-    try {
-      await navigator.clipboard.writeText(url);
-      setNote({ en: "Link copied. Whoever opens it gets this receipt.", ko: "링크를 복사했어요. 열면 이 영수증이 나와요." });
-    } catch {
-      setNote({ en: `Copy this link: ${url}`, ko: "링크를 길게 눌러 복사해 주세요." });
-    }
+  const share = async () => {
+    setNote(null);
+    const url = receiptLink(location.origin + location.pathname, issued.input, text);
+    const ready = png.current?.key === issued ? png.current.blob : undefined;
+    const r = await shareReceipt(issued, url, shareText(text), ready);
+    if (r.how === "cancelled") return;
+    track("name-share", { how: r.how }); // 이름은 보내지 않는다
+    if (r.how === "copied") setNote({ en: "Link copied. Whoever opens it gets this receipt.", ko: "링크를 복사했어요. 열면 이 영수증이 나와요." });
+    else if (r.how === "manual") setNote({ en: `Copy this link: ${url}`, ko: "링크를 길게 눌러 복사해 주세요." });
   };
 
   const save = async () => {
@@ -380,7 +392,7 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
           <Btn className="mt-0" variant="ghost" ko={copied ? "복사했어요" : "📋 복사"} en={copied ? "Copied!" : "Copy name"} onClick={() => void copy()} />
           <Btn className="mt-0" variant="ghost" ko="💾 저장" en={saving ? "Making the image…" : "Save image"} onClick={() => void save()} disabled={saving} aria-busy={saving} />
           <Btn className="mt-0" variant="ghost" ko="✏️ 고치기" en="Edit spelling" onClick={openEdit} />
-          {issued.option.status === "edited" && <Btn className="mt-0" variant="ghost" ko="🔗 링크 복사" en="Copy link" onClick={() => void copyLink()} />}
+          <Btn className="mt-0" variant="ghost" ko="📤 공유" en="Share" onClick={() => void share()} />
         </div>
         {editing && (
           <form className="mt-3 rounded-md border-2 border-line bg-bg p-3" onSubmit={applyEdit}>

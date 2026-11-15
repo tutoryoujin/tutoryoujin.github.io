@@ -276,6 +276,8 @@ export async function renderPng(it: Issued): Promise<Blob> {
   return new Promise((ok, fail) => canvas.toBlob((b) => (b ? ok(b) : fail(new Error("toBlob"))), "image/png"));
 }
 
+const fileName = (it: Issued) => `hangul-name-${it.input.replace(/[^A-Za-z0-9-]+/g, "-").toLowerCase() || "receipt"}.png`;
+
 export type SaveResult = { how: "shared" | "downloaded" | "cancelled" } | { how: "preview"; url: string };
 
 const isMobile = () => isIOS() || /Android/i.test(navigator.userAgent);
@@ -286,7 +288,7 @@ const isMobile = () => isIOS() || /Android/i.test(navigator.userAgent);
  */
 export async function saveReceipt(it: Issued, ready?: Blob): Promise<SaveResult> {
   const blob = ready ?? (await renderPng(it));
-  const name = `hangul-name-${it.input.replace(/[^A-Za-z0-9-]+/g, "-").toLowerCase() || "receipt"}.png`;
+  const name = fileName(it);
   const file = new File([blob], name, { type: "image/png" });
   if (isMobile() && navigator.canShare?.({ files: [file] })) {
     try {
@@ -307,4 +309,34 @@ export async function saveReceipt(it: Issued, ready?: Blob): Promise<SaveResult>
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
   return { how: "downloaded" };
+}
+
+export type ShareResult = { how: "sheet-image" | "sheet-link" | "copied" | "manual" | "cancelled" };
+
+/**
+ * 공유하기 (#90). 공유 시트 → 링크 복사 → (복사도 막히면) 화면에 링크.
+ * 모바일은 영수증 그림을 같이 보낸다 — 링크 미리보기(og)는 앱 공통 그림이라, 내 영수증은 그림으로 보여 준다.
+ * 공유 시트는 누른 직후에만 열려서 그림은 미리 만든 것(ready)만 쓴다. 없으면 링크만.
+ * SNS 스크립트 · 버튼 위젯은 쓰지 않는다 — 브라우저 공유 시트가 카카오톡 · 인스타그램 · X 를 고르게 한다.
+ */
+export async function shareReceipt(it: Issued, url: string, text: string, ready?: Blob): Promise<ShareResult> {
+  if (navigator.share) {
+    const file = ready && new File([ready], fileName(it), { type: "image/png" });
+    // 그림과 함께면 url 칸을 버리는 앱이 있어서 링크를 글 안에 넣는다
+    const image = file && isMobile() ? { files: [file], text: `${text}\n${url}` } : null;
+    const data = image && navigator.canShare?.(image) ? image : { title: it.option.text, text, url };
+    try {
+      await navigator.share(data);
+      return { how: data === image ? "sheet-image" : "sheet-link" };
+    } catch (e) {
+      if ((e as Error).name === "AbortError") return { how: "cancelled" };
+      // 공유가 막히면 복사로
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    return { how: "copied" };
+  } catch {
+    return { how: "manual" };
+  }
 }
