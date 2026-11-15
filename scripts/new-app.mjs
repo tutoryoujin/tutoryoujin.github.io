@@ -94,7 +94,14 @@ const entry = `  {
     learn: [{ ko: "TODO 앱에 실제로 있는 것", en: "TODO" }],
   },
 ];`;
-writeFileSync(appsPath, apps.replace(/\n\];/, "\n" + entry));
+// APPS 배열 끝에 넣는다 — 파일의 첫 `];` 는 CATEGORIES 일 수 있다 (#52)
+const start = apps.indexOf("export const APPS");
+const end = start < 0 ? -1 : apps.indexOf("\n];", start);
+if (end < 0) {
+  console.error("shared/apps.ts 에서 `export const APPS … ];` 를 못 찾았어요. 앱 줄을 손으로 넣어 주세요.");
+  process.exit(1);
+}
+writeFileSync(appsPath, apps.slice(0, end) + "\n" + entry + apps.slice(end + "\n];".length));
 
 console.log(`만들었어요: apps/${slug}/`);
 console.log(`- shared/apps.ts 의 TODO(category, tone, about, tagline, description, searchTitle, learn)를 채우세요`);
