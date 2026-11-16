@@ -94,7 +94,7 @@ function Home() {
             {USED.map((c) => (
               <div key={c.id}>
                 <h3 className="text-[0.85rem] font-bold text-muted">
-                  {c.en} <span className="font-semibold">{c.ko}</span>
+                  {c.en} <span className="font-semibold" lang="ko">{c.ko}</span>
                 </h3>
                 <ul className="mt-1">
                   {APPS.filter((a) => a.category === c.id).map((a) => (
@@ -161,7 +161,7 @@ function HeroNew() {
         </h1>
         <p className="mt-6 text-[1.3rem] leading-[1.45] font-bold">
           Small apps for learning Korean, a little every day.
-          <span className="mt-1 block text-[1rem] font-semibold text-muted">
+          <span className="mt-1 block text-[1rem] font-semibold text-muted" lang="ko">
             한국어를 배우는 작은 앱, 매일 조금씩.
           </span>
         </p>
@@ -194,7 +194,7 @@ function HeroBack({ app, r }: { app: AppInfo; r: Recent }) {
       <div className="break-keep">
         <h1 className="font-display text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.05] font-normal">
           Welcome back!
-          <span className="mt-2 block font-app text-[1.1rem] font-bold text-muted">
+          <span className="mt-2 block font-app text-[1.1rem] font-bold text-muted" lang="ko">
             다시 오셨네요! 하던 데서 이어서 해요.
           </span>
         </h1>
@@ -214,13 +214,13 @@ function HeroBack({ app, r }: { app: AppInfo; r: Recent }) {
           </span>
           <span className="block min-w-0">
             <span className="block text-[0.85rem] font-bold text-muted">
-              Continue <span className="font-semibold">이어서 하기</span>
+              Continue <span className="font-semibold" lang="ko">이어서 하기</span>
             </span>
             <b className="mt-0.5 block font-display text-[1.6rem] leading-[1.15] font-normal">
               {app.en}
             </b>
             <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
-              {app.ko} · {r.step ? `${r.step.en} ${r.step.ko}` : app.about.en}
+              <span lang="ko">{app.ko}</span> · {r.step ? `${r.step.en} ${r.step.ko}` : app.about.en}
             </span>
             {hasProgress && (
               <span className="mt-3 flex items-center gap-3">
@@ -290,6 +290,7 @@ function BigLink({
           "text-[0.8rem] font-bold",
           primary ? "opacity-85" : "text-muted",
         )}
+        lang="ko"
       >
         {ko}
       </span>
@@ -420,7 +421,7 @@ function IeungStage() {
       aria-labelledby="ieung-title"
     >
       <h2 id="ieung-title" className="sr-only">
-        <span className="block">이응이를 소개해요</span>
+        <span className="block" lang="ko">이응이를 소개해요</span>
         <span>Meet Ieung{"‑"}i</span>
       </h2>
       {/* 말풍선 — 무대 위에서는 흰 면. 높이를 잡아 둬서 이응이가 들썩이지 않는다. z-2: 튀는 글자가 글을 가리지 않게 */}
@@ -485,7 +486,7 @@ function FirstSteps() {
     <section className={cn(wrap, section)} aria-labelledby="first-title">
       <h2 id="first-title" className={h2}>
         New here? Try them in this order
-        <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
+        <span className="mt-2 block font-app text-[1rem] font-bold text-muted" lang="ko">
           처음이라면 이 순서로
         </span>
       </h2>
@@ -512,7 +513,7 @@ function FirstSteps() {
                   {a.en}
                 </b>
                 <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
-                  {a.ko} · {a.about.en}
+                  <span lang="ko">{a.ko}</span> · {a.about.en}
                 </span>
               </span>
             </a>
@@ -533,7 +534,7 @@ function NewApps() {
     >
       <h2 id="new-title" className={h2}>
         New apps
-        <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
+        <span className="mt-2 block font-app text-[1rem] font-bold text-muted" lang="ko">
           새로 나온 앱
         </span>
       </h2>
@@ -584,12 +585,12 @@ function FeatureTile({
         >
           {a.en}
         </b>
-        <small className="mt-1 block text-[1rem] font-bold opacity-80">
+        <small className="mt-1 block text-[1rem] font-bold opacity-80" lang="ko">
           {a.ko}
         </small>
         <span className="mt-4 block text-[1.05rem] font-bold">
           {a.about.en}
-          <em className="mt-0.5 block text-[0.85rem] font-semibold not-italic opacity-80">
+          <em className="mt-0.5 block text-[0.85rem] font-semibold not-italic opacity-80" lang="ko">
             {a.about.ko}
           </em>
         </span>
@@ -677,7 +678,7 @@ function AllApps() {
         <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[960px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] min-[960px]:items-end">
           <h2 id="apps-title" className={h2}>
             All apps, {APPS.length} so far
-            <span className="mt-2 block font-app text-[1rem] font-bold text-muted">
+            <span className="mt-2 block font-app text-[1rem] font-bold text-muted" lang="ko">
               모든 앱
             </span>
           </h2>
@@ -729,6 +730,7 @@ function AllApps() {
                   "text-[0.8rem] font-semibold",
                   cat === c.id ? "opacity-80" : "text-muted",
                 )}
+                lang="ko"
               >
                 {c.ko}
               </span>
@@ -750,7 +752,7 @@ function AllApps() {
             role="status"
           >
             No apps match. Try another word.
-            <span className="mt-1 block text-[0.9rem] font-semibold text-muted">
+            <span className="mt-1 block text-[0.9rem] font-semibold text-muted" lang="ko">
               찾는 앱이 없어요.
             </span>
           </p>
@@ -784,12 +786,12 @@ function AppCard({ a }: { a: AppInfo }) {
         <b className="block font-display text-[1.4rem] leading-[1.2] font-normal">
           {a.en}
         </b>
-        <small className="block text-[0.95rem] font-bold text-muted">
+        <small className="block text-[0.95rem] font-bold text-muted" lang="ko">
           {a.ko}
         </small>
         <span className="mt-3 block text-[0.95rem] font-semibold">
           {a.about.en}
-          <em className="mt-0.5 block text-[0.8rem] font-semibold not-italic text-muted">
+          <em className="mt-0.5 block text-[0.8rem] font-semibold not-italic text-muted" lang="ko">
             {a.about.ko}
           </em>
         </span>
@@ -812,6 +814,7 @@ function Maker() {
           <h2
             id="maker-title"
             className="font-display text-[clamp(2.4rem,5vw,4.25rem)] leading-[1.12] font-normal"
+            lang="ko"
           >
             빈자리에 하나씩, 매일 조금씩.
           </h2>
@@ -820,7 +823,7 @@ function Maker() {
           </p>
           <p className="mt-10 text-[1.05rem] font-bold">
             Made by Youjin, a Korean teacher in Seoul
-            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
+            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted" lang="ko">
               만든 사람: 유진, 서울의 한국어 선생님
             </span>
           </p>
@@ -831,7 +834,7 @@ function Maker() {
               <span className="text-primary">You</span>jin
             </span>
             ? It’s Korean with Youjin — and Korean with you.
-            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">
+            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted" lang="ko">
               Youjin 안에 You 가 있어요. 유진이랑, 그리고 여러분이랑 같이 배워요.
             </span>
           </p>

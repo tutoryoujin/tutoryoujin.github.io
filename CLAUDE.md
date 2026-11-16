@@ -158,6 +158,9 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   `learn` 에는 앱에 실제로 있는 것만. 구조화 데이터에 평점·리뷰처럼 없는 데이터를 넣지 마세요.
 - 빌드 때 각 페이지 `#root` 안에 정적 본문(h1 · 배우는 것 · 앱 링크)이 들어갑니다. 자바스크립트를 안 돌리는 AI 크롤러용이고 React 가 뜨면 덮습니다 사람에게는 첫 그림부터 숨깁니다(`data-prerender`, #69) — 자바스크립트가 꺼져 있을 때만 보여요.
   그래서 index.html 의 `<div id="root"></div>` 를 바꾸지 마세요 (없으면 빌드가 멈춥니다). 크롤러에만 보이는 말을 넣지 마세요.
+- 언어 신호 (#95): `<html lang>` 은 index.html 값이 아니라 `seo.ts` 의 `pageLang` 이 빌드 때 정한다 — 앱 밖 페이지(홈 · 블로그 · 처방침 · 404)는 `en`, 앱은 `ko`(#92 에서 다시 본다).
+  `en` 페이지의 한국어 줄에는 `lang="ko"` 를 붙인다. `og:locale` 은 모든 페이지 `en_US`.
+- 404 는 `apps/404/` → 빌드가 `dist/404.html` 로 옮긴다. 글은 `pages.ts` 의 `NOT_FOUND`. 색인 안 함 · sitemap 에 없음.
 - 검색엔진 소유 확인 코드는 `site.ts` 의 `verify` (Google Search Console · 네이버 서치어드바이저).
 - 분석 · 구독 · 상품은 `shared/site.ts` 값만 바꿉니다. 꺼졌을 때 아무것도 안 나오는지는 `shared/site.test.ts` 가 봅니다.
 - 수업 · 튜터링 · 예약 · 외부 결제 안내는 넣지 않습니다. 기능을 `?ref` 나 localStorage 로 숨기지 않습니다.

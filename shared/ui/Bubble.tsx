@@ -28,10 +28,13 @@ export function Bubble({
         TAIL[tail],
         className,
       )}
+      lang="ko"
       {...rest}
     >
       {ko}
-      <em className="mt-0.5 block font-app text-[0.8rem] font-bold not-italic text-sky-ink opacity-80">{en}</em>
+      <em className="mt-0.5 block font-app text-[0.8rem] font-bold not-italic text-sky-ink opacity-80" lang="en">
+        {en}
+      </em>
     </p>
   );
 }
