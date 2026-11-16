@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
 import { notesForApp, NOTES_TITLE } from "../notes";
 import { markApp } from "../recent";
@@ -25,8 +25,6 @@ type Props = {
   legal?: ReactNode;
   /** 워드마크를 <h1> 로 쌀지. 화면에 다른 <h1> 이 없을 때만 */
   h1?: boolean;
-  /** 본문 폭(px). 기본 640. CSS 의 :root { --shell-width } 로 정해도 된다 */
-  width?: number;
   /** 이 앱 안의 메뉴 항목 (예: 이미지 출처). 형제 앱 목록 뒤에 붙는다 */
   links?: NavLink[];
   /** <main> 의 클래스. 앱이 레이아웃을 통째로 직접 잡을 때만 바꾼다 */
@@ -61,14 +59,10 @@ export const WithYoujin = ({ className }: { className?: string }) => (
   </em>
 );
 
-export function Page({ app, children, legal, h1 = true, width, links = [], mainClass: main = mainClass }: Props) {
+export function Page({ app, children, legal, h1 = true, links = [], mainClass: main = mainClass }: Props) {
   const me = appBySlug(app);
   // 첫 화면 「이어서 하기」용 — 이 기기에서 마지막으로 연 앱 (shared/recent.ts)
   useEffect(() => markApp(app), [app]);
-  // 첫 그림 전에 건다. useEffect 면 한 프레임 640px 로 보였다가 줄어든다
-  useLayoutEffect(() => {
-    if (width) document.documentElement.style.setProperty("--shell-width", width + "px");
-  }, [width]);
 
   return (
     <>

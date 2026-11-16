@@ -22,8 +22,8 @@ const LEGAL = (
 );
 
 /* <Page> 가 그리는 main — body 의 flex 안에서 남는 높이를 채운다.
-   좁은 화면은 폭 전부, 600px 부터 640px 가운데 */
-const main = "flex w-full flex-[1_0_auto] flex-col px-4 pt-5 pb-3.5 sm:mx-auto sm:max-w-160 sm:gap-4 sm:px-5 sm:py-6";
+   폭 · 좌우 여백은 다른 앱과 같은 --shell-width · px-4 — 헤더 · 꼬리말과 같은 선 (#96) */
+const main = "mx-auto flex w-full max-w-(--shell-width) flex-[1_0_auto] flex-col px-4 pt-5 pb-3.5 sm:gap-4 sm:py-6";
 
 function useRoute() {
   const read = () => location.hash.replace(/^#/, "") || "/";

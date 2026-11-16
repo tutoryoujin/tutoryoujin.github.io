@@ -50,7 +50,7 @@
   }
 }
 
-/* 본문 폭 — <Page width> 나 앱 CSS 의 :root 에서 바꾼다 */
+/* 본문 폭 — 앱 · 블로그 · 처방침 · 404 모두 이 값 하나 (#96). 앱에서 바꾸지 않는다. 홈만 apps/home.css 에서 넓게 */
 :root {
   --shell-width: 640px;
 }

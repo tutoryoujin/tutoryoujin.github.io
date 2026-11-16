@@ -2,8 +2,6 @@
    한국어 이름 — 색 별칭 · 키프레임만. 모양은 App.tsx · Receipt.tsx 의 className 에 있다.
    ============================================================ */
 :root {
-  --shell-width: 480px;
-
   /* 뜻 이름은 기존 토큰의 별칭이다. 여기에 hex 를 다시 적지 말 것.
      다크 값은 원본이 tokens.css 의 세 블록에서 바뀌므로 따라온다.
      영수증 전용 토큰(receipt-paper · receipt-ink · receipt-red)은 아직 만들지 않았다 —
