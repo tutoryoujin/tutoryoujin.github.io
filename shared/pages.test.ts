@@ -6,7 +6,7 @@ import { APPS } from "./apps";
 import { docHtml, docText } from "./doc";
 import { NOT_FOUND, PAGES } from "./pages";
 import { privacyBlocks } from "./privacy";
-import { headTags, jsonLd, llmsTxt, pageLang, pageMeta, prerenderHtml, sitemapXml } from "./seo";
+import { headTags, jsonLd, llmsTxt, noteOg, pageLang, pageMeta, prerenderHtml, sitemapXml } from "./seo";
 import { SITE, type SiteConfig } from "./site";
 
 const OFF: SiteConfig = { ...SITE, analytics: { provider: "goatcounter", id: "" }, subscribe: { provider: "kit", formId: "" } };
@@ -107,6 +107,16 @@ describe("영어로 검색하는 학습자 (#95)", () => {
     for (const a of APPS) expect(xml, a.slug).toContain(`<loc>${pageMeta(a.slug).url}</loc></url>`);
     expect(xml).toContain(`<loc>https://tutoryoujin.github.io/</loc></url>`);
     for (const m of xml.matchAll(/<lastmod>([^<]*)<\/lastmod>/g)) expect(m[1]).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+  it("모든 앱 · 블로그 글에 공유 그림이 있고, public/ 에 파일도 있다", () => {
+    const pub = (u: string) => fileURLToPath(new URL("../public" + new URL(u).pathname, import.meta.url));
+    for (const slug of [...APPS.map((a) => a.slug), ...PAGES.map((p) => p.slug)]) {
+      const img = pageMeta(slug).image;
+      expect(img, `${slug} — 그림이 없으면 tools/og/build_og.py`).toBeTruthy();
+      expect(existsSync(pub(img!.url)), `${img!.url} — .venv/bin/python tools/og/build_og.py`).toBe(true);
+      expect(img!.alt).toBeTruthy();
+    }
+    for (const p of PAGES.filter((x) => x.note)) expect(pageMeta(p.slug).image!.url).toContain(noteOg(p.note!.slug));
   });
   it("404: 색인하지 않고 대표 주소 없음, sitemap 에 없음, 앱 · 블로그 · 홈 링크", () => {
     const tags = headTags(NOT_FOUND.slug);

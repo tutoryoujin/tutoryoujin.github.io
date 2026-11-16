@@ -69,6 +69,9 @@ export function screenTitle(slug: string, sub?: string, apps: AppInfo[] = APPS):
   return sub ? `${sub} · ${brand(findApp(slug, apps))}` : pageMeta(slug, SITE, apps).title;
 }
 
+/** 블로그 글 공유 그림 — 글을 쓰면 tools/og/build_og.py 를 돌린다 (없으면 테스트가 알려 준다) */
+export const noteOg = (slug: string) => `/og/notes/${slug}.png`;
+
 /** slug 가 "" 이면 첫 화면 */
 export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APPS): PageMeta {
   if (!slug)
@@ -86,7 +89,8 @@ export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
       url: `${c.url}/${p.slug}/`,
       title: `${p.searchTitle} | ${c.name}`,
       description: p.description,
-      image: { url: c.url + HOME.og.image, alt: HOME.og.alt },
+      // 글은 글마다 그림 (tools/og/build_og.py), 목록 · 처방침은 홈 그림
+      image: p.note ? { url: c.url + noteOg(p.note.slug), alt: `${NOTES_TITLE.en}: ${p.note.title.en} (${p.note.title.ko})` } : { url: c.url + HOME.og.image, alt: HOME.og.alt },
     };
   const a = findApp(slug, apps);
   return {

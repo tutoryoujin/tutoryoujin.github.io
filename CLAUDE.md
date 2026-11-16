@@ -64,6 +64,8 @@ scripts/             build-tokens.mjs · new-app.mjs · check-classes.mjs
 tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
 tools/home/          홈 공유 그림 build_og.py — 토큰 · 이응 · apps.ts 를 그대로 읽어 브라우저로 찍는다
                      앱 썸네일 build_shots.py — public/home/<slug>.webp (새 앱을 더하면 한 번 돌린다)
+tools/og/            앱 · 블로그 글 공유 그림 build_og.py — public/og/<slug>.png · public/og/notes/<slug>.png (#95)
+                     앱 썸네일 + apps.ts 이름 · 설명, 글은 제목 + 이응이. 새 글 · 새 앱(og: /og/<slug>.png)이면 한 번 돌린다
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
 

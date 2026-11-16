@@ -72,6 +72,7 @@ export const APPS: AppInfo[] = [
       { ko: "획 하나 더: ㄱ→ㅋ, ㅏ→ㅑ", en: "Add one stroke: ㄱ→ㅋ (a puff of air), ㅏ→ㅑ (a y sound)" },
       { ko: "받침과 겹받침 읽기", en: "Reading final consonants (batchim), including double ones" },
     ],
+    og: { image: "/og/hangul-blocks.png", alt: "한국어 블록 앱 화면 — ㄱ과 ㅏ 블록을 붙여 「가」를 만든다" },
   },
   // 그다음 자기 이름 — 처음 쓰는 한글 단어
   {
@@ -134,6 +135,7 @@ export const APPS: AppInfo[] = [
       { ko: "양력 고정 공휴일", en: "Korea's fixed-date public holidays" },
       { ko: "퀴즈로 날짜 읽기 연습", en: "A date-reading quiz" },
     ],
+    og: { image: "/og/calendar-practice.png", alt: "한국어 달력 앱 화면 — 2026년 11월 달력과 「이천이십육 년 십일월」 읽기" },
   },
   {
     slug: "korean-clock",
@@ -154,6 +156,7 @@ export const APPS: AppInfo[] = [
       { ko: "시곗바늘을 돌리면 소리로 읽어 줘요", en: "Turn the hands and hear the time read aloud" },
       { ko: "퀴즈로 시각 읽기 연습", en: "A time-reading quiz" },
     ],
+    og: { image: "/og/korean-clock.png", alt: "한국어 시계 앱 화면 — 시침 · 분침이 있는 시계와 오전 · 오후" },
   },
 ];
 
