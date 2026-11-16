@@ -6,7 +6,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite";
 import { analyticsScript } from "./shared/analytics";
 import { NOTES } from "./shared/notes";
-import { headTags, jsonLdText, llmsTxt, PRERENDER_HIDE, PRERENDER_SHOW, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
+import { NOT_FOUND } from "./shared/pages";
+import { headTags, jsonLdText, llmsTxt, pageLang, PRERENDER_HIDE, PRERENDER_SHOW, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
 import { THEME_BOOT } from "./shared/ui/theme";
 
 // 앱 하나 = apps/<slug>/index.html 하나. 폴더만 만들면 빌드에 들어간다.
@@ -48,6 +49,8 @@ const headHtml = (slug: string) =>
       return t.tag === "title" ? `<title>${escText(t.children ?? "")}</title>` : `<${t.tag}${attrs} />`;
     })
     .join("\n    ") + `\n    <script type="application/ld+json">${jsonLdText(slug)}</script>`;
+/** <html lang> 은 index.html 에 적은 값 대신 페이지 종류로 정한다 (shared/seo.ts pageLang, #95) */
+const HTML_LANG_RE = /<html lang="[^"]*">/;
 const HEAD = (inner: string) => `<!--yj:head-->\n    ${inner}\n    <!--/yj:head-->`;
 const ROOT = (inner: string) => `<!--yj:root-->${inner}<!--/yj:root-->`;
 const HEAD_RE = /<!--yj:head-->[\s\S]*?<!--\/yj:head-->/;
@@ -80,12 +83,30 @@ const notesPages: Plugin = {
   },
 };
 
+/* 404 — GitHub Pages 는 없는 주소에 dist/404.html 을 보여 준다. apps/404/ 로 빌드한 것을 그 이름으로 옮긴다 (#95).
+   그림 · 스크립트 주소는 / 로 시작하니 어느 깊이의 주소에서 열려도 그대로 풀린다 */
+const notFoundPage: Plugin = {
+  name: "yj-404",
+  enforce: "post",
+  generateBundle(_, bundle) {
+    const key = `${NOT_FOUND.slug}/index.html`;
+    const page = bundle[key];
+    if (!page || page.type !== "asset") throw new Error(`${key} 이 빌드에 없어요`);
+    const src = String(page.source);
+    if (/(?:src|href)="\.\.?\//.test(src)) throw new Error("404 페이지에 상대 주소가 있어요 — 깊은 주소에서 깨진다");
+    delete bundle[key];
+    this.emitFile({ type: "asset", fileName: "404.html", source: src });
+  },
+};
+
 const siteHead: Plugin = {
   name: "yj-site-head",
   transformIndexHtml(html, ctx) {
     const slug = slugOf(ctx.filename);
     const root = '<div id="root"></div>';
     if (!html.includes(root)) throw new Error(`${ctx.filename}: <div id="root"></div> 가 없어요`);
+    if (!HTML_LANG_RE.test(html)) throw new Error(`${ctx.filename}: <html lang="…"> 이 없어요`);
+    html = html.replace(HTML_LANG_RE, `<html lang="${pageLang(slug)}">`);
     const a = analyticsScript();
     const analytics: HtmlTagDescriptor[] = a ? [{ tag: "script", attrs: { src: a.src, ...a.attrs }, injectTo: "head" }] : [];
     // 글 목록은 메타 · 정적 본문을 표시 안에 글자로 — 글마다 복사할 때 바꾼다 (notesPages)
@@ -97,7 +118,9 @@ const siteHead: Plugin = {
         tags: analytics,
       };
     const tags: HtmlTagDescriptor[] = headTags(slug).map((t) => ({ ...t, injectTo: "head" }));
-    tags.push({ tag: "script", attrs: { type: "application/ld+json" }, children: jsonLdText(slug), injectTo: "head" }, ...analytics);
+    // 404 는 구조화 데이터를 넣지 않는다 — 어느 주소에서나 나오는 페이지라 무엇이라 적을 것이 없다
+    if (slug !== NOT_FOUND.slug) tags.push({ tag: "script", attrs: { type: "application/ld+json" }, children: jsonLdText(slug), injectTo: "head" });
+    tags.push(...analytics);
     // 정적 본문 — 자바스크립트를 안 돌리는 크롤러용. React 가 뜨면 그대로 덮는다
     return { html: html.replace(root, `<div id="root">${prerenderHtml(slug)}</div>`), tags };
   },
@@ -112,7 +135,7 @@ const siteHead: Plugin = {
 export default defineConfig({
   root: apps,
   publicDir: resolve(here, "public"),
-  plugins: [themeBoot, siteHead, notesPages, react(), tailwindcss()],
+  plugins: [themeBoot, siteHead, notesPages, notFoundPage, react(), tailwindcss()],
   resolve: { alias: { "@yj": resolve(here, "shared") } },
   build: { outDir: resolve(here, "dist"), emptyOutDir: true, rollupOptions: { input: pages } },
 });

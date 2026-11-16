@@ -75,3 +75,19 @@ export const PAGES: SitePage[] = [
 ];
 
 export const pageBySlug = (slug: string) => PAGES.find((p) => p.slug === slug);
+
+/**
+ * 404 — 지난 주소 · 오타로 온 사람에게 GitHub 기본 404 대신 (#95).
+ * apps/404/ 로 빌드하고 vite.config.ts 가 dist/404.html 로 옮긴다 (GitHub Pages 가 찾는 이름).
+ * 페이지 목록(PAGES)에는 넣지 않는다 — sitemap · 구조화 데이터에 들어가면 안 된다
+ */
+export const NOT_FOUND = {
+  slug: "404",
+  en: "Page not found",
+  ko: "페이지를 찾을 수 없어요",
+  lead: {
+    en: "The address may be old or mistyped. Try one of these.",
+    ko: "주소가 바뀌었거나 잘못 적혔을 수 있어요. 여기서 골라 보세요.",
+  },
+  description: "This page doesn’t exist. Find free apps for learning Korean and the Korean Learning Blog. 페이지를 찾을 수 없어요.",
+};

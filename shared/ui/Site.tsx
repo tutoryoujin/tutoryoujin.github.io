@@ -23,7 +23,9 @@ export function SiteNavLink({ href, en, ko, className, current }: { href: string
       {...(current ? { "aria-current": "page" as const } : {})}
     >
       {en}
-      <span className="ml-1.5 text-[0.8rem] font-semibold text-muted">{ko}</span>
+      <span className="ml-1.5 text-[0.8rem] font-semibold text-muted" lang="ko">
+        {ko}
+      </span>
     </a>
   );
 }
@@ -76,7 +78,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
             <span>
               Small apps for learning Korean, a little every day.
               <br />
-              한국어를 배우는 작은 앱, 매일 조금씩.
+              <span lang="ko">한국어를 배우는 작은 앱, 매일 조금씩.</span>
             </span>
           </div>
         </div>

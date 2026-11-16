@@ -6,9 +6,12 @@ const page = pageBySlug("privacy")!;
 
 mount(
   <SitePage>
-    <SiteTitle big={page.en} small={page.ko}>
+    <SiteTitle big={page.en} small={page.ko} lead={page.lead}>
       <p className="mt-3 text-[0.9rem] font-bold text-muted">
-        Updated {page.updated} <span className="font-semibold">· 고친 날</span>
+        Updated {page.updated}{" "}
+        <span className="font-semibold" lang="ko">
+          · 고친 날
+        </span>
       </p>
     </SiteTitle>
     <Doc blocks={page.blocks()} lead={page.lead} />

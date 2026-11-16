@@ -144,7 +144,10 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Reac
           <span>© {new Date().getFullYear()} Made by Youjin. All rights reserved.</span>
           {/* 모든 페이지에서 처방침으로 (#79). 누르는 자리 44px */}
           <a className="inline-flex min-h-11 items-center text-muted underline underline-offset-2 hover:text-ink" href="/privacy/">
-            개인정보 처리방침 · Privacy
+            {/* 한 덩어리로 — inline-flex 의 자식끼리는 사이 띄어쓰기가 사라진다 */}
+            <span>
+              <span lang="ko">개인정보 처리방침</span> · <span lang="en">Privacy</span>
+            </span>
           </a>
         </p>
       </div>
