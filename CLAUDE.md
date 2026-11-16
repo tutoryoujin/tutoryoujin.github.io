@@ -124,6 +124,7 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
   홈 헤더 · 히어로 제목 · 꼬리말 워드마크는 「Korean with Youjin」. 홈에서도 이응이 말풍선 · 표어는 한국어가 큽니다. 앱 안은 예외 없이 한국어 먼저.
 - 꼬리말은 `<하는 일>, 매일 조금씩.` — "매일 조금씩" 은 바꾸지 않습니다.
 - 누를 수 있는 것은 최소 44px.
+- **본문 폭은 하나** — `--shell-width` 640px (`shared/ui/styles.css`). 앱 CSS 에서 바꾸지 않는다 (#96). 넓으면 어색한 부품(달력 칸 등)은 그 부품 안에서 잡는다. 홈만 `apps/home.css` 에서 넓게.
 
 ## 앱별 메모
 

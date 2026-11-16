@@ -102,14 +102,17 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
   const first = new Date(y, m - 1, 1).getDay();
   const days = new Date(y, m, 0).getDate();
   const cells = [];
-  for (let i = 0; i < first; i++) cells.push(<div key={"e" + i} className="aspect-square" />);
+  // 칸 모양: 폰은 정사각, 넓은 화면(본문 640px, #96)은 4:3 — 정사각이면 달력이 너무 길어진다
+  const cellShape = "aspect-square sm:aspect-[4/3]";
+  for (let i = 0; i < first; i++) cells.push(<div key={"e" + i} className={cellShape} />);
   for (let d = 1; d <= days; d++) {
     const date = new Date(y, m - 1, d);
     const wd = date.getDay();
     const hol = !!holiday(y, m, d);
     const isSel = +date === +selected;
     const cls = cn(
-      "relative flex aspect-square min-h-10 flex-col items-center justify-center rounded-sm text-[1rem] font-extrabold",
+      cellShape,
+      "relative flex min-h-10 flex-col items-center justify-center rounded-sm text-[1rem] font-extrabold",
       (wd === 0 || hol) && "text-sun",
       wd === 6 && "text-sat",
       +date === +today &&
