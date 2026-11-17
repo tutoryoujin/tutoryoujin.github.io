@@ -1,0 +1,34 @@
+/* 한국어 이응 — 뜻 이름 색 별칭 · 키프레임만. 나머지는 JSX 의 유틸리티 */
+:root {
+  /* 뜻 이름은 악센트 8쌍의 별칭이다. 여기에 hex 를 다시 적지 말 것.
+     다크 값은 원본 쌍이 tokens.css 의 세 블록에서 바뀌므로 따라온다. */
+  --ie-silent-bg: var(--gray-bg); /* 첫자리 ㅇ — 소리 없음 */
+  --ie-silent-ink: var(--gray-ink);
+  --ie-ng-bg: var(--mint-bg); /* 받침 ㅇ — [ng] (한국어 블록의 받침 색과 같다) */
+  --ie-ng-ink: var(--mint-ink);
+  --ie-g-bg: var(--coral-bg); /* 받침 ㄱ — 딱 끊김 */
+  --ie-g-ink: var(--coral-ink);
+  --ie-vowel-bg: var(--pink-bg); /* 모음 (한국어 블록과 같다) */
+  --ie-vowel-ink: var(--pink-ink);
+}
+
+/* 코로 계속 흐르는 소리 — 물결이 옆으로 흐른다. 움직임 줄이기면 멈춘 물결 */
+@keyframes ie-flow {
+  from {
+    transform: translateX(-24px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* 코가 울린다 — 살짝 커졌다 돌아온다 */
+@keyframes ie-hum {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
