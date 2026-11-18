@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, shuffle, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
+import { useEffect, useId, useState } from "react";
+import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, shuffle, TabPanel, Tabs, speak, useHashTab, type Question } from "@yj/ui";
+import { tabsOf } from "@yj/apps";
 import { MONTH_EN, holiday, RELATIVE, SPECIAL_NOTE, WEEK, readDay, readMonth, readYear, wrongChoices } from "./reading";
 import "./calendar.css";
 
-const TABS: TabDef<"cal" | "year" | "quiz">[] = [
-  { key: "cal", ko: "달력", en: "Calendar" },
-  { key: "year", ko: "연간", en: "Year" },
-  { key: "quiz", ko: "퀴즈", en: "Quiz" },
-];
+/* 탭 이름은 shared/apps.ts — 정적 본문 h2 와 같은 원본 (#101) */
+const TABS = tabsOf("calendar-practice", ["cal", "year", "quiz"] as const);
+const [CAL, YEAR, QUIZ] = TABS;
 
 /* 달 머리(‹ 제목 ›) — 달력 탭과 연간 탭이 같이 쓴다 */
 const monthHead = "mb-3 flex items-center justify-between gap-2";
 const navBtn = "grid size-11 flex-none place-items-center rounded-full border border-line bg-bg text-[1.3rem]";
 const monthTitle = "flex-1 text-center";
-const titleDigits = "font-display text-[1.5rem] leading-[1.1]";
-const titleReading = "mt-0.5 text-[0.95rem] font-bold text-muted";
-const section = "flex flex-col gap-3.5";
+const titleDigits = "block font-display text-[1.5rem] leading-[1.1]";
+const titleReading = "mt-0.5 block text-[0.95rem] font-bold text-muted";
 const week7 = "grid grid-cols-7 gap-1";
 const sparkle = "animate-[sparkle_1.6s_ease-in-out_infinite] motion-reduce:animate-none";
 const tag = "rounded-full border border-line bg-bg px-3 py-1 text-[0.85rem] font-bold";
@@ -69,8 +67,11 @@ export function App() {
       }
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
-      {tab === "cal" && <CalendarTab today={today} view={view} setView={setView} />}
-      {tab === "year" && (
+      {/* 탭 셋을 모두 그린다 — 안 열린 탭은 hidden (#101) */}
+      <TabPanel tab={CAL} value={tab}>
+        <CalendarTab today={today} view={view} setView={setView} />
+      </TabPanel>
+      <TabPanel tab={YEAR} value={tab}>
         <YearTab
           today={today}
           open={(y, m) => {
@@ -79,8 +80,10 @@ export function App() {
             window.scrollTo({ top: 0 });
           }}
         />
-      )}
-      {tab === "quiz" && <Quiz make={makeQuestion} length={QUIZ_LEN} label={{ ko: "어떻게 읽어요?", en: "How do you read this?" }} />}
+      </TabPanel>
+      <TabPanel tab={QUIZ} value={tab}>
+        <Quiz make={makeQuestion} length={QUIZ_LEN} label={{ ko: "어떻게 읽어요?", en: "How do you read this?" }} />
+      </TabPanel>
     </Page>
   );
 }
@@ -90,6 +93,7 @@ type View = { y: number; m: number };
 
 function CalendarTab({ today, view, setView }: { today: Date; view: View; setView: (v: View) => void }) {
   const [selected, setSelected] = useState(today);
+  const titleId = useId();
   const { y, m } = view;
   const shift = (delta: number) => {
     let nm = m + delta,
@@ -128,20 +132,21 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
   }
 
   return (
-    <section className={section}>
-      <Box>
+    <>
+      <Box labelledBy={titleId}>
         <div className={monthHead}>
           <button className={navBtn} type="button" aria-label="이전 달 / Previous month" onClick={() => shift(-1)}>
             ‹
           </button>
-          <div className={monthTitle}>
-            <div className={titleDigits}>
+          {/* 상자 제목 — 탭 h2 아래라 h3 */}
+          <h3 id={titleId} className={monthTitle}>
+            <span className={titleDigits}>
               {y}년 {m}월
-            </div>
-            <div className={titleReading}>
+            </span>
+            <span className={titleReading}>
               {readYear(y)} {readMonth(m)}
-            </div>
-          </div>
+            </span>
+          </h3>
           <button className={navBtn} type="button" aria-label="다음 달 / Next month" onClick={() => shift(1)}>
             ›
           </button>
@@ -168,7 +173,7 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
         </button>
       </Box>
       <DayPanel today={today} date={selected} />
-    </section>
+    </>
   );
 }
 
@@ -230,18 +235,19 @@ function YearTab({ today, open }: { today: Date; open: (y: number, m: number) =>
   const [picked, setPicked] = useState(today.getMonth() + 1);
   const special = SPECIAL_NOTE[picked];
   const isThisYear = year === today.getFullYear();
+  const titleId = useId();
 
   return (
-    <section className={section}>
-      <Box>
+    <>
+      <Box labelledBy={titleId}>
         <div className={monthHead}>
           <button className={navBtn} type="button" aria-label="이전 해 / Previous year" onClick={() => setYear(year - 1)}>
             ‹
           </button>
-          <div className={monthTitle}>
-            <div className={titleDigits}>{year}년</div>
-            <div className={titleReading}>{readYear(year)}</div>
-          </div>
+          <h3 id={titleId} className={monthTitle}>
+            <span className={titleDigits}>{year}년</span>
+            <span className={titleReading}>{readYear(year)}</span>
+          </h3>
           <button className={navBtn} type="button" aria-label="다음 해 / Next year" onClick={() => setYear(year + 1)}>
             ›
           </button>
@@ -316,7 +322,7 @@ function YearTab({ today, open }: { today: Date; open: (y: number, m: number) =>
           );
         })}
       </div>
-    </section>
+    </>
   );
 }
 

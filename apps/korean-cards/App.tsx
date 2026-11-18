@@ -77,7 +77,6 @@ export function App() {
   return (
     <Page
       app="korean-cards"
-      h1={false} // 화면마다 자기 <h1> 이 따로 있다
       legal={LEGAL}
       mainClass={cn(main, credits ? "gap-3" : "gap-5")}
       links={[{ href: "#/credits", ko: "이미지 출처", en: "Image credits", active: credits }]}

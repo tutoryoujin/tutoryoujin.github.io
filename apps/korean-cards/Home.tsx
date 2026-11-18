@@ -8,11 +8,11 @@ import { Art, TONE } from "./Art";
 import { folderArtSrc, peekDeck, shelf, type ShelfItem } from "./decks";
 import { daysAway, howtoSeen, lastDeck, markHowtoSeen, progress } from "./store";
 
-/** 화면 맨 위 제목 (홈, 출처) */
+/** 화면 맨 위 제목 (홈, 출처). 헤더의 앱 이름이 h1 이라 h2 (#101) */
 export function Hero({ ko, en }: { ko: string; en: string }) {
   return (
     <section className="px-0.5 pt-1">
-      <h1 className="text-[1.55rem] leading-[1.25] font-extrabold">{ko}</h1>
+      <h2 className="text-[1.55rem] leading-[1.25] font-extrabold">{ko}</h2>
       <p className="mt-1 text-[0.92rem] font-bold text-muted">{en}</p>
     </section>
   );
