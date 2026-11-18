@@ -677,7 +677,7 @@ function AllApps() {
       <div className={wrap}>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[960px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] min-[960px]:items-end">
           <h2 id="apps-title" className={h2}>
-            All apps, {APPS.length} so far
+            All apps
             <span className="mt-2 block font-app text-[1rem] font-bold text-muted" lang="ko">
               모든 앱
             </span>
