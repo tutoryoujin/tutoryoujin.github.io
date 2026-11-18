@@ -64,6 +64,25 @@ export const koreanZodiacTti: Note = {
         { ko: "우리 동갑이에요.", en: "We’re the same age." },
       ],
     },
+    { t: "h", ko: "띠로 운세와 궁합도 봐요", en: "Fortunes and matches" },
+    {
+      t: "p",
+      ko: "띠로 운세를 보기도 해요. 새해가 되면 신문과 인터넷에 띠마다 올해 운세가 나와요. 두 사람의 띠로 궁합을 보기도 해요. 궁합은 두 사람이 서로 잘 맞는지 보는 거예요.",
+      en: "Some people also read their fortune by their animal. Every new year, newspapers and websites print a fortune for each animal. People even check 궁합 (gunghap): whether two people’s animals make a good match.",
+    },
+    {
+      t: "p",
+      ko: "물론 미신이에요! 다들 재미로 봐요. 너무 믿지는 마세요.",
+      en: "Of course, it’s just superstition! Most people read it for fun, so don’t take it too seriously.",
+    },
+    {
+      t: "ex",
+      items: [
+        { ko: "올해 운세 봤어요?", en: "Did you check your fortune for this year?" },
+        { ko: "우리 궁합이 잘 맞아요.", en: "We’re a good match." },
+        { ko: "그냥 재미로 봐요.", en: "It’s just for fun." },
+      ],
+    },
     { t: "h", ko: "1월이나 2월에 태어났다면", en: "Born in January or February?" },
     {
       t: "p",
