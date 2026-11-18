@@ -325,21 +325,23 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
   const notes = notesForApp(a.slug);
   return (
     `<main data-prerender class="${wrap}">` +
-    `<h1 class="${h1}">${esc(a.ko)} with Youjin<span class="${sub}">${esc(a.en)} — ${esc(a.searchTitle)}</span></h1>` +
+    // 헤더와 같게 영어 이름이 크고, 한국어 이름 + with Youjin 이 아래 (#100)
+    `<h1 class="${h1}"><span lang="en">${esc(a.en)}</span><span class="${sub}"><span lang="ko">${esc(a.ko)}</span> with Youjin — ${esc(a.searchTitle)}</span></h1>` +
     `<p class="mt-2">${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></p>` +
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
     (loose.length ? `<ul class="mt-2">${loose.map(learnLi).join("")}</ul>` : "") +
     tabs
       .map((t) => `<section><h2 class="${h2}">${esc(t.ko)} · ${esc(t.en)}</h2><ul>${a.learn.filter((l) => l.tab === t.key).map(learnLi).join("")}</ul></section>`)
       .join("") +
-    (notes.length ? `<h2 class="${h2}">${esc(RELATED_NOTES.ko)} · ${esc(RELATED_NOTES.en)}</h2><ul>${notes.map((n) => noteLink(n, "ko")).join("")}</ul>` : "") +
+    // 화면과 같게 영어 먼저 (#100)
+    (notes.length ? `<h2 class="${h2}">${esc(RELATED_NOTES.en)} · ${ko(RELATED_NOTES.ko)}</h2><ul>${notes.map((n) => noteLink(n, "en")).join("")}</ul>` : "") +
     `<nav class="mt-6" aria-label="다른 앱 / More apps"><ul>${others.map(appLink).join("")}` +
     `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul></nav>` +
     `</main>`
   );
 }
 
-/** 글 링크 한 줄 — 블로그 목록(영어 먼저) · 앱 아래 관련 글(한국어 먼저) */
+/** 글 링크 한 줄 — 블로그 목록 · 앱 아래 관련 글 모두 영어 먼저 (#100). lead "ko" 는 지금 안 쓴다 */
 const noteLink = (n: Note, lead: "ko" | "en") => {
   if (lead === "ko")
     return `<li class="${li}"><a class="${link}" href="/notes/${n.slug}/">${esc(n.title.ko)} · ${esc(n.title.en)}</a> — ${esc(n.summary.ko)} <span class="text-muted">${esc(n.summary.en)}</span></li>`;

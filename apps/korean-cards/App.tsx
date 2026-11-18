@@ -14,12 +14,15 @@ import { Study } from "./Study";
 import type { Deck } from "./types";
 import "./cards.css";
 
-const LEGAL = (
-  <>
-    Illustrations by Microsoft Fluent Emoji (MIT) and Youjin. Photos by Openverse contributors, used under CC BY / CC BY-SA. Images remain
-    the property of their respective owners.
-  </>
-);
+// 출처 문구는 영어만 — 주인이 정함 (#92 6번, #100)
+const LEGAL = {
+  en: (
+    <>
+      Illustrations by Microsoft Fluent Emoji (MIT) and Youjin. Photos by Openverse contributors, used under CC BY / CC BY-SA. Images remain
+      the property of their respective owners.
+    </>
+  ),
+};
 
 /* <Page> 가 그리는 main — body 의 flex 안에서 남는 높이를 채운다.
    폭 · 좌우 여백은 다른 앱과 같은 --shell-width · px-4 — 헤더 · 꼬리말과 같은 선 (#96) */

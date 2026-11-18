@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { APPS, appBySlug } from "../apps";
+import { APPS, appBySlug, CATEGORIES } from "../apps";
 import { notesForApp, NOTES_TITLE, RELATED_NOTES } from "../notes";
 import { markApp } from "../recent";
 import { cn } from "./cn";
@@ -21,8 +21,8 @@ const inner = "mx-auto w-full max-w-(--shell-width) px-4";
 type Props = {
   app: string;
   children: ReactNode;
-  /** 저작권·면책 문구. 한국어 줄, 영어 줄 */
-  legal?: ReactNode;
+  /** 저작권·면책 문구. 꼬리말은 영어가 크고 한국어가 아래 (#100) — 순서는 여기서 정한다 */
+  legal?: Legal;
   /** 워드마크를 <h1> 로 쌀지. 화면에 다른 <h1> 이 없을 때만 */
   h1?: boolean;
   /** 이 앱 안의 메뉴 항목 (예: 이미지 출처). 형제 앱 목록 뒤에 붙는다 */
@@ -31,6 +31,8 @@ type Props = {
   mainClass?: string;
 };
 export type NavLink = { href: string; ko: string; en: string; active?: boolean };
+/** 꼬리말 고지. ko 가 없으면 영어만 (출처 같은 법적 문구, #92) */
+export type Legal = { en: ReactNode; ko?: ReactNode };
 
 /* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
    preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
@@ -72,14 +74,19 @@ export function Page({ app, children, legal, h1 = true, links = [], mainClass: m
       <Footer legal={legal}>
         <div className="flex items-start gap-2.5">
           <Mark className="size-8" />
+          {/* 헤더 · 꼬리말은 영어 먼저 (#100) — 앱 이름 · 꼬리말 한 줄 모두 */}
           <div>
             <b className="block text-[0.95rem] font-extrabold text-ink">
-              {me.ko} <WithYoujin className={withYoujin} />
+              <span lang="en">{me.en}</span> <WithYoujin className={withYoujin} />
+              <span className="block text-[0.78rem] font-bold text-muted" lang="ko">
+                {me.ko}
+              </span>
             </b>
-            <span>
+            <span lang="en">{me.tagline.en}</span>
+            <br />
+            {/* 한글은 대체 글꼴이라 같은 크기면 영어보다 진해 보인다 — 작은 쪽답게 줄인다 */}
+            <span className="text-[0.9em]" lang="ko">
               {me.tagline.ko}
-              <br />
-              {me.tagline.en}
             </span>
           </div>
         </div>
@@ -95,9 +102,12 @@ function RelatedNotes({ app }: { app: string }) {
   if (!notes.length) return null;
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
+      {/* 영어 먼저 (#100) — 꼬리말 바로 위이고, 영어 먼저인 글 페이지로 가는 문이다 */}
       <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
-        {RELATED_NOTES.ko}
-        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">{RELATED_NOTES.en}</span>
+        <span lang="en">{RELATED_NOTES.en}</span>
+        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted" lang="ko">
+          {RELATED_NOTES.ko}
+        </span>
       </h2>
       <ul className="mt-2.5 flex flex-col gap-2.5">
         {notes.map((n) => (
@@ -107,8 +117,12 @@ function RelatedNotes({ app }: { app: string }) {
               className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
             >
               <span className="min-w-0 flex-1">
-                <span className="block font-display text-[1.1rem] leading-[1.25]">{n.title.ko}</span>
-                <span className="block text-[0.85rem] font-bold text-muted">{n.title.en}</span>
+                <span className="block font-display text-[1.1rem] leading-[1.25]" lang="en">
+                  {n.title.en}
+                </span>
+                <span className="block text-[0.85rem] font-bold text-muted" lang="ko">
+                  {n.title.ko}
+                </span>
               </span>
               <span aria-hidden="true" className="font-bold text-muted">
                 →
@@ -122,12 +136,21 @@ function RelatedNotes({ app }: { app: string }) {
 }
 
 /** 꼬리말. children 은 위쪽 브랜드 칸 (첫 화면은 비운다) */
-export function Footer({ children, legal }: { children?: ReactNode; legal?: ReactNode }) {
+export function Footer({ children, legal }: { children?: ReactNode; legal?: Legal }) {
   return (
     <footer className="mt-9 border-t border-line bg-surface pt-7 pb-[calc(--spacing(7)+env(safe-area-inset-bottom,0px))] text-[0.8rem] leading-[1.55] text-muted">
       <div className={cn(inner, "flex flex-col gap-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-start")}>
         {children}
-        {legal && <p className="text-[0.74rem] sm:col-span-full">{legal}</p>}
+        {legal && (
+          <p className="text-[0.74rem] sm:col-span-full">
+            <span lang="en">{legal.en}</span>
+            {legal.ko && (
+              <span className="mt-0.5 block text-[0.9em]" lang="ko">
+                {legal.ko}
+              </span>
+            )}
+          </p>
+        )}
         {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}
         <p
           className={cn(
@@ -140,7 +163,7 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Reac
           <a className="inline-flex min-h-11 items-center text-muted underline underline-offset-2 hover:text-ink" href="/privacy/">
             {/* 한 덩어리로 — inline-flex 의 자식끼리는 사이 띄어쓰기가 사라진다 */}
             <span>
-              <span lang="ko">개인정보 처리방침</span> · <span lang="en">Privacy</span>
+              <span lang="en">Privacy</span> · <span lang="ko">개인정보 처리방침</span>
             </span>
           </a>
         </p>
@@ -176,12 +199,14 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
     };
   }, [open]);
 
+  /* 메뉴 항목(앱 하나) — 영어 왼쪽, 한국어 오른쪽 작게 (#100). 분류 제목보다 작다 */
   const navLink = (active?: boolean) =>
     cn(
-      "flex min-h-11 items-baseline justify-between gap-3 rounded-sm px-3 py-2.5 text-[0.95rem] font-bold whitespace-nowrap text-ink no-underline hover:bg-bg",
+      "flex min-h-11 items-baseline justify-between gap-3 rounded-sm px-3 py-2.5 text-[0.88rem] font-bold whitespace-nowrap text-ink no-underline hover:bg-bg",
       active && "bg-bg text-primary",
     );
   const navSmall = "text-[0.7rem] font-semibold text-muted";
+  const current = (active?: boolean) => (active ? { "aria-current": "page" as const } : {});
   const bar = "block h-0.5 w-4.5 rounded-[2px] bg-ink transition-[transform,background] duration-200";
 
   return (
@@ -190,17 +215,20 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
         <div className="flex min-w-0 items-center gap-2.5 text-ink">
           {/* 이응 = 모든 앱 첫 화면, 이름 = 이 앱 첫 화면. 앱 사이를 오가는 길이 메뉴 안에만 있으면 못 찾는다 */}
           {/* 이응 마크는 36px 라 누를 자리를 44px 로 넓힌다 (바깥으로만 — 줄 높이는 그대로) */}
-          <a className="group -m-1 flex min-w-0 shrink-0 items-center rounded-full p-1" href="/" aria-label="모든 앱 / All apps">
+          <a className="group -m-1 flex min-w-0 shrink-0 items-center rounded-full p-1" href="/" aria-label="All apps / 모든 앱">
             <Mark className="group-hover:scale-108" />
           </a>
           <a
             className="flex min-w-0 items-center rounded-sm text-inherit no-underline"
             href={`/${slug}/`}
-            aria-label={`${me.ko} with Youjin 처음으로 / ${me.en} start`}
+            aria-label={`${me.en} with Youjin — start / ${me.ko} 처음으로`}
           >
+            {/* 영어 먼저 (#100). 「with Youjin」은 아래 줄에 — 위 줄에 붙이면 긴 영어 이름이 폰 폭을 넘는다 */}
             <Tag className="text-[1.05rem] leading-[1.1] font-extrabold whitespace-nowrap">
-              {me.ko} <WithYoujin className={withYoujin} />
-              <small className="block text-[0.7rem] font-semibold text-muted">{me.en}</small>
+              <span lang="en">{me.en}</span>
+              <small className="block text-[0.7rem] font-semibold text-muted">
+                <span lang="ko">{me.ko}</span> <WithYoujin />
+              </small>
             </Tag>
           </a>
         </div>
@@ -210,7 +238,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
             ref={btn}
             className={cn(iconBtn, "group")}
             type="button"
-            aria-label={open ? "메뉴 닫기 / Close menu" : "메뉴 열기 / Open menu"}
+            aria-label={open ? "Close menu / 메뉴 닫기" : "Open menu / 메뉴 열기"}
             aria-expanded={open}
             aria-controls="siteNav"
             onClick={() => setOpen((o) => !o)}
@@ -222,35 +250,83 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
               <span className={cn(bar, "absolute top-1.5 left-0 group-aria-expanded:-translate-y-1.5 group-aria-expanded:-rotate-45")} />
             </span>
           </button>
+          {/* 메뉴 (#100) — 앱은 분류(apps.ts CATEGORIES)로 묶고, 목록만 메뉴 안에서 스크롤한다.
+              「All apps」 · 블로그 · 앱 안 링크는 맨 아래에 고정 — 앱이 많아져도 늘 닿는다.
+              높이는 보이는 화면(dvh)에서 헤더(60px)와 위아래 틈(8px씩)을 뺀 만큼 */}
           <nav
-            className="absolute top-[calc(100%+8px)] right-0 z-1 flex w-max max-w-[calc(100vw-32px)] min-w-53 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5 shadow-card"
+            className="absolute top-[calc(100%+8px)] right-0 z-1 flex max-h-[calc(100dvh-76px)] w-max max-w-[calc(100vw-32px)] min-w-64 flex-col overflow-hidden rounded-md border border-line bg-surface shadow-card"
             id="siteNav"
-            aria-label="메뉴 / Menu"
+            aria-label="Menu / 메뉴"
             hidden={!open}
           >
-            {/* 형제 앱을 모두 건다. 한쪽만 걸려 있으면 묶음이 아니라 외딴 페이지로 보인다 */}
-            {APPS.map((a) => {
-              const active = a.slug === slug && !inner_;
-              return (
-                <a key={a.slug} href={`/${a.slug}/`} className={navLink(active)} {...(active ? { "aria-current": "page" as const } : {})}>
-                  {a.ko}
-                  <small className={navSmall}>{a.en}</small>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-1.5 pt-1">
+              {/* 형제 앱을 모두 건다. 한쪽만 걸려 있으면 묶음이 아니라 외딴 페이지로 보인다 */}
+              {CATEGORIES.map((c) => {
+                const apps = APPS.filter((a) => a.category === c.id);
+                if (!apps.length) return null;
+                return (
+                  // 분류 제목은 헤딩이 아니라 묶음 이름 — 숨긴 메뉴가 본문 헤딩 순서(#101)에 끼지 않게
+                  <div key={c.id} role="group" aria-labelledby={`nav-${c.id}`} className="not-first:mt-1 not-first:border-t not-first:border-line not-first:pt-1">
+                    <p id={`nav-${c.id}`} className="flex items-baseline gap-1.5 px-3 pt-2.5 pb-1 leading-[1.2]">
+                      <span className="font-display text-[1.1rem] text-ink" lang="en">
+                        {c.en}
+                      </span>
+                      <span className="text-[0.72rem] font-bold text-muted" lang="ko">
+                        {c.ko}
+                      </span>
+                    </p>
+                    {apps.map((a) => {
+                      const active = a.slug === slug && !inner_;
+                      return (
+                        <a key={a.slug} href={`/${a.slug}/`} className={navLink(active)} {...current(active)}>
+                          <span lang="en">
+                            {a.en}
+                            {/* 회원 앱은 숨기지 않고 잠금으로 (apps.ts access) */}
+                            {a.access === "member" && (
+                              <span className="ml-1.5 rounded-full bg-gray-bg px-1.5 py-px text-[0.68rem] font-extrabold text-gray-ink">🔒 Members</span>
+                            )}
+                          </span>
+                          <small className={navSmall} lang="ko">
+                            {a.ko}
+                          </small>
+                        </a>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+              {/* 더 있다는 표시 — 목록 끝이 흐려진다. 끝까지 내리면 빈 틈 위에 놓인다 */}
+              <div className="h-3" />
+              <div aria-hidden="true" className="pointer-events-none sticky bottom-0 -mt-6 h-6 bg-linear-to-b from-transparent to-surface" />
+            </div>
+            <div className="flex flex-col gap-0.5 border-t border-line p-1.5">
+              {links.map((l) => (
+                <a key={l.href} href={l.href} className={navLink(l.active)} {...current(l.active)}>
+                  <span lang="en">{l.en}</span>
+                  <small className={navSmall} lang="ko">
+                    {l.ko}
+                  </small>
                 </a>
-              );
-            })}
-            {links.map((l) => (
-              <a key={l.href} href={l.href} className={navLink(l.active)} {...(l.active ? { "aria-current": "page" as const } : {})}>
-                {l.ko}
-                <small className={navSmall}>{l.en}</small>
+              ))}
+              <a href="/notes/" className={navLink()}>
+                <span lang="en">{NOTES_TITLE.en}</span>
+                <small className={navSmall} lang="ko">
+                  {NOTES_TITLE.ko}
+                </small>
               </a>
-            ))}
-            <a href="/notes/" className={navLink()}>
-              {NOTES_TITLE.ko}
-              <small className={navSmall}>{NOTES_TITLE.en}</small>
-            </a>
-            <a href="/" className={navLink()}>
-              모든 앱<small className={navSmall}>All apps</small>
-            </a>
+              {/* All apps 는 맨 밑 — 메뉴의 마지막 출구 (#100, 주인이 정함) */}
+              <a
+                href="/"
+                className="flex min-h-13 flex-col items-center justify-center rounded-sm bg-primary px-3 py-1.5 leading-[1.15] text-primary-ink no-underline"
+              >
+                <span className="font-display text-[1.1rem]" lang="en">
+                  All apps
+                </span>
+                <span className="text-[0.7rem] font-bold opacity-85" lang="ko">
+                  모든 앱
+                </span>
+              </a>
+            </div>
           </nav>
         </div>
       </div>
@@ -271,8 +347,8 @@ export function ThemeToggle() {
       type="button"
       className={iconBtn}
       aria-pressed={dark}
-      aria-label="어두운 화면 / Dark mode"
-      title={dark ? "밝게 보기 / Light mode" : "어둡게 보기 / Dark mode"}
+      aria-label="Dark mode / 어두운 화면"
+      title={dark ? "Light mode / 밝게 보기" : "Dark mode / 어둡게 보기"}
       onClick={() => setTheme(dark ? "light" : "dark")}
     >
       <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-ink stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true">

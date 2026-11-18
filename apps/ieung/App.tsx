@@ -25,13 +25,15 @@ export function App() {
   return (
     <Page
       app="ieung"
-      legal={
-        <>
-          소리는 기기의 브라우저 목소리예요. 기기마다 조금씩 다르게 들릴 수 있어요.
-          <br />
-          Audio uses your browser’s built-in voice, so it may sound a little different on each device.
-        </>
-      }
+      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      legal={{
+        en: (
+          <>
+            Audio uses your browser’s built-in voice, so it may sound a little different on each device.
+          </>
+        ),
+        ko: "소리는 기기의 브라우저 목소리예요. 기기마다 조금씩 다르게 들릴 수 있어요.",
+      }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
       {/* 탭 넷을 모두 그린다 — 안 열린 탭은 hidden (#101) */}
