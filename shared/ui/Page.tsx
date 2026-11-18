@@ -84,7 +84,10 @@ export function Page({ app, children, legal, h1 = true, links = [], mainClass: m
             </b>
             <span lang="en">{me.tagline.en}</span>
             <br />
-            <span lang="ko">{me.tagline.ko}</span>
+            {/* 한글은 대체 글꼴이라 같은 크기면 영어보다 진해 보인다 — 작은 쪽답게 줄인다 */}
+            <span className="text-[0.9em]" lang="ko">
+              {me.tagline.ko}
+            </span>
           </div>
         </div>
       </Footer>
@@ -99,9 +102,12 @@ function RelatedNotes({ app }: { app: string }) {
   if (!notes.length) return null;
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
+      {/* 영어 먼저 (#100) — 꼬리말 바로 위이고, 영어 먼저인 글 페이지로 가는 문이다 */}
       <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
-        {RELATED_NOTES.ko}
-        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">{RELATED_NOTES.en}</span>
+        <span lang="en">{RELATED_NOTES.en}</span>
+        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted" lang="ko">
+          {RELATED_NOTES.ko}
+        </span>
       </h2>
       <ul className="mt-2.5 flex flex-col gap-2.5">
         {notes.map((n) => (
@@ -111,8 +117,12 @@ function RelatedNotes({ app }: { app: string }) {
               className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
             >
               <span className="min-w-0 flex-1">
-                <span className="block font-display text-[1.1rem] leading-[1.25]">{n.title.ko}</span>
-                <span className="block text-[0.85rem] font-bold text-muted">{n.title.en}</span>
+                <span className="block font-display text-[1.1rem] leading-[1.25]" lang="en">
+                  {n.title.en}
+                </span>
+                <span className="block text-[0.85rem] font-bold text-muted" lang="ko">
+                  {n.title.ko}
+                </span>
               </span>
               <span aria-hidden="true" className="font-bold text-muted">
                 →
@@ -135,7 +145,7 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Lega
           <p className="text-[0.74rem] sm:col-span-full">
             <span lang="en">{legal.en}</span>
             {legal.ko && (
-              <span className="block" lang="ko">
+              <span className="mt-0.5 block text-[0.9em]" lang="ko">
                 {legal.ko}
               </span>
             )}
@@ -290,17 +300,6 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
               <div aria-hidden="true" className="pointer-events-none sticky bottom-0 -mt-6 h-6 bg-linear-to-b from-transparent to-surface" />
             </div>
             <div className="flex flex-col gap-0.5 border-t border-line p-1.5">
-              <a
-                href="/"
-                className="flex min-h-13 flex-col items-center justify-center rounded-sm bg-primary px-3 py-1.5 leading-[1.15] text-primary-ink no-underline"
-              >
-                <span className="font-display text-[1.1rem]" lang="en">
-                  All apps
-                </span>
-                <span className="text-[0.7rem] font-bold opacity-85" lang="ko">
-                  모든 앱
-                </span>
-              </a>
               {links.map((l) => (
                 <a key={l.href} href={l.href} className={navLink(l.active)} {...current(l.active)}>
                   <span lang="en">{l.en}</span>
@@ -314,6 +313,18 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
                 <small className={navSmall} lang="ko">
                   {NOTES_TITLE.ko}
                 </small>
+              </a>
+              {/* All apps 는 맨 밑 — 메뉴의 마지막 출구 (#100, 주인이 정함) */}
+              <a
+                href="/"
+                className="flex min-h-13 flex-col items-center justify-center rounded-sm bg-primary px-3 py-1.5 leading-[1.15] text-primary-ink no-underline"
+              >
+                <span className="font-display text-[1.1rem]" lang="en">
+                  All apps
+                </span>
+                <span className="text-[0.7rem] font-bold opacity-85" lang="ko">
+                  모든 앱
+                </span>
               </a>
             </div>
           </nav>

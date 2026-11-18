@@ -139,6 +139,9 @@ describe("헤더 메뉴 (#100)", () => {
       const a = nav.querySelector(`a[href="${href}"]`)!;
       expect(scroll.contains(a), href).toBe(false);
     }
+    // All apps 가 맨 밑 (블로그 · 앱 안 링크보다 아래)
+    const links = [...nav.querySelectorAll("a")];
+    expect(links.at(-1)!.getAttribute("href")).toBe("/");
     // 숨긴 메뉴가 본문 헤딩 순서에 끼지 않는다
     expect(nav.querySelector("h1, h2, h3, h4, h5, h6")).toBeNull();
   });

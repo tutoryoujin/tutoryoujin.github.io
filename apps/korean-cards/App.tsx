@@ -14,7 +14,7 @@ import { Study } from "./Study";
 import type { Deck } from "./types";
 import "./cards.css";
 
-// 출처 문구는 영어만 — 한국어 줄을 더할지는 #92 (6번)
+// 출처 문구는 영어만 — 주인이 정함 (#92 6번, #100)
 const LEGAL = {
   en: (
     <>
