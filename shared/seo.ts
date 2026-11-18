@@ -16,7 +16,7 @@
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
 import { docHtml } from "./doc";
-import { NOTES, NOTES_TITLE, notesForApp, paginate, type Note } from "./notes";
+import { NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, type Note } from "./notes";
 import { NOT_FOUND, pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -316,16 +316,25 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
   if (p) return pageHtml(p, c, apps);
   const a = apps.find((x) => x.slug === slug)!;
   const others = apps.filter((x) => x.slug !== slug);
+  /* h2 는 화면과 같게 (#101) — 탭 이름 h2 (shared/apps.ts tabs, 화면은 <TabPanel>) + 앱 아래 「같이 읽어 보세요」.
+     배우는 것은 그 탭 h2 아래에. 탭이 없는 줄은 첫머리 목록에.
+     화면에 h2 로 없는 묶음(배우는 것 · 다른 앱)에는 h2 를 달지 않는다 — 다른 앱은 헤더 메뉴처럼 nav 로 */
+  const learnLi = (l: AppInfo["learn"][number]) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`;
+  const tabs = a.tabs ?? [];
+  const loose = a.learn.filter((l) => !tabs.some((t) => t.key === l.tab));
+  const notes = notesForApp(a.slug);
   return (
     `<main data-prerender class="${wrap}">` +
     `<h1 class="${h1}">${esc(a.ko)} with Youjin<span class="${sub}">${esc(a.en)} — ${esc(a.searchTitle)}</span></h1>` +
     `<p class="mt-2">${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></p>` +
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
-    `<h2 class="${h2}">이 앱에서 배우는 것 · What you’ll learn</h2>` +
-    `<ul>${a.learn.map((l) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`).join("")}</ul>` +
-    (notesForApp(a.slug).length ? `<h2 class="${h2}">관련 글 · Related posts</h2><ul>${notesForApp(a.slug).map((n) => noteLink(n, "ko")).join("")}</ul>` : "") +
-    `<h2 class="${h2}">다른 앱 · More apps</h2><ul>${others.map(appLink).join("")}` +
-    `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul>` +
+    (loose.length ? `<ul class="mt-2">${loose.map(learnLi).join("")}</ul>` : "") +
+    tabs
+      .map((t) => `<section><h2 class="${h2}">${esc(t.ko)} · ${esc(t.en)}</h2><ul>${a.learn.filter((l) => l.tab === t.key).map(learnLi).join("")}</ul></section>`)
+      .join("") +
+    (notes.length ? `<h2 class="${h2}">${esc(RELATED_NOTES.ko)} · ${esc(RELATED_NOTES.en)}</h2><ul>${notes.map((n) => noteLink(n, "ko")).join("")}</ul>` : "") +
+    `<nav class="mt-6" aria-label="다른 앱 / More apps"><ul>${others.map(appLink).join("")}` +
+    `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul></nav>` +
     `</main>`
   );
 }

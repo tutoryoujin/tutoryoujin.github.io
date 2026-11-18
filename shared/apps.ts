@@ -46,7 +46,13 @@ export type AppInfo = {
    * 이 앱에서 배우는 것. 정적 본문 · 구조화 데이터 · llms.txt 에 들어간다 (shared/seo.ts).
    * 앱에 실제로 있는 것만 — 지어내지 않는다. 읽기를 적으면 앱 · 테스트와 맞는지 본다.
    */
-  learn: { ko: string; en: string }[];
+  learn: { ko: string; en: string; tab?: string }[];
+  /**
+   * 화면의 탭 — 탭 이름이 그 패널의 h2 가 된다 (#101). 앱은 tabsOf() 로 받아 쓴다.
+   * 정적 본문도 같은 h2 를 같은 순서로 그리고, learn 의 tab 이 같은 줄을 그 아래에 둔다.
+   * 그래서 learn 에 tab 을 적으면 그 탭에 실제로 있는 것이어야 한다. 탭마다 learn 이 하나는 있어야 한다.
+   */
+  tabs?: { key: string; ko: string; en: string }[];
   /** 공유 카드 그림 (1200×630). public/ 안의 경로. 없으면 작은 카드로 나간다 */
   og?: { image: string; alt: string };
 };
@@ -66,11 +72,17 @@ export const APPS: AppInfo[] = [
     tagline: { ko: "글자 만들기, 매일 조금씩.", en: "Build Hangul, one block at a time." },
     description: "Tap consonants and vowels to build Hangul syllable blocks — a free, visual way to start reading Korean. 자음과 모음을 눌러 한글 글자 블록을 만들어 봐요.",
     searchTitle: "Learn Hangul by Building Syllable Blocks",
+    tabs: [
+      { key: "build", ko: "만들기", en: "Build" },
+      { key: "air", ko: "획 하나 더", en: "One more stroke" },
+      { key: "chart", ko: "자모표", en: "All letters" },
+    ],
     learn: [
-      { ko: "자음과 모음이 모여 글자 한 칸이 되는 법", en: "How consonants and vowels stack into one syllable block" },
-      { ko: "세로 모음은 오른쪽, 가로 모음은 아래", en: "Vertical vowels go to the right, horizontal vowels go below" },
-      { ko: "획 하나 더: ㄱ→ㅋ, ㅏ→ㅑ", en: "Add one stroke: ㄱ→ㅋ (a puff of air), ㅏ→ㅑ (a y sound)" },
-      { ko: "받침과 겹받침 읽기", en: "Reading final consonants (batchim), including double ones" },
+      { ko: "자음과 모음이 모여 글자 한 칸이 되는 법", en: "How consonants and vowels stack into one syllable block", tab: "build" },
+      { ko: "세로 모음은 오른쪽, 가로 모음은 아래", en: "Vertical vowels go to the right, horizontal vowels go below", tab: "build" },
+      { ko: "받침과 겹받침 읽기", en: "Reading final consonants (batchim), including double ones", tab: "build" },
+      { ko: "획 하나 더: ㄱ→ㅋ, ㅏ→ㅑ", en: "Add one stroke: ㄱ→ㅋ (a puff of air), ㅏ→ㅑ (a y sound)", tab: "air" },
+      { ko: "자음 19개 · 모음 21개 자모표, 누르면 이름을 읽어 줘요", en: "A chart of all 19 consonants and 21 vowels — tap one to hear its name", tab: "chart" },
     ],
     og: { image: "/og/hangul-blocks.png", alt: "한국어 블록 앱 화면 — ㄱ과 ㅏ 블록을 붙여 「가」를 만든다" },
   },
@@ -88,12 +100,18 @@ export const APPS: AppInfo[] = [
     tagline: { ko: "ㅇ 소리, 매일 조금씩.", en: "Master ㅇ, one sound at a time." },
     description: "Why is ㅇ silent at the start of a syllable but “ng” at the bottom? Move it, listen, and hear ng vs. g side by side. ㅇ은 첫자리에서 소리가 없고, 받침에서는 [ng] 소리예요.",
     searchTitle: "Korean Ieung Sound (Silent or ng)",
+    tabs: [
+      { key: "switch", ko: "스위치", en: "Switch" },
+      { key: "ng", ko: "ng ≠ g", en: "Compare" },
+      { key: "link", ko: "이어 읽기", en: "Linking" },
+      { key: "quiz", ko: "퀴즈", en: "Quiz" },
+    ],
     learn: [
-      { ko: "첫자리 ㅇ은 소리가 없어요: 아 [a]", en: "ㅇ at the start of a block is silent: 아 sounds like [a]" },
-      { ko: "받침 ㅇ은 [ng] 소리: 앙 [ang]", en: "ㅇ as a final consonant (batchim) is [ng]: 앙 sounds like [ang]" },
-      { ko: "받침 ㅇ과 ㄱ 견주어 듣기: 방 / 박", en: "Hearing ng vs. k side by side: 방 / 박, 강 / 각, 공 / 곡" },
-      { ko: "ㅇ 받침은 다음 글자로 안 넘어가요: 고양이 [고양이]", en: "ㅇ never slides into the next syllable: 고양이 stays [고양이], not [고양기]" },
-      { ko: "퀴즈 두 가지: 소리가 날까? · 듣고 고르기", en: "Two quizzes: spot the silent ㅇ, and pick ng or k by ear" },
+      { ko: "첫자리 ㅇ은 소리가 없어요: 아 [a]", en: "ㅇ at the start of a block is silent: 아 sounds like [a]", tab: "switch" },
+      { ko: "받침 ㅇ은 [ng] 소리: 앙 [ang]", en: "ㅇ as a final consonant (batchim) is [ng]: 앙 sounds like [ang]", tab: "switch" },
+      { ko: "받침 ㅇ과 ㄱ 견주어 듣기: 방 / 박", en: "Hearing ng vs. k side by side: 방 / 박, 강 / 각, 공 / 곡", tab: "ng" },
+      { ko: "ㅇ 받침은 다음 글자로 안 넘어가요: 고양이 [고양이]", en: "ㅇ never slides into the next syllable: 고양이 stays [고양이], not [고양기]", tab: "link" },
+      { ko: "퀴즈 두 가지: 소리가 날까? · 듣고 고르기", en: "Two quizzes: spot the silent ㅇ, and pick ng or k by ear", tab: "quiz" },
     ],
     og: { image: "/og/ieung.png", alt: "한국어 이응 앱 화면 — 첫자리에 앉은 이응이와 ㅏ, 아래에 비어 있는 받침 자리" },
   },
@@ -152,11 +170,17 @@ export const APPS: AppInfo[] = [
     tagline: { ko: "날짜 읽기, 매일 조금씩.", en: "Read Korean dates, one day at a time." },
     description: "Learn to read dates in Korean — years, months, days and weekdays — and practice with a quiz. 날짜를 한국어로 읽고 퀴즈로 연습해요.",
     searchTitle: "How to Read Dates in Korean",
+    tabs: [
+      { key: "cal", ko: "달력", en: "Calendar" },
+      { key: "year", ko: "연간", en: "Year" },
+      { key: "quiz", ko: "퀴즈", en: "Quiz" },
+    ],
     learn: [
-      { ko: "연도 · 월 · 일 · 요일을 한국어로 읽기", en: "Reading the year, month, day and weekday in Korean" },
-      { ko: "6월은 유월, 10월은 시월", en: "Why June is 유월 and October is 시월" },
-      { ko: "양력 고정 공휴일", en: "Korea's fixed-date public holidays" },
-      { ko: "퀴즈로 날짜 읽기 연습", en: "A date-reading quiz" },
+      { ko: "연도 · 월 · 일 · 요일을 한국어로 읽기", en: "Reading the year, month, day and weekday in Korean", tab: "cal" },
+      { ko: "양력 고정 공휴일", en: "Korea's fixed-date public holidays", tab: "cal" },
+      { ko: "열두 달 이름 한눈에 보기: 일월부터 십이월까지", en: "All twelve month names at a glance, from 일월 to 십이월", tab: "year" },
+      { ko: "6월은 유월, 10월은 시월", en: "Why June is 유월 and October is 시월", tab: "year" },
+      { ko: "퀴즈로 날짜 읽기 연습", en: "A date-reading quiz", tab: "quiz" },
     ],
     og: { image: "/og/calendar-practice.png", alt: "한국어 달력 앱 화면 — 2026년 11월 달력과 「이천이십육 년 십일월」 읽기" },
   },
@@ -173,11 +197,16 @@ export const APPS: AppInfo[] = [
     tagline: { ko: "시계 읽기, 매일 조금씩.", en: "Tell time in Korean, one minute at a time." },
     description: "Turn the clock hands and hear the time in Korean. Hours use native Korean numbers, minutes use Sino-Korean. 시곗바늘을 돌리면 한국어로 읽어 줘요.",
     searchTitle: "How to Tell Time in Korean",
+    tabs: [
+      { key: "clock", ko: "시계", en: "Clock" },
+      { key: "rule", ko: "읽는 법", en: "How to read" },
+      { key: "quiz", ko: "퀴즈", en: "Quiz" },
+    ],
     learn: [
-      { ko: "시는 고유어: 한 시, 두 시, 세 시", en: "Hours use native Korean numbers: 한 시, 두 시, 세 시" },
-      { ko: "분은 한자어: 십 분, 삼십 분", en: "Minutes use Sino-Korean numbers: 십 분, 삼십 분" },
-      { ko: "시곗바늘을 돌리면 소리로 읽어 줘요", en: "Turn the hands and hear the time read aloud" },
-      { ko: "퀴즈로 시각 읽기 연습", en: "A time-reading quiz" },
+      { ko: "시곗바늘을 돌리면 소리로 읽어 줘요", en: "Turn the hands and hear the time read aloud", tab: "clock" },
+      { ko: "시는 고유어: 한 시, 두 시, 세 시", en: "Hours use native Korean numbers: 한 시, 두 시, 세 시", tab: "rule" },
+      { ko: "분은 한자어: 십 분, 삼십 분", en: "Minutes use Sino-Korean numbers: 십 분, 삼십 분", tab: "rule" },
+      { ko: "퀴즈로 시각 읽기 연습", en: "A time-reading quiz", tab: "quiz" },
     ],
     og: { image: "/og/korean-clock.png", alt: "한국어 시계 앱 화면 — 시침 · 분침이 있는 시계와 오전 · 오후" },
   },
@@ -188,6 +217,16 @@ export const appBySlug = (slug: string) => {
   if (!a) throw new Error(`shared/apps.ts 에 없는 앱이에요: ${slug}`);
   return a;
 };
+
+/**
+ * 앱의 탭 목록 (#101). keys 는 앱이 쓰는 순서 그대로 — apps.ts 와 다르면 바로 멈춘다.
+ * 탭 이름을 앱과 apps.ts 두 곳에 적지 않으려고 둔다 (정적 본문 h2 가 여기서 나온다).
+ */
+export function tabsOf<K extends string>(slug: string, keys: readonly K[]): { key: K; ko: string; en: string }[] {
+  const tabs = appBySlug(slug).tabs ?? [];
+  if (tabs.map((t) => t.key).join() !== keys.join()) throw new Error(`${slug}: 탭이 shared/apps.ts 와 달라요 (${tabs.map((t) => t.key).join()})`);
+  return tabs as { key: K; ko: string; en: string }[];
+}
 
 /** 워드마크 가운데 단어. "한국어 시계" → "시계" */
 export const wordOf = (a: AppInfo) => a.ko.replace(/^한국어\s*/, "");

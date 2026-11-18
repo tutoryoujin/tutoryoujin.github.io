@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 import { cn } from "./cn";
 import { canSpeak, speak } from "./speech";
 
@@ -19,11 +19,20 @@ const toneStyle = (t: Tone): CSSProperties => ({ background: `var(--${t}-bg)`, c
 
 /** 흰 상자. 화면의 큰 덩어리마다 하나 */
 export const boxClass = "rounded-[24px] bg-surface p-4 shadow-card";
-export const Box = ({ children, className, ...rest }: { children: ReactNode; className?: string } & Record<string, unknown>) => (
-  <div className={cn(boxClass, className)} {...rest}>
-    {children}
-  </div>
-);
+/**
+ * labelledBy 에 상자 제목(h3 …)의 id 를 주면 <section aria-labelledby> 로 그린다 (#101).
+ * 제목이 없는 상자는 div 그대로 — 이름 없는 section 은 뜻이 없다.
+ */
+export const Box = ({ children, className, labelledBy, ...rest }: { children: ReactNode; className?: string; labelledBy?: string } & Record<string, unknown>) =>
+  labelledBy ? (
+    <section className={cn(boxClass, className)} aria-labelledby={labelledBy} {...rest}>
+      {children}
+    </section>
+  ) : (
+    <div className={cn(boxClass, className)} {...rest}>
+      {children}
+    </div>
+  );
 
 /**
  * 큰 버튼. variant="ghost" 는 흰 바탕. tone 을 주면 그 쌍(-bg 바탕 · -ink 글자 · -ink 테)으로 칠한다.
@@ -132,16 +141,38 @@ export function useHashTab<K extends string>(tabs: TabDef<K>[]): [K, (k: K) => v
   return [tab, go];
 }
 
+/* 탭 · 패널 id. 주소의 #key 와 겹치지 않게 앞말을 붙인다 — 같으면 브라우저가 그 자리로 스크롤한다.
+   한 페이지에 탭 묶음은 하나뿐이다 */
+const tabId = (k: string) => `tab-${k}`;
+const panelId = (k: string) => `panel-${k}`;
+
+/**
+ * 탭 단추 줄. 패널은 <TabPanel> 로 탭마다 하나씩 — 열린 것만 그리지 말고 전부 그린다 (#101).
+ * ← → 로 옆 탭, Home · End 로 처음 · 끝. 누르면 바로 바뀐다 (자동 선택)
+ */
 export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef<K>[]; value: K; onChange: (k: K) => void }) {
+  const onKey = (e: KeyboardEvent) => {
+    const i = tabs.findIndex((t) => t.key === value);
+    const n = tabs.length;
+    const to = ({ ArrowRight: i + 1, ArrowLeft: i - 1 + n, Home: 0, End: n - 1 } as Record<string, number>)[e.key];
+    if (to === undefined) return;
+    e.preventDefault();
+    const k = tabs[to % n].key;
+    onChange(k);
+    document.getElementById(tabId(k))?.focus();
+  };
   return (
-    <div className="grid auto-cols-fr grid-flow-col rounded-full border border-line bg-surface p-1" role="tablist">
+    <div className="grid auto-cols-fr grid-flow-col rounded-full border border-line bg-surface p-1" role="tablist" onKeyDown={onKey}>
       {tabs.map((t) => (
         <button
           key={t.key}
+          id={tabId(t.key)}
           className="group flex min-h-11 flex-col items-center justify-center rounded-full px-1 py-1.5 leading-[1.1] aria-selected:bg-primary aria-selected:text-primary-ink"
           role="tab"
           type="button"
           aria-selected={t.key === value}
+          aria-controls={panelId(t.key)}
+          tabIndex={t.key === value ? 0 : -1}
           onClick={() => onChange(t.key)}
         >
           <span className="font-display text-[1rem]">{t.ko}</span>
@@ -149,5 +180,29 @@ export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef
         </button>
       ))}
     </div>
+  );
+}
+
+/**
+ * 탭 하나의 내용. 안 열린 패널도 그리고 hidden 으로만 숨긴다 (#101) —
+ * 검색엔진은 숨긴 패널도 읽는다. 열린 탭만 그리면 첫 탭 말고는 HTML 에 없다.
+ * 탭 이름이 이 패널의 h2 다. 탭 단추에 이미 보이는 글이라 화면에서는 sr-only 로 겹치지 않게 둔다.
+ * 패널 안 상자 제목은 h3, 상자 안 소제목은 h4.
+ * 상태는 탭을 옮겨도 남는다 (퀴즈를 하다 다른 탭을 봐도 이어서 한다).
+ */
+export function TabPanel<K extends string>({ tab, value, children, className }: { tab: TabDef<K>; value: K; children: ReactNode; className?: string }) {
+  return (
+    <section
+      role="tabpanel"
+      id={panelId(tab.key)}
+      aria-labelledby={tabId(tab.key)}
+      hidden={tab.key !== value}
+      className={cn("flex flex-col gap-3.5", className)}
+    >
+      <h2 className="sr-only">
+        {tab.ko} · {tab.en}
+      </h2>
+      {children}
+    </section>
   );
 }

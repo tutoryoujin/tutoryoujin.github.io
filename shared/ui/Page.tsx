@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { APPS, appBySlug } from "../apps";
-import { notesForApp, NOTES_TITLE } from "../notes";
+import { notesForApp, NOTES_TITLE, RELATED_NOTES } from "../notes";
 import { markApp } from "../recent";
 import { cn } from "./cn";
 import { SoundHint } from "./SoundHint";
@@ -96,8 +96,8 @@ function RelatedNotes({ app }: { app: string }) {
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
       <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
-        같이 읽어 보세요
-        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">Read more</span>
+        {RELATED_NOTES.ko}
+        <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted">{RELATED_NOTES.en}</span>
       </h2>
       <ul className="mt-2.5 flex flex-col gap-2.5">
         {notes.map((n) => (

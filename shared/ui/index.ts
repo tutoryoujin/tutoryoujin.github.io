@@ -10,7 +10,7 @@ export { useTheme, THEME_KEY, type ThemePref } from "./theme";
 export { Ieung, type Mood } from "./Ieung";
 export { Bubble, pokeClass } from "./Bubble";
 export { Quiz, type Question, type Choice } from "./Quiz";
-export { Box, boxClass, Btn, ListenBtn, Seg, Segments, Note, Tabs, useHashTab, type TabDef, type Accent, type Tone } from "./parts";
+export { Box, boxClass, Btn, ListenBtn, Seg, Segments, Note, Tabs, TabPanel, useHashTab, type TabDef, type Accent, type Tone } from "./parts";
 export { speak, canSpeak, hasKoreanVoice, onVoicesChanged, onSpeak, isIOS, playThroughSilentSwitch } from "./speech";
 export { SoundHint, SOUND_HINT_KEY } from "./SoundHint";
 export { mount } from "./mount";

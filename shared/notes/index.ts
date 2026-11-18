@@ -23,6 +23,8 @@ export const notesForApp = (app: string) => NOTES.filter((n) => n.apps.includes(
 
 /** 목록 페이지 이름 — 학습자가 붙여 검색하는 말 (korean learning blog, #94) */
 export const NOTES_TITLE = { ko: "한국어 공부 블로그", en: "Korean Learning Blog" };
+/** 앱 아래 관련 글 묶음의 h2 — 화면(Page) · 정적 본문(seo.ts)이 같은 말 (#101) */
+export const RELATED_NOTES = { ko: "같이 읽어 보세요", en: "Read more" };
 /** 헤더 링크처럼 짧게 쓸 때 */
 export const NOTES_NAV = { ko: "블로그", en: "Blog" };
 

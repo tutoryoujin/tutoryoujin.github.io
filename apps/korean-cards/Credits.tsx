@@ -28,9 +28,9 @@ export function Credits() {
         const items = ALL.filter((c) => c.key.startsWith(deck.id + "/"));
         if (!items.length) return null;
         const head = (
-          <h2 className="mt-3 text-[1.2rem] font-bold">
+          <h3 className="mt-3 text-[1.2rem] font-bold">
             {deck.title.ko} <small className="[font-size:smaller]">{deck.title.en}</small>
-          </h2>
+          </h3>
         );
         // 덱 전체가 한 출처(예: Fluent Emoji)면 한 줄로 요약
         const one = items.every((c) => c.author === items[0].author && c.license === items[0].license);

@@ -1,17 +1,15 @@
-import { useState } from "react";
-import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, Tabs, speak, useHashTab, type Question, type TabDef } from "@yj/ui";
+import { useId, useState } from "react";
+import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, TabPanel, Tabs, speak, useHashTab, type Question } from "@yj/ui";
+import { tabsOf } from "@yj/apps";
 import { native, nativeCounter } from "@yj/korean/numbers";
 import { ClockFace } from "./ClockFace";
 import { contracted, parts, readHour, readMin, readTime, wrapDay, wrongChoices } from "./reading";
 import "./clock.css";
 
-const TABS: TabDef<"clock" | "rule" | "quiz">[] = [
-  { key: "clock", ko: "시계", en: "Clock" },
-  { key: "rule", ko: "읽는 법", en: "How to read" },
-  { key: "quiz", ko: "퀴즈", en: "Quiz" },
-];
+/* 탭 이름은 shared/apps.ts — 정적 본문 h2 와 같은 원본 (#101) */
+const TABS = tabsOf("korean-clock", ["clock", "rule", "quiz"] as const);
+const [CLOCK, RULE, QUIZ] = TABS;
 const pad = (n: number) => String(n).padStart(2, "0");
-const section = "flex flex-col gap-3.5";
 
 export function App() {
   const [tab, setTab] = useHashTab(TABS);
@@ -27,9 +25,16 @@ export function App() {
       }
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
-      {tab === "clock" && <ClockTab />}
-      {tab === "rule" && <RuleTab />}
-      {tab === "quiz" && <Quiz make={makeQuestion} label={{ ko: "몇 시 몇 분이에요?", en: "What time is it?" }} />}
+      {/* 탭 셋을 모두 그린다 — 안 열린 탭은 hidden (#101) */}
+      <TabPanel tab={CLOCK} value={tab}>
+        <ClockTab />
+      </TabPanel>
+      <TabPanel tab={RULE} value={tab}>
+        <RuleTab />
+      </TabPanel>
+      <TabPanel tab={QUIZ} value={tab}>
+        <Quiz make={makeQuestion} label={{ ko: "몇 시 몇 분이에요?", en: "What time is it?" }} />
+      </TabPanel>
     </Page>
   );
 }
@@ -42,7 +47,7 @@ function ClockTab() {
   const step = (d: number) => setT(wrapDay(t + d));
 
   return (
-    <section className={section}>
+    <>
       <Box>
         <div className="mx-auto mb-2 grid max-w-55 grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="오전 오후 / AM PM">
           {[false, true].map((isPm) => (
@@ -122,7 +127,7 @@ function ClockTab() {
           }}
         />
       </Box>
-    </section>
+    </>
   );
 }
 
@@ -132,7 +137,7 @@ const ruleSmall = "text-[0.75rem] font-extrabold";
 const ruleB = "font-display text-[1.6rem] font-normal";
 const ruleSpan = "font-display text-[1rem]";
 const ruleEm = "text-[0.75rem] font-bold not-italic";
-// h2 크기는 브라우저 기본(1.5em) 그대로 — 영어 줄의 줄 높이가 여기서 나온다
+// 상자 제목(h3, #101). 크기는 예전 h2 의 브라우저 기본(1.5em) 그대로 — 영어 줄의 줄 높이가 여기서 나온다
 const secTitle = "mb-2.5 text-[1.5em] font-normal leading-[1.2]";
 const secKo = "block font-display text-[1.2rem]";
 const secEn = "text-[0.75rem] font-bold text-muted";
@@ -143,13 +148,14 @@ const word = "font-display text-[1.2rem]";
 const MINUTES = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 function RuleTab() {
+  const [ruleId, hourId, minId] = [useId(), useId(), useId()];
   return (
-    <section className={section}>
-      <Box>
-        <div className="mb-3 text-center leading-[1.35]">
+    <>
+      <Box labelledBy={ruleId}>
+        <h3 id={ruleId} className="mb-3 text-center leading-[1.35]">
           <span className="block font-display text-[1.4rem]">시는 고유어, 분은 한자어</span>
           <span className="text-[0.82rem] font-bold text-muted">Hours use native Korean numbers. Minutes use Sino-Korean numbers.</span>
-        </div>
+        </h3>
         <div className="grid grid-cols-2 gap-2.5">
           <div className={cn(rule, "bg-(--clk-hour-bg) text-(--clk-hour-ink)")}>
             <small className={ruleSmall}>시 · Hour</small>
@@ -166,11 +172,11 @@ function RuleTab() {
         </div>
       </Box>
 
-      <Box>
-        <h2 className={secTitle}>
+      <Box labelledBy={hourId}>
+        <h3 id={hourId} className={secTitle}>
           <span className={secKo}>시 — 몇 시예요?</span>
           <span className={secEn}>Hours · tap to listen</span>
-        </h2>
+        </h3>
         <ul className="grid grid-cols-2 gap-1.5">
           {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
             <li key={h}>
@@ -194,11 +200,11 @@ function RuleTab() {
         />
       </Box>
 
-      <Box>
-        <h2 className={secTitle}>
+      <Box labelledBy={minId}>
+        <h3 id={minId} className={secTitle}>
           <span className={secKo}>분 — 몇 분이에요?</span>
           <span className={secEn}>Minutes · tap to listen</span>
-        </h2>
+        </h3>
         <ul className="grid grid-cols-2 gap-1.5">
           {MINUTES.map((m) => (
             <li key={m}>
@@ -216,7 +222,7 @@ function RuleTab() {
           ex="세 시 삼십 분 = 세 시 반 · half past three"
         />
       </Box>
-    </section>
+    </>
   );
 }
 

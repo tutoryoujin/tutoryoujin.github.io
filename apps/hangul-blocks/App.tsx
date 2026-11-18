@@ -4,6 +4,7 @@ import {
   ListenBtn,
   Note,
   Page,
+  TabPanel,
   Tabs,
   boxClass,
   canSpeak,
@@ -12,8 +13,8 @@ import {
   onVoicesChanged,
   speak,
   useHashTab,
-  type TabDef,
 } from "@yj/ui";
+import { tabsOf } from "@yj/apps";
 import { DOUBLE_JONG, MIXED_PARTS, canBeJong, compose, isCommon, joinJong, joinJung, readJong, shapeOf, soundOf } from "@yj/korean/hangul";
 import { josa } from "@yj/korean/numbers";
 import { AIR_PAIRS, CONSONANTS, MIXED, VOWELS, Y_PAIRS, cellsOf, type StrokePair } from "./glyphs";
@@ -22,12 +23,9 @@ import { WORDS } from "./words";
 import { Blocks, bevel, fitSize, type BlockCell } from "./Blocks";
 import "./hangul-blocks.css";
 
-type Tab = "build" | "air" | "chart";
-const TABS: TabDef<Tab>[] = [
-  { key: "build", ko: "만들기", en: "Build" },
-  { key: "air", ko: "획 하나 더", en: "One more stroke" },
-  { key: "chart", ko: "자모표", en: "All letters" },
-];
+/* 탭 이름은 shared/apps.ts — 정적 본문 h2 와 같은 원본 (#101) */
+const TABS = tabsOf("hangul-blocks", ["build", "air", "chart"] as const);
+const [BUILD, AIR, CHART] = TABS;
 
 export function App() {
   const [tab, setTab] = useHashTab(TABS);
@@ -44,9 +42,16 @@ export function App() {
     >
       <VoiceNote />
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
-      {tab === "build" && <BuildTab />}
-      {tab === "air" && <AirTab />}
-      {tab === "chart" && <ChartTab />}
+      {/* 탭 셋을 모두 그린다 — 안 열린 탭은 hidden (#101) */}
+      <TabPanel tab={BUILD} value={tab} className={section}>
+        <BuildTab />
+      </TabPanel>
+      <TabPanel tab={AIR} value={tab} className={section}>
+        <AirTab />
+      </TabPanel>
+      <TabPanel tab={CHART} value={tab} className={section}>
+        <ChartTab />
+      </TabPanel>
     </Page>
   );
 }
@@ -101,10 +106,11 @@ const sayBtn = cn("flex min-h-24 flex-col items-center justify-center gap-0.5 ro
 const sayRow = "grid grid-cols-2 gap-2";
 const sayChar = "font-reading text-[2.2rem] leading-[1.1] font-medium";
 const chip = "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1";
+/** 패널 안 소제목 — 탭 h2 아래라 h3 */
 const Title = ({ k, e }: { k: ReactNode; e: ReactNode }) => (
-  <h2 className={title}>
+  <h3 className={title}>
     <span className={ko}>{k}</span> <span className={en}>{e}</span>
-  </h2>
+  </h3>
 );
 
 const ROLE_NAME: Record<Role, { ko: string; en: string }> = {
@@ -196,7 +202,7 @@ function BuildTab() {
   ];
 
   return (
-    <section className={section}>
+    <>
       <div className={stage}>
         {/* 블록 조각을 누르면 그 자모가 빠지고, 키보드가 그 자리에 맞게 넘어간다 (nextKb).
             빈자리 ㅇ 은 뺄 것이 없으니 자음 키보드로만 */}
@@ -267,7 +273,9 @@ function BuildTab() {
             key={k.key}
             type="button"
             role="tab"
+            id={`kb-${k.key}`}
             aria-selected={kb === k.key}
+            aria-controls="kb-panel"
             className={cn(
               "group flex min-h-11 flex-col items-center justify-center rounded-full px-1 py-1 leading-[1.1]",
               kb === k.key && TONE_CLASS[k.key === "cons" ? (jongTarget ? "blk-jong" : "blk-cho") : "blk-jung"],
@@ -282,7 +290,7 @@ function BuildTab() {
         ))}
       </div>
 
-      <div className={kbKeys} role="tabpanel">
+      <div className={kbKeys} role="tabpanel" id="kb-panel" aria-labelledby={`kb-${kb}`}>
         {kb === "cons"
           ? Object.entries(CONSONANTS).map(([c, g]) => (
               <button
@@ -364,7 +372,7 @@ function BuildTab() {
           <span className={en}>Tap the block or a slot above to take that letter out.</span>
         </p>
       </div>
-    </section>
+    </>
   );
 }
 
@@ -578,7 +586,7 @@ function AirTab() {
   const say = SAY[p.kind];
 
   return (
-    <section className={section}>
+    <>
       <div className={stage}>
         <div className="flex items-center justify-center">
           <Blocks cells={cells} w={5} h={5} size={wide ? 36 : 26} label={ch} />
@@ -700,7 +708,7 @@ function AirTab() {
           en="Just like ㅐ and ㅔ, ㅒ and ㅖ sound exactly the same."
         />
       )}
-    </section>
+    </>
   );
 }
 
@@ -718,7 +726,7 @@ const GROUPS: { ko: string; en: string; items: string[] }[] = [
 
 function ChartTab() {
   return (
-    <section className={section}>
+    <>
       <p className={tip}>
         <span className={ko}>누르면 이름을 읽어 줘요.</span>
         <span className={en}>Tap a letter to hear its name.</span>
@@ -733,7 +741,7 @@ function ChartTab() {
           </div>
         </div>
       ))}
-    </section>
+    </>
   );
 }
 
