@@ -74,6 +74,29 @@ export const APPS: AppInfo[] = [
     ],
     og: { image: "/og/hangul-blocks.png", alt: "한국어 블록 앱 화면 — ㄱ과 ㅏ 블록을 붙여 「가」를 만든다" },
   },
+  // 블록 다음 — 블록 안 자리에 따라 소리가 바뀌는 ㅇ (#97)
+  {
+    slug: "ieung",
+    category: "hangul",
+    tone: "orange",
+    access: "free",
+    added: "2026-11-17",
+    ko: "한국어 이응",
+    en: "Two Faces of ㅇ",
+    emoji: "👃",
+    about: { ko: "ㅇ을 위아래로 옮기면 소리가 바뀌어요", en: "Move ㅇ up or down and hear it change" },
+    tagline: { ko: "ㅇ 소리, 매일 조금씩.", en: "Master ㅇ, one sound at a time." },
+    description: "Why is ㅇ silent at the start of a syllable but “ng” at the bottom? Move it, listen, and hear ng vs. g side by side. ㅇ은 첫자리에서 소리가 없고, 받침에서는 [ng] 소리예요.",
+    searchTitle: "Korean Ieung Sound (Silent or ng)",
+    learn: [
+      { ko: "첫자리 ㅇ은 소리가 없어요: 아 [a]", en: "ㅇ at the start of a block is silent: 아 sounds like [a]" },
+      { ko: "받침 ㅇ은 [ng] 소리: 앙 [ang]", en: "ㅇ as a final consonant (batchim) is [ng]: 앙 sounds like [ang]" },
+      { ko: "받침 ㅇ과 ㄱ 견주어 듣기: 방 / 박", en: "Hearing ng vs. k side by side: 방 / 박, 강 / 각, 공 / 곡" },
+      { ko: "ㅇ 받침은 다음 글자로 안 넘어가요: 고양이 [고양이]", en: "ㅇ never slides into the next syllable: 고양이 stays [고양이], not [고양기]" },
+      { ko: "퀴즈 두 가지: 소리가 날까? · 듣고 고르기", en: "Two quizzes: spot the silent ㅇ, and pick ng or k by ear" },
+    ],
+    og: { image: "/og/ieung.png", alt: "한국어 이응 앱 화면 — 첫자리에 앉은 이응이와 ㅏ, 아래에 비어 있는 받침 자리" },
+  },
   // 그다음 자기 이름 — 처음 쓰는 한글 단어
   {
     slug: "hangul-name",
