@@ -95,7 +95,7 @@ export const APPS: AppInfo[] = [
       { ko: "ㅇ 받침은 다음 글자로 안 넘어가요: 고양이 [고양이]", en: "ㅇ never slides into the next syllable: 고양이 stays [고양이], not [고야기]" },
       { ko: "퀴즈 두 가지: 소리가 날까? · 듣고 고르기", en: "Two quizzes: spot the silent ㅇ, and pick ng or k by ear" },
     ],
-    og: { image: "/og/ieung.png", alt: "한국어 이응 앱 화면 — 첫자리 ㅇ 과 ㅏ 블록, 아래에 비어 있는 받침 자리" },
+    og: { image: "/og/ieung.png", alt: "한국어 이응 앱 화면 — 첫자리에 앉은 이응이와 ㅏ, 아래에 비어 있는 받침 자리" },
   },
   // 그다음 자기 이름 — 처음 쓰는 한글 단어
   {

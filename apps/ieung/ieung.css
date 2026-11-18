@@ -32,3 +32,34 @@
     transform: scale(1.12);
   }
 }
+
+/* 이응이가 자리를 옮길 때 — 위로 솟았다가 내려앉으며 살짝 눌린다 */
+@keyframes ie-hop {
+  0% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-48px) scale(1.04);
+  }
+  85% {
+    transform: translateY(0) scale(1.08, 0.9);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* 음파 — 작게 나와 커지며 사라진다 */
+@keyframes ie-ring {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}

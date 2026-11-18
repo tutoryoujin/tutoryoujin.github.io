@@ -2,6 +2,8 @@ import { useId, useState, type ReactNode } from "react";
 import { Box, Btn, cn, Ieung, ListenBtn, Note, Page, Quiz, Tabs, canSpeak, speak, useHashTab, type Choice, type Question, type TabDef } from "@yj/ui";
 import { compose, decompose, shapeOf } from "@yj/korean/hangul";
 import { ieungSeats, linked, MOVES, NG_WORDS, PAIRS, SILENT_WORDS, STAYS, SWITCH_VOWELS, type Seat } from "./data";
+import { Mouth, type MouthMode } from "./Mouth";
+import { Stage } from "./Stage";
 import "./ieung.css";
 
 /* ============================================================
@@ -179,19 +181,8 @@ function SwitchTab() {
           ))}
         </div>
 
-        <Block
-          cho={{
-            jamo: "ㅇ",
-            tone: top ? "ie-silent" : undefined,
-            ghost: !top,
-            caption: top ? "🤫 silent" : "자리만 · seat",
-            onClick: () => move("cho"),
-            label: "ㅇ을 첫자리로 / Move ㅇ to the top",
-          }}
-          jung={{ jamo: v, tone: "ie-vowel", caption: rom }}
-          jong={top ? undefined : { jamo: "ㅇ", tone: "ie-ng", caption: "👃 ng", hum: true, onClick: () => move("jong"), label: "받침 ㅇ / ㅇ at the bottom" }}
-          emptyJong={{ jamo: "", caption: "받침 자리 · tap", onClick: () => move("jong"), label: "ㅇ을 받침으로 / Move ㅇ to the bottom" }}
-        />
+        <Stage vowel={v} rom={rom} seat={seat} onMove={move} />
+        <p className="mt-2 text-center text-[0.75rem] font-bold text-muted">이응이를 눌러 보세요 · Tap ㅇ to make it jump</p>
 
         <div className="mt-3 grid grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="ㅇ의 자리 / Where ㅇ sits">
           {(["cho", "jong"] as const).map((s) => (
@@ -214,19 +205,13 @@ function SwitchTab() {
       </Box>
 
       <Box aria-live="polite" className="text-center">
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-16 shrink-0 [&_svg]:h-auto [&_svg]:w-full">
-            <Ieung mood={top ? "sleepy" : "yay"} />
-          </div>
-          <div>
-            <div className="font-display text-[3.2rem] leading-none">{syl}</div>
-            <div className="mt-1 text-[1.1rem] font-extrabold text-muted">[{sound}]</div>
-          </div>
+        <div className="flex items-baseline justify-center gap-3">
+          <span className="font-display text-[3.2rem] leading-none">{syl}</span>
+          <span className="text-[1.1rem] font-extrabold text-muted">[{sound}]</span>
         </div>
         <div className="mt-3">
           {top ? <Badge tone="ie-silent" icon="🤫" ko="빈 자리" en="silent" /> : <Badge tone="ie-ng" icon="👃" ko="코로 울려요" en="ng" />}
         </div>
-        {!top && <Wave className="mx-auto mt-2 w-40" />}
         <p className="mt-3 leading-[1.4]">
           {top ? (
             <>
@@ -322,25 +307,45 @@ function Marked({ word, tone }: { word: string; tone: string }) {
 
 /* ---------- ng ≠ g ---------- */
 
+const MOUTH_MODES: { k: MouthMode; syl: string; tone: string; ko: string; en: string; say: { ko: string; en: string } }[] = [
+  { k: "a", syl: "아", tone: "ie-vowel", ko: "모음", en: "vowel a", say: { ko: "입이 열려 있어서 공기가 입으로 나가요.", en: "Tongue down, mouth open — the air goes out through your mouth." } },
+  { k: "ng", syl: "앙", tone: "ie-ng", ko: "ㅇ 받침", en: "ng", say: { ko: "혀 뒤가 입을 막아요. 공기는 코로 끝까지 흘러요.", en: "The back of your tongue closes the mouth, but the air keeps flowing out your nose." } },
+  { k: "k", syl: "악", tone: "ie-g", ko: "ㄱ 받침", en: "k", say: { ko: "입도 코도 막혀서 공기가 딱 멈춰요.", en: "Mouth and nose both close — the air stops dead." } },
+];
+
 function CompareTab() {
+  const [mode, setMode] = useState<MouthMode>("ng");
+  const cur = MOUTH_MODES.find((x) => x.k === mode)!;
   return (
     <section className={section}>
       <Box>
         <Title ko="ㅇ 받침은 끝까지 코로 울려요. 혀 뒤로 막고 끊는 건 ㄱ이에요." en="ㅇ at the bottom is a hum through your nose, never a hard g. Stopping with a click is ㄱ." />
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="flex flex-col items-center gap-1.5 rounded-lg bg-(--ie-ng-bg) p-3 text-center text-(--ie-ng-ink)">
-            <span className="text-[0.75rem] font-extrabold">👃 받침 ㅇ · ng</span>
-            <Wave className="w-full" />
-            <span className="font-display text-[1rem]">길게 흘러요</span>
-            <span className="text-[0.72rem] font-extrabold">keeps flowing</span>
-          </div>
-          <div className="flex flex-col items-center gap-1.5 rounded-lg bg-(--ie-g-bg) p-3 text-center text-(--ie-g-ink)">
-            <span className="text-[0.75rem] font-extrabold">🧱 받침 ㄱ · k</span>
-            <Wall />
-            <span className="font-display text-[1rem]">딱 끊겨요</span>
-            <span className="text-[0.72rem] font-extrabold">stops short</span>
-          </div>
+        <div className="mb-2 grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="소리 고르기 / Pick a sound">
+          {MOUTH_MODES.map((x) => (
+            <button
+              key={x.k}
+              type="button"
+              role="radio"
+              aria-checked={mode === x.k}
+              onClick={() => {
+                setMode(x.k);
+                speak(x.syl);
+              }}
+              className="flex min-h-14 flex-col items-center justify-center rounded-md border-2 border-line bg-bg leading-[1.15] aria-checked:border-current"
+              style={mode === x.k ? { background: `var(--${x.tone}-bg)`, color: `var(--${x.tone}-ink)` } : undefined}
+            >
+              <span className="font-display text-[1.4rem]">{x.syl}</span>
+              <span className="text-[0.68rem] font-extrabold">
+                {x.ko} · {x.en}
+              </span>
+            </button>
+          ))}
         </div>
+        <Mouth mode={mode} />
+        <p className="mt-2 text-center leading-[1.35]" aria-live="polite">
+          <span className="block font-display text-[1.05rem]">{cur.say.ko}</span>
+          <span className={titleEn}>{cur.say.en}</span>
+        </p>
         <Note tone="ie-g" ko="영어 철자에 속지 마세요: singer 의 ng ⭕ / finger 의 ngg ❌" en="Say it like singer ⭕, not finger ❌ — no g at the end." />
       </Box>
 
@@ -349,7 +354,7 @@ function CompareTab() {
         <ul className="flex flex-col gap-2">
           {PAIRS.map((p) => (
             <li key={p.ng.ko} className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1.5">
-              <PairSide w={p.ng} kind="ng" />
+              <PairSide w={p.ng} kind="ng" onPlay={() => setMode("ng")} />
               <button
                 type="button"
                 className="grid min-w-11 place-items-center rounded-md border border-line bg-bg px-1 text-[1.1rem] font-extrabold"
@@ -358,7 +363,7 @@ function CompareTab() {
               >
                 <span aria-hidden="true">⇄</span>
               </button>
-              <PairSide w={p.g} kind="g" />
+              <PairSide w={p.g} kind="g" onPlay={() => setMode("k")} />
             </li>
           ))}
         </ul>
@@ -373,12 +378,15 @@ function CompareTab() {
   );
 }
 
-function PairSide({ w, kind }: { w: { ko: string; en: string; rom: string }; kind: "ng" | "g" }) {
+function PairSide({ w, kind, onPlay }: { w: { ko: string; en: string; rom: string }; kind: "ng" | "g"; onPlay: () => void }) {
   const tone = kind === "ng" ? "ie-ng" : "ie-g";
   return (
     <button
       type="button"
-      onClick={() => speak(w.ko)}
+      onClick={() => {
+        speak(w.ko);
+        onPlay();
+      }}
       className="flex min-h-22 flex-col items-center justify-center gap-0.5 rounded-md px-2 py-1.5 leading-[1.15]"
       style={{ background: `var(--${tone}-bg)`, color: `var(--${tone}-ink)` }}
     >
