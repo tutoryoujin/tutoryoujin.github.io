@@ -43,10 +43,10 @@ describe("이어 읽기", () => {
   it("ㅇ 받침은 넘어가지 않는다", () => {
     for (const w of STAYS) expect(linked(w.ko)).toBe(w.ko);
   });
-  it("ㅇ 을 ㄱ 처럼 넘기면 틀린 소리", () => {
-    expect(linked("고양이", true)).toBe("고야기");
-    expect(linked("영어", true)).toBe("여거");
-    expect(linked("강아지", true)).toBe("가가지");
+  it("ㅇ 뒤에 g 를 덧붙이면 틀린 소리", () => {
+    expect(linked("고양이", true)).toBe("고양기");
+    expect(linked("영어", true)).toBe("영거");
+    expect(linked("강아지", true)).toBe("강가지");
   });
   it("다른 받침은 넘어간다", () => {
     expect(linked("한국어")).toBe("한구거");

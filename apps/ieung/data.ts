@@ -86,7 +86,8 @@ export function ieungSeats(word: string): { i: number; seat: Seat }[] {
  * 이어 읽기 — 받침 뒤에 ㅇ 으로 시작하는 글자가 오면 받침이 그 자리로 넘어간다.
  * 한국어 → [한구거] · 음악 → [으막]. ㅇ 받침은 넘어가지 않는다 (고양이 → [고양이]).
  * 홑받침만 다룬다 — ㅎ(좋아 [조아]) · 겹받침(닭이 [달기])은 규칙이 달라 그대로 둔다.
- * asG 를 켜면 ㅇ 받침을 ㄱ 처럼 넘긴다 — 학생들이 하는 실수 (고양이 → [고야기]).
+ * asG 를 켜면 ㅇ 받침 뒤에 g 소리를 덧붙인다 — 학생들이 하는 실수 (고양이 → [고양기]).
+ * 영어 철자 ng 에 끌려 ㅇ 은 그대로 두고 다음 글자를 ㄱ 으로 시작한다 (finger 처럼).
  */
 export function linked(word: string, asG = false): string {
   const parts = [...word].map((s) => decompose(s));
@@ -97,9 +98,10 @@ export function linked(word: string, asG = false): string {
     const next = ds[i + 1];
     if (next.cho !== "ㅇ" || !canBeJong(cur.jong) || cur.jong === "ㅎ") continue;
     if (cur.jong === "ㅇ") {
-      if (!asG) continue;
-      next.cho = "ㄱ";
-    } else next.cho = cur.jong;
+      if (asG) next.cho = "ㄱ"; // ㅇ 받침은 그대로, g 가 새로 생긴다
+      continue;
+    }
+    next.cho = cur.jong;
     cur.jong = "";
   }
   return ds.map((d) => compose(d.cho, d.jung, d.jong)).join("");
