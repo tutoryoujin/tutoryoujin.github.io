@@ -26,7 +26,7 @@ export const NG_WORDS: Word[] = [
   { ko: "방", en: "room" },
   { ko: "강", en: "river" },
   { ko: "공", en: "ball" },
-  { ko: "상", en: "table · prize" },
+  { ko: "상", en: "prize" },
   { ko: "형", en: "older brother" },
   { ko: "영", en: "zero" },
   { ko: "가방", en: "bag" },
@@ -41,7 +41,7 @@ export const PAIRS: Pair[] = [
   { ng: { ko: "방", en: "room", rom: "bang" }, g: { ko: "박", en: "gourd", rom: "bak" } },
   { ng: { ko: "강", en: "river", rom: "gang" }, g: { ko: "각", en: "angle", rom: "gak" } },
   { ng: { ko: "공", en: "ball", rom: "gong" }, g: { ko: "곡", en: "song · tune", rom: "gok" } },
-  { ng: { ko: "상", en: "table · prize", rom: "sang" }, g: { ko: "삭", en: "", rom: "sak" } },
+  { ng: { ko: "상", en: "prize", rom: "sang" }, g: { ko: "삭", en: "", rom: "sak" } },
   { ng: { ko: "형", en: "older brother", rom: "hyeong" }, g: { ko: "혁", en: "", rom: "hyeok" } },
   { ng: { ko: "영", en: "zero", rom: "yeong" }, g: { ko: "역", en: "station", rom: "yeok" } },
 ];
