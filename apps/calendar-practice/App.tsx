@@ -57,14 +57,16 @@ export function App() {
   return (
     <Page
       app="calendar-practice"
-      legal={
-        <>
-          공휴일은 양력 고정 공휴일만 표시해요. 설날·추석·부처님오신날 같은 음력 공휴일과 대체공휴일은 빠져 있어요.
-          <br />
-          Only fixed solar-calendar holidays are shown. Lunar holidays (Seollal, Chuseok, Buddha’s Birthday) and substitute holidays
-          are not included.
-        </>
-      }
+      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      legal={{
+        en: (
+          <>
+            Only fixed solar-calendar holidays are shown. Lunar holidays (Seollal, Chuseok, Buddha’s Birthday) and substitute holidays
+            are not included.
+          </>
+        ),
+        ko: "공휴일은 양력 고정 공휴일만 표시해요. 설날·추석·부처님오신날 같은 음력 공휴일과 대체공휴일은 빠져 있어요.",
+      }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
       {/* 탭 셋을 모두 그린다 — 안 열린 탭은 hidden (#101) */}

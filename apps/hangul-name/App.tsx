@@ -175,21 +175,23 @@ export function App() {
   return (
     <Page
       app="hangul-name"
-      legal={
-        <>
-          이름 발음은 CMU 발음 사전에서, 이름 목록은 미국 사회보장국 출생 이름 통계에서 왔어요.
-          <br />
-          Pronunciations from the{" "}
-          <a className="underline" href="https://github.com/cmusphinx/cmudict">
-            CMU Pronouncing Dictionary
-          </a>{" "}
-          (
-          <a className="underline" href="https://github.com/tutoryoujin/tutoryoujin.github.io/blob/main/apps/hangul-name/LICENSE-cmudict.txt">
-            BSD 2-Clause, © Carnegie Mellon University
-          </a>
-          ). Names from US Social Security baby-name data.
-        </>
-      }
+      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      legal={{
+        en: (
+          <>
+            Pronunciations from the{" "}
+            <a className="underline" href="https://github.com/cmusphinx/cmudict">
+              CMU Pronouncing Dictionary
+            </a>{" "}
+            (
+            <a className="underline" href="https://github.com/tutoryoujin/tutoryoujin.github.io/blob/main/apps/hangul-name/LICENSE-cmudict.txt">
+              BSD 2-Clause, © Carnegie Mellon University
+            </a>
+            ). Names from US Social Security baby-name data.
+          </>
+        ),
+        ko: "이름 발음은 CMU 발음 사전에서, 이름 목록은 미국 사회보장국 출생 이름 통계에서 왔어요.",
+      }}
     >
       {/* 이름 가게 — 영수증이 나오는 기계 */}
       <section className="relative z-[2] rounded-t-[24px] rounded-b-[12px] bg-(--hn-machine-bg) px-4 pt-4 text-(--hn-machine-ink)" aria-label="한글 이름 가게 / Hangul Name Shop">

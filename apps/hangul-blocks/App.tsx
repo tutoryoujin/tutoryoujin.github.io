@@ -32,13 +32,15 @@ export function App() {
   return (
     <Page
       app="hangul-blocks"
-      legal={
-        <>
-          글자 블록은 5×5 칸 안에 직접 그렸어요. 소리는 기기의 목소리라서 기기마다 달라요.
-          <br />
-          The block letters are drawn by hand on a 5×5 grid. Sounds come from your device&apos;s voice, so they vary by device.
-        </>
-      }
+      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      legal={{
+        en: (
+          <>
+            The block letters are drawn by hand on a 5×5 grid. Sounds come from your device&apos;s voice, so they vary by device.
+          </>
+        ),
+        ko: "글자 블록은 5×5 칸 안에 직접 그렸어요. 소리는 기기의 목소리라서 기기마다 달라요.",
+      }}
     >
       <VoiceNote />
       <Tabs tabs={TABS} value={tab} onChange={setTab} />

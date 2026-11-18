@@ -119,6 +119,41 @@ describe("앱 본문 구조 (#101)", () => {
   }
 });
 
+describe("헤더 메뉴 (#100)", () => {
+  it("모든 앱이 자기 분류 묶음 안에 있고, All apps · 블로그는 목록 밖 아래에 고정", async () => {
+    const el = await render("ieung");
+    const nav = el.querySelector<HTMLElement>("#siteNav")!;
+    for (const a of APPS) {
+      const link = nav.querySelector(`a[href="/${a.slug}/"]`);
+      expect(link, a.slug).not.toBeNull();
+      const group = link!.closest('[role="group"]')!;
+      expect(group.getAttribute("aria-labelledby")).toBe(`nav-${a.category}`);
+      // 영어가 앞(크게), 한국어가 뒤(작게)
+      expect(link!.firstElementChild!.getAttribute("lang")).toBe("en");
+      expect(link!.querySelector("small")!.textContent).toBe(a.ko);
+    }
+    expect(nav.querySelector('[aria-current="page"]')!.getAttribute("href")).toBe("/ieung/");
+    // 스크롤 영역 밖(아래 고정)에 있다
+    const scroll = nav.firstElementChild!;
+    for (const href of ["/", "/notes/"]) {
+      const a = nav.querySelector(`a[href="${href}"]`)!;
+      expect(scroll.contains(a), href).toBe(false);
+    }
+    // 숨긴 메뉴가 본문 헤딩 순서에 끼지 않는다
+    expect(nav.querySelector("h1, h2, h3, h4, h5, h6")).toBeNull();
+  });
+
+  it("헤더 워드마크 · 꼬리말은 영어가 먼저", async () => {
+    const el = await render("ieung");
+    const a = APPS.find((x) => x.slug === "ieung")!;
+    const h1 = el.querySelector("h1")!;
+    expect(h1.firstElementChild!.textContent).toBe(a.en);
+    const footer = el.querySelector("footer")!.textContent!;
+    expect(footer.indexOf(a.tagline.en)).toBeLessThan(footer.indexOf(a.tagline.ko));
+    expect(footer.indexOf("Privacy")).toBeLessThan(footer.indexOf("개인정보"));
+  });
+});
+
 describe("탭 키보드 (#101)", () => {
   it("→ ← Home End 로 탭을 옮긴다", async () => {
     const el = await render("ieung");

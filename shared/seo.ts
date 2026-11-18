@@ -325,7 +325,8 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
   const notes = notesForApp(a.slug);
   return (
     `<main data-prerender class="${wrap}">` +
-    `<h1 class="${h1}">${esc(a.ko)} with Youjin<span class="${sub}">${esc(a.en)} — ${esc(a.searchTitle)}</span></h1>` +
+    // 헤더와 같게 영어 이름이 크고, 한국어 이름 + with Youjin 이 아래 (#100)
+    `<h1 class="${h1}"><span lang="en">${esc(a.en)}</span><span class="${sub}"><span lang="ko">${esc(a.ko)}</span> with Youjin — ${esc(a.searchTitle)}</span></h1>` +
     `<p class="mt-2">${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></p>` +
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
     (loose.length ? `<ul class="mt-2">${loose.map(learnLi).join("")}</ul>` : "") +
