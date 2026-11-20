@@ -680,7 +680,7 @@ function BlogBand() {
           alt=""
           width={374}
           height={156}
-          className="-mt-24 -mb-6 w-[220px] max-w-none min-[900px]:absolute min-[900px]:bottom-0 min-[900px]:left-5 min-[900px]:m-0 min-[900px]:w-[220px] min-[1200px]:w-[260px]"
+          className="-mt-24 -mb-6 w-[220px] max-w-none min-[900px]:absolute min-[900px]:-bottom-[2px] min-[900px]:left-5 min-[900px]:m-0 min-[900px]:w-[220px] min-[1200px]:w-[260px]"
         />
         <h2 id="band-title" className="font-display text-[clamp(1.5rem,2.3vw,2.05rem)] leading-[1.1] break-keep min-[1200px]:whitespace-nowrap">
           From <span className="underline decoration-primary decoration-[0.09em] underline-offset-[0.14em]">Seoul</span> to your screen
