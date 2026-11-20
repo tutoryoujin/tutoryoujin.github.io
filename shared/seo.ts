@@ -110,7 +110,7 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
     meta("name", "description", m.description),
     // 404 는 어느 주소에서나 같은 글이 나온다 — 색인하지 않고, 대표 주소도 두지 않는다
     notFound ? meta("name", "robots", "noindex") : { tag: "link", attrs: { rel: "canonical", href: m.url } },
-    // favicon.ico · apple-touch-icon.png 는 favicon.svg 를 그대로 구운 것 (public/)
+    // 세 파일 모두 로고 마크(public/mascot/mark.webp)를 tools/home/build_favicon.py 가 구운 것 (public/, #110)
     { tag: "link", attrs: { rel: "icon", href: "/favicon.ico", sizes: "32x32" } },
     { tag: "link", attrs: { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" } },
     { tag: "link", attrs: { rel: "apple-touch-icon", href: "/apple-touch-icon.png" } },

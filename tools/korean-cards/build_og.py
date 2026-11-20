@@ -6,11 +6,13 @@ Usage:
 
 A stack of labelled deck cards — the same thing the home screen shows —
 next to the title. Deck colours, blurbs and art come from the DECKS table below (keep in step with apps/korean-cards/decks), so
-this file and the app stay in step. Fonts (Jua, Nunito) are downloaded once
+this file and the app stay in step. Colours come from shared/tokens/tokens.css (light).
+Retro look (#110): cream paper, navy ink outlines and hard ink shadows, like the home cards.
+Fonts (Pretendard for Korean, Caprasimo for the English title, Nunito) are downloaded once
 into tools/korean-cards/.fontcache/ — that folder is gitignored, the PNG is committed.
 """
-import os, urllib.request
-from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
+import os, re, urllib.request
+from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))           # site/
@@ -22,24 +24,27 @@ W, H = 1200, 630
 S = 2  # supersample factor — render 2x, downscale at the end
 
 FONTS = {
-    "Jua-Regular.ttf": "https://github.com/google/fonts/raw/main/ofl/jua/Jua-Regular.ttf",
+    "Pretendard-ExtraBold.otf": "https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/Pretendard-ExtraBold.otf",
+    "Caprasimo-Regular.ttf": "https://github.com/google/fonts/raw/main/ofl/caprasimo/Caprasimo-Regular.ttf",
     "Nunito.ttf": "https://github.com/google/fonts/raw/main/ofl/nunito/Nunito%5Bwght%5D.ttf",
 }
+KO_FONT, TITLE_FONT = "Pretendard-ExtraBold.otf", "Caprasimo-Regular.ttf"
 
-# css/app.css tokens (light theme) — 디자인 시스템 v2
-BG = (245, 248, 255)
-INK = (30, 39, 66)
-MUTED = (86, 97, 138)
-PRIMARY = (67, 86, 207)
-LINE = (201, 213, 242)
-GRAY_BG = (221, 228, 243)
-ACCENT = {                       # -bg, -ink
-    "blue": ((156, 178, 235), (23, 38, 94)),
-    "pink": ((255, 208, 210), (138, 37, 53)),
-    "yellow": ((244, 226, 113), (95, 83, 0)),
-    "mint": ((189, 234, 206), (20, 84, 58)),
-    "lavender": ((221, 212, 251), (65, 43, 140)),
-}
+
+def _tokens():
+    """shared/tokens/tokens.css 의 첫 :root (라이트) 값을 읽는다 — 값을 여기 옮겨 적지 않는다"""
+    with open(os.path.join(ROOT, "shared", "tokens", "tokens.css"), encoding="utf-8") as f:
+        css = f.read()
+    light = css[css.index(":root"):]
+    light = light[: light.index("}")]
+    hexes = dict(re.findall(r"--([a-z-]+):\s*#([0-9a-fA-F]{6});", light))
+    return {k: tuple(int(v[i:i + 2], 16) for i in (0, 2, 4)) for k, v in hexes.items()}
+
+
+T = _tokens()
+BG, SURFACE, INK, MUTED, PRIMARY, LINE, GRAY_BG = (T[k] for k in ("bg", "surface", "ink", "muted", "primary", "line", "gray-bg"))
+ACCENT = {c: (T[f"{c}-bg"], T[f"{c}-ink"]) for c in ("blue", "pink", "yellow", "mint", "lavender")}  # -bg, -ink
+OUTLINE, HARD = 3, 6   # 잉크 테 굵기 · 딱딱한 그림자 깊이 (홈 카드와 같은 결)
 
 # 홈 더미와 같은 순서·같은 내용. (덱 폴더, 겉면 그림, 라벨, 한 줄 소개, 색)
 DECKS = [
@@ -70,40 +75,17 @@ def font(name, size):
 
 
 def backdrop(size):
-    """Near-white vertical wash + a few airy pastel glows."""
+    """크림 종이 + 잉크 점 — 홈 남산 점묘의 결"""
     w, h = size
-    img = Image.new("RGBA", size, (255, 255, 255, 255))
-    grad = Image.new("L", (1, h))
-    for y in range(h):
-        grad.putpixel((0, y), int(255 - 26 * (y / h)))  # subtle top->bottom cool-down
-    img.paste(Image.new("RGBA", size, BG + (255,)), (0, 0), ImageOps.invert(grad.resize(size)))
-
-    # anchored just outside the corners, so only the edges tint and the
-    # middle stays near-white (overlapping pastels turn gray fast)
-    glows = [  # (cx%, cy%, r, rgb, alpha)
-        (.80, -.16, 300, ACCENT["yellow"][0], 150),
-        (1.10, .92, 300, ACCENT["pink"][0], 200),
-        (-.16, 1.06, 290, ACCENT["mint"][0], 150),
-        (-.15, -.14, 280, ACCENT["lavender"][0], 160),
-    ]
-    for fx, fy, r, rgb, a in glows:
-        r *= S
-        cx, cy = int(w * fx), int(h * fy)
-        layer = Image.new("RGBA", size, (0, 0, 0, 0))
-        ImageDraw.Draw(layer).ellipse((cx - r, cy - r, cx + r, cy + r), fill=rgb + (a,))
-        img.alpha_composite(layer.filter(ImageFilter.GaussianBlur(r * 0.32)))
+    img = Image.new("RGBA", size, BG + (255,))
+    d = ImageDraw.Draw(img)
+    # RGBA 그림 위에서는 반투명이 섞이지 않아서 섞은 색을 직접 쓴다 — 잉크 9%
+    dot = tuple(round(b + (i - b) * 0.09) for b, i in zip(BG, INK))
+    step, r = 18 * S, 1.5 * S
+    for y in range(step // 2, h, step):
+        for x in range(step // 2, w, step):
+            d.ellipse((x - r, y - r, x + r, y + r), fill=dot)
     return img
-
-
-def sparkles(img):
-    """Tiny confetti dots — just enough to feel playful."""
-    d = ImageDraw.Draw(img, "RGBA")
-    dots = [(126, 486, 9, (255, 196, 218)), (196, 540, 6, (255, 214, 120)),
-            (64, 436, 5, (150, 188, 250)), (560, 172, 7, (255, 200, 140)),
-            (614, 104, 5, (150, 220, 196)), (96, 142, 6, (255, 214, 120))]
-    for x, y, r, rgb in dots:
-        x, y, r = x * S, y * S, r * S
-        d.ellipse((x - r, y - r, x + r, y + r), fill=rgb + (205,))
 
 
 def rounded(size, radius, fill, outline=None, width=0):
@@ -137,7 +119,7 @@ def deck_card(deck, art_id, label, en, blurb, color):
     """홈 화면의 폴더 한 장 — 라벨 알약 + 한 줄 소개 + 모서리에 잘리는 겉면 그림."""
     bg, ink = ACCENT[color]
     w, h = CARD_W * S, CARD_H * S
-    card = rounded((w, h), RADIUS * S, bg, LINE, 2 * S)
+    card = rounded((w, h), RADIUS * S, bg, INK, OUTLINE * S)
     mask = rounded((w, h), RADIUS * S, (255, 255, 255, 255)).getchannel("A")
 
     # 겉면 그림 — 오른쪽 아래로 밀어 내고 카드 모서리가 잘라 준다
@@ -146,46 +128,55 @@ def deck_card(deck, art_id, label, en, blurb, color):
     layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     layer.alpha_composite(im, ((CARD_W - ART + 18) * S, (CARD_H - ART + 26) * S))
     card.alpha_composite(Image.composite(layer, Image.new("RGBA", (w, h), (0, 0, 0, 0)), mask))
+    # 그림이 덮은 테를 다시 긋는다
+    ImageDraw.Draw(card).rounded_rectangle((0, 0, w - 1, h - 1), RADIUS * S, outline=INK, width=OUTLINE * S)
 
     d = ImageDraw.Draw(card)
     # 라벨 알약 — -ink 바탕에 -bg 글자
-    fj = font("Jua-Regular.ttf", 30 * S)
+    fj = font(KO_FONT, 30 * S)
     tw = d.textlength(label, font=fj)
     ph = 52 * S
     d.rounded_rectangle((PAD * S, 26 * S, PAD * S + tw + 44 * S, 26 * S + ph), 999, fill=ink)
     d.text((PAD * S + 22 * S, 26 * S + ph / 2 + 2 * S), label, font=fj, fill=bg, anchor="lm")
 
     # 한 줄 소개와 장수. 폴더 위에서는 muted 를 쓰지 않는다 — ink 로 두고 크기로만 눌러 준다
-    fb = font("Jua-Regular.ttf", 23 * S)
+    fb = font(KO_FONT, 22 * S)
     y = 100 * S
     for line in wrap(d, blurb, fb, (CARD_W - PAD - ART + 10) * S)[:2]:
         d.text((PAD * S, y), line, font=fb, fill=INK, anchor="lt")
         y += 31 * S
-    fn, fk = font("Nunito.ttf", 18 * S), font("Jua-Regular.ttf", 19 * S)
+    fn, fk = font("Nunito.ttf", 18 * S), font(KO_FONT, 18 * S)
     runs(d, PAD * S, y + 5 * S, [(en + " · ", fn, INK), ("20장", fk, INK)])
     return card
 
 
-def drop(canvas, shape, x, y, blur, dy, alpha):
+def drop(canvas, shape, x, y):
+    """딱딱한 잉크 그림자 — 흐리지 않고 아래로 HARD 만큼"""
     sh = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-    solid = Image.new("RGBA", shape.size, (31, 40, 63, alpha))
-    sh.paste(solid, (x, y + dy), shape)
-    canvas.alpha_composite(sh.filter(ImageFilter.GaussianBlur(blur)))
+    sh.paste(Image.new("RGBA", shape.size, INK + (255,)), (x, y + HARD * S), shape)
+    canvas.alpha_composite(sh)
+
+
+def brand(img, x, y):
+    """로고 마크 + 「Korean with Youjin」 — You 만 primary (#83)"""
+    mark = Image.open(os.path.join(ROOT, "public", "mascot", "mark.webp")).convert("RGBA").resize((52 * S, 52 * S), Image.LANCZOS)
+    img.alpha_composite(mark, (x, y - 40 * S))
+    d = ImageDraw.Draw(img)
+    runs(d, x + 64 * S, y - 28 * S, [(t, font(TITLE_FONT, 30 * S), c) for t, c in (("Korean with ", INK), ("You", PRIMARY), ("jin", INK))])
 
 
 def main():
     w, h = W * S, H * S
     img = backdrop((w, h))
-    sparkles(img)
 
     # ---- text block -------------------------------------------------
     d = ImageDraw.Draw(img)
     x = 78 * S
     lines = [
-        (232, "한국어 카드", "Jua-Regular.ttf", 98, INK),
-        (288, "Korean Cards with Youjin", "Nunito.ttf", 38, PRIMARY),
-        (356, "뒤집으며 외우는 한국어 단어", "Jua-Regular.ttf", 31, MUTED),
-        (398, "Flip, guess, repeat.", "Nunito.ttf", 26, MUTED),
+        (232, "한국어 카드", KO_FONT, 98, INK),
+        (292, "Korean Word Cards", TITLE_FONT, 40, PRIMARY),
+        (360, "뒤집으며 외우는 한국어 단어", KO_FONT, 31, INK),
+        (400, "Flip, guess, repeat.", "Nunito.ttf", 26, MUTED),
     ]
     for y, text, fam, size, fill in lines:
         f = font(fam, size * S)
@@ -197,15 +188,17 @@ def main():
     # ---- 가라앉은 뒤 카드들 -------------------------------------------
     for i in range(5):
         quiet = rounded((CARD_W * S, CARD_H * S), RADIUS * S,
-                        GRAY_BG if i % 2 == 0 else LINE)
+                        GRAY_BG if i % 2 == 0 else SURFACE, INK, OUTLINE * S)
         img.alpha_composite(quiet, ((STACK_X - 14 + 6 * i) * S, (STACK_Y - 48 + 11 * i) * S))
 
     # ---- 덱 더미 ------------------------------------------------------
     for i, (deck, art_id, label, en, blurb, color) in enumerate(DECKS):
         card = deck_card(deck, art_id, label, en, blurb, color)
         cx, cy = (STACK_X + SKEW * i) * S, (STACK_Y + STEP * i) * S
-        drop(img, card.getchannel("A"), cx, cy, 22 * S, 10 * S, 70)
+        drop(img, card.getchannel("A"), cx, cy)
         img.alpha_composite(card, (cx, cy))
+
+    brand(img, x, 500 * S)
 
     img.convert("RGB").resize((W, H), Image.LANCZOS).save(OUT, optimize=True)
     print("wrote", os.path.relpath(OUT, ROOT), os.path.getsize(OUT) // 1024, "KB")

@@ -11,14 +11,17 @@ Usage (홈 공유 그림과 같은 .venv — tools/home/build_og.py 참고):
 나머지 재료도 사이트와 같은 것:
   색       shared/tokens/tokens.css (라이트)
   글자     shared/apps.ts 의 hangul-name (ko · en · about)
-  글꼴     Google Fonts Jua · Nunito
+  글꼴 · 이응이  tools/og/retro.py (Caprasimo · Nunito · Pretendard · public/mascot) — 레트로 (#110)
 """
-import argparse, base64, html, os, re
+import argparse, base64, html, os, re, sys
 from urllib.parse import quote
 from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, os.path.join(ROOT, "tools", "og"))
+import retro  # noqa: E402
+
 OUT = os.path.join(ROOT, "public", "hangul-name", "og.png")
 W, H = 1200, 630
 
@@ -60,49 +63,37 @@ def receipt_png(url, name, ko):
 
 
 def page(receipt, name, ko):
-    tokens = "file://" + os.path.join(ROOT, "shared", "tokens", "tokens.css")
     src = "data:image/png;base64," + base64.b64encode(receipt).decode()
     return f"""<!doctype html>
-<html lang="ko" data-theme="light"><head><meta charset="utf-8">
-<link rel="stylesheet" href="{tokens}">
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@600;800&display=block" rel="stylesheet">
+<html lang="ko" data-theme="light"><head>{retro.head(W, H)}
 <style>
-  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  html, body {{ width: {W}px; height: {H}px; overflow: hidden; }}
-  body {{
-    font-family: "Nunito", "Jua", sans-serif; color: var(--ink); font-synthesis: none;
-    background:
-      radial-gradient(320px 320px at 96% -8%, color-mix(in srgb, var(--pink-bg) 85%, transparent), transparent 70%),
-      radial-gradient(300px 300px at 104% 104%, color-mix(in srgb, var(--yellow-bg) 70%, transparent), transparent 70%),
-      radial-gradient(300px 300px at -8% 108%, color-mix(in srgb, var(--mint-bg) 70%, transparent), transparent 70%),
-      radial-gradient(300px 300px at -8% -12%, color-mix(in srgb, var(--lavender-bg) 75%, transparent), transparent 70%),
-      var(--bg);
-    display: grid; grid-template-columns: 1fr 440px; align-items: center; padding: 0 64px 0 80px; gap: 32px;
-  }}
-  h1 {{ font-family: "Jua"; font-weight: 400; font-size: 108px; line-height: 1.05; }}
-  .en {{ margin-top: 12px; font-size: 34px; font-weight: 800; color: var(--primary); white-space: nowrap; }}
-  .about {{ margin-top: 30px; font-family: "Jua"; font-size: 30px; }}
+  body {{ display: grid; grid-template-columns: minmax(0, 1fr) 440px; align-items: center; padding: 0 56px 0 80px; gap: 32px; }}
+  h1 {{ font-size: 108px; line-height: 1.05; }}
+  .en {{ margin-top: 12px; font-size: 38px; color: var(--primary); white-space: nowrap; }}
+  .about {{ margin-top: 26px; font-size: 30px; }}
   .about-en {{ margin-top: 6px; font-size: 22px; font-weight: 800; color: var(--muted); }}
-  .demo {{ margin-top: 34px; display: inline-flex; align-items: center; gap: 16px; background: var(--surface); border-radius: 999px; padding: 10px 28px; box-shadow: var(--shadow-card); }}
+  .demo {{ margin-top: 30px; display: inline-flex; align-items: center; gap: 16px; background: var(--surface); border-radius: 999px; padding: 8px 28px; border-width: 2.5px; box-shadow: 0 4px 0 var(--ink); }}
   .demo b {{ font-size: 28px; font-weight: 800; letter-spacing: 0.06em; }}
   .demo span {{ font-size: 26px; color: var(--muted); }}
-  .demo strong {{ font-family: "Jua"; font-weight: 400; font-size: 40px; }}
-  /* 영수증 — 위가 보이게 비스듬히, 아래는 바탕으로 사라진다 */
+  .demo strong {{ font-size: 40px; }}
+  .brand {{ margin-top: 30px; }}
+  /* 영수증 — 위가 보이게 비스듬히, 아래는 바탕으로 사라진다. 잉크 그림자 (레트로) */
   .stage {{ position: relative; height: {H}px; overflow: hidden; }}
   .stage img {{
     position: absolute; left: 30px; top: 46px; width: 380px; transform: rotate(-3deg);
-    box-shadow: var(--shadow-card), 0 18px 40px rgb(0 0 0 / 0.12);
+    border: 3px solid var(--ink); box-shadow: 8px 10px 0 var(--ink);
     -webkit-mask-image: linear-gradient(to bottom, #000 64%, transparent 94%);
     mask-image: linear-gradient(to bottom, #000 64%, transparent 94%);
   }}
 </style></head>
-<body>
+<body class="paper">
   <main>
-    <h1>{html.escape(KO)}</h1>
-    <p class="en">{html.escape(EN)} with Youjin</p>
-    <p class="about">{html.escape(ABOUT_KO)}</p>
-    <p class="about-en">{html.escape(ABOUT_EN)}</p>
-    <p class="demo"><b>{html.escape(name.upper())}</b><span>→</span><strong>{html.escape(ko)}</strong></p>
+    <h1 class="ko">{html.escape(KO)}</h1>
+    <p class="en d" lang="en">{html.escape(EN)}</p>
+    <p class="about ko">{html.escape(ABOUT_KO)}</p>
+    <p class="about-en" lang="en">{html.escape(ABOUT_EN)}</p>
+    <p class="demo ink"><b lang="en">{html.escape(name.upper())}</b><span>→</span><strong class="ko">{html.escape(ko)}</strong></p>
+    {retro.brand()}
   </main>
   <div class="stage"><img src="{src}" alt=""></div>
 </body></html>"""
@@ -125,7 +116,7 @@ def main():
     with sync_playwright() as p:
         b = p.chromium.launch()
         pg = b.new_page(viewport={"width": W, "height": H}, color_scheme="light")
-        pg.goto("file://" + page_path, wait_until="networkidle")
+        pg.goto(retro.file_url(page_path), wait_until="networkidle")
         pg.evaluate("document.fonts.ready")
         over = pg.evaluate("[...document.querySelectorAll('main *')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent.trim().slice(0, 30))")
         if over:
