@@ -9,13 +9,14 @@
    - 수업 · 튜터링 · 예약 · 외부 결제 안내 없이 학습 팁만
    - 읽기 규칙(숫자 · 띠 …)을 적으면 shared/korean 의 함수로 만들고 테스트한다
    ============================================================ */
+import { koreanSuneungExam } from "./korean-suneung-exam";
 import { koreanZodiacTti } from "./korean-zodiac-tti";
 import type { Note } from "./types";
 
 export type { Note } from "./types";
 
 /** 최신순 */
-export const NOTES: Note[] = [koreanZodiacTti].sort((a, b) => b.added.localeCompare(a.added));
+export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam].sort((a, b) => b.added.localeCompare(a.added));
 
 export const noteBySlug = (slug: string) => NOTES.find((n) => n.slug === slug);
 /** 이 앱과 관련된 글 */
