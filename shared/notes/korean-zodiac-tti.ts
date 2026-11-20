@@ -6,7 +6,8 @@ export const koreanZodiacTti: Note = {
   slug: "korean-zodiac-tti",
   added: "2026-11-13",
   title: { ko: "무슨 띠예요? 한국의 열두 띠", en: "What’s your Korean zodiac animal?" },
-  searchTitle: "Korean Zodiac Animals (띠, tti) Explained",
+  // 검색 제목에는 한글을 넣지 않는다 — 띠는 설명 · 본문에 (#72)
+  searchTitle: "Korean Zodiac Animals (Tti) Explained",
   description:
     "The Korean zodiac (띠, tti): the twelve animals, how to find yours from your birth year, and how to say “I’m a Horse” in Korean. 무슨 띠예요? 열두 띠와 말하는 법.",
   summary: {

@@ -36,8 +36,8 @@ const HOME = {
   description:
     "Free little apps for learning Korean: build Hangul blocks, write your name in Hangul, learn words with flashcards, read dates and tell time. Made by Youjin, a Korean teacher in Seoul. 한국어를 배우는 사람을 위한 작은 앱 모음.",
 };
-/** 홈 화면 · 헤더 · 꼬리말의 워드마크 (#84). 사이트 이름(SITE.name)을 영어로 바꾸는 건 #72 */
-const HOME_TITLE = "Korean with Youjin";
+/** 홈 화면 · 헤더 · 꼬리말의 워드마크 (#84) — 사이트 이름(SITE.name)과 같다 (#72) */
+const HOME_TITLE = SITE.name;
 /** 사이트를 만든 사람 — 구조화 데이터의 저자. 구독 폼 문구와 같은 사실만 */
 const AUTHOR = { name: "Youjin", jobTitle: "Korean teacher", description: "A Korean teacher in Seoul" }; // llmsTxt 에도 같은 말
 
@@ -46,7 +46,6 @@ const THEME_COLOR = { light: "#f5f8ff", dark: "#131a2c" };
 
 export type PageMeta = { url: string; title: string; description: string; image?: { url: string; alt: string } };
 
-const brand = (a: AppInfo) => `${a.ko} with Youjin`;
 
 /**
  * 페이지 언어 — <html lang> · 구조화 데이터 inLanguage 의 첫 말 (#95).
@@ -66,7 +65,7 @@ const findApp = (slug: string, apps: AppInfo[]) => {
 
 /** 앱 안 화면(덱 · 출처 …)의 브라우저 제목. sub 가 없으면 빌드가 넣은 검색 제목 그대로 (#51) */
 export function screenTitle(slug: string, sub?: string, apps: AppInfo[] = APPS): string {
-  return sub ? `${sub} · ${brand(findApp(slug, apps))}` : pageMeta(slug, SITE, apps).title;
+  return sub ? `${sub} · ${SITE.name}` : pageMeta(slug, SITE, apps).title;
 }
 
 /** 블로그 글 공유 그림 — 글을 쓰면 tools/og/build_og.py 를 돌린다 (없으면 테스트가 알려 준다) */
@@ -95,7 +94,8 @@ export function pageMeta(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
   const a = findApp(slug, apps);
   return {
     url: `${c.url}/${a.slug}/`,
-    title: `${a.searchTitle} | ${brand(a)}`,
+    // 브랜드는 사이트 이름 하나 — 검색 제목에 한글을 넣지 않는다 (#72)
+    title: `${a.searchTitle} | ${c.name}`,
     description: a.description,
     image: a.og && { url: c.url + a.og.image, alt: a.og.alt },
   };
@@ -181,7 +181,6 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
           ...site,
           url: home,
           name: c.name,
-          alternateName: HOME_TITLE,
           description: HOME.description,
           inLanguage: inLanguage(slug, apps),
           publisher: author,
@@ -405,7 +404,7 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
 /* ---------- llms.txt — AI 가 읽는 사이트 요약 (https://llmstxt.org) ---------- */
 export function llmsTxt(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
   const lines = [
-    `# ${c.name} (Korean with Youjin)`,
+    `# ${c.name}`,
     ``,
     `> ${HOME.description}`,
     ``,

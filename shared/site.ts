@@ -43,7 +43,8 @@ export type SiteConfig = {
 
 export const SITE: SiteConfig = {
   url: "https://tutoryoujin.github.io",
-  name: "한국어 with Youjin",
+  // 검색 제목 · og:site_name · 구조화 데이터의 이름. 영어만 — 검색 메타에 한글을 넣지 않는다 (#72)
+  name: "Korean with Youjin",
   analytics: { provider: "goatcounter", id: "" },
   subscribe: { provider: "kit", formId: "" },
   products: [],

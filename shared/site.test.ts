@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { analyticsScript, track } from "./analytics";
 import { APPS } from "./apps";
+import { NOT_FOUND, PAGES } from "./pages";
 import { headTags, jsonLd, jsonLdText, llmsTxt, ogAlt, pageMeta, prerenderHtml, screenTitle, robotsTxt, sitemapXml } from "./seo";
 import { SITE, SUBSCRIBE_COPY, type SiteConfig } from "./site";
 import { subscribeEmail, subscribeEndpoint } from "./subscribe";
@@ -132,13 +133,25 @@ describe("SEO", () => {
   it("검색 제목은 영어 검색어 + 브랜드, 잘리지 않는 길이", () => {
     for (const slug of ["", ...APPS.map((a) => a.slug)]) {
       const t = pageMeta(slug).title;
-      expect(t, t).toMatch(/^[A-Z][\w ()]+ \| .*(with Youjin|한국어 with Youjin)$/);
+      expect(t, t).toMatch(/^[A-Z][\w ()]+ \| Korean with Youjin$/);
       expect(t.length, t).toBeLessThanOrEqual(65);
+    }
+  });
+  it("검색 제목 · 사이트 이름 · og 제목에 한글이 없다 — 대상은 영어로 검색하는 학습자 (#72)", () => {
+    const hangul = /[가-힣ㄱ-ㅎㅏ-ㅣ]/;
+    expect(SITE.name).not.toMatch(hangul);
+    for (const slug of ["", NOT_FOUND.slug, ...PAGES.map((p) => p.slug), ...APPS.map((a) => a.slug)]) {
+      const tags = headTags(slug);
+      for (const key of ["og:title", "og:site_name", "twitter:title"]) {
+        const v = tags.find((t) => t.attrs?.property === key || t.attrs?.name === key)?.attrs?.content;
+        expect(v, `${slug || "home"} ${key}`).not.toMatch(hangul);
+      }
+      expect(pageMeta(slug).title, slug || "home").not.toMatch(hangul);
     }
   });
   it("앱 안 화면 제목 — 홈은 검색 제목 그대로, 덱 · 출처는 앞에 붙인다 (#51)", () => {
     expect(screenTitle("korean-cards")).toBe(pageMeta("korean-cards").title);
-    expect(screenTitle("korean-cards", "이미지 출처")).toBe("이미지 출처 · 한국어 카드 with Youjin");
+    expect(screenTitle("korean-cards", "이미지 출처")).toBe("이미지 출처 · Korean with Youjin");
   });
   it("설명은 영어 먼저, 한국어도 같이", () => {
     for (const slug of ["", ...APPS.map((a) => a.slug)]) {
