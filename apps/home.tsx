@@ -673,9 +673,16 @@ function Maker() {
 function BlogBand() {
   return (
     <section className={cn(wrap, "pt-10 pb-16")} aria-labelledby="band-title">
-      <div className={cn("relative grid items-center gap-5 rounded-[40px] bg-lavender-bg px-6 py-6 text-lavender-ink min-[900px]:grid-cols-[150px_minmax(0,1.3fr)_minmax(0,1fr)_auto] min-[900px]:rounded-full min-[900px]:py-4 min-[900px]:pr-5 min-[900px]:pl-6", ink2)}>
-        <img src="/mascot/winking.webp" alt="" width={160} height={162} className="-mt-16 w-[120px] min-[900px]:-mt-14 min-[900px]:w-[150px]" />
-        <h2 id="band-title" className="font-display text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.1] break-keep">
+      <div className={cn("relative grid items-center gap-5 rounded-[40px] bg-lavender-bg px-6 py-6 text-lavender-ink min-[900px]:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_auto] min-[900px]:pl-[250px] min-[1200px]:grid-cols-[auto_minmax(0,1fr)_auto] min-[1200px]:pl-[290px] min-[900px]:rounded-full min-[900px]:py-5 min-[900px]:pr-5", ink2)}>
+        {/* 띠 아래 가장자리에 손을 걸치고 빼꼼 — 머리는 띠 위로 넘친다 (GPT 목업) */}
+        <img
+          src="/mascot/peek.webp"
+          alt=""
+          width={374}
+          height={156}
+          className="-mt-24 -mb-6 w-[220px] max-w-none min-[900px]:absolute min-[900px]:bottom-0 min-[900px]:left-5 min-[900px]:m-0 min-[900px]:w-[220px] min-[1200px]:w-[260px]"
+        />
+        <h2 id="band-title" className="font-display text-[clamp(1.5rem,2.3vw,2.05rem)] leading-[1.1] break-keep min-[1200px]:whitespace-nowrap">
           From <span className="underline decoration-primary decoration-[0.09em] underline-offset-[0.14em]">Seoul</span> to your screen
           <span className="mt-1 block font-app text-[0.9rem] font-bold" lang="ko">서울에서 여러분 화면으로</span>
         </h2>
