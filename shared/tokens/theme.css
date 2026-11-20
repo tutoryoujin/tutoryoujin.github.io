@@ -73,7 +73,7 @@
 @theme {
   --font-*: initial;
   --font-app: "Nunito", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --font-display: "Fraunces", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif;
+  --font-display: "Caprasimo", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif;
   --font-reading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 
   /* 글자 — 디자인 시스템 타입 스케일. 글꼴은 따로: font-display text-display-md */

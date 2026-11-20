@@ -62,10 +62,10 @@ function cssBlock(tokens, theme, indent) {
 const colors = data.color.tokens;
 const scalars = [
   [
-    "글꼴 — 영문·숫자는 Nunito(본문) · Fraunces(제목, 레트로 세리프), 한글은 언제나 Pretendard (한 스택에서 글자별로 분기)",
+    "글꼴 — 영문·숫자는 Nunito(본문) · Caprasimo(제목, Cooper Black 계열), 한글은 언제나 Pretendard (한 스택에서 글자별로 분기)",
     [
       ["--font-app", '"Nunito", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'],
-      ["--font-display", '"Fraunces", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif'],
+      ["--font-display", '"Caprasimo", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif'],
       [
         "--font-reading",
         '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif',

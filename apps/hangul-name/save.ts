@@ -1,6 +1,6 @@
 /* ============================================================
    영수증 그림 저장 — 화면 영수증과 같은 데이터(receipt.ts)를 <canvas> 에 그린다.
-   의존성 없음. 글꼴은 페이지가 이미 받은 웹폰트(Fraunces · Nunito · Pretendard)를 그대로 쓴다
+   의존성 없음. 글꼴은 페이지가 이미 받은 웹폰트(Caprasimo · Nunito · Pretendard)를 그대로 쓴다
    (canvas 는 document.fonts 를 본다 — SVG 처럼 글꼴을 따로 넣을 필요가 없다).
 
    저장 방법
