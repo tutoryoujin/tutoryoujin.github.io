@@ -77,15 +77,20 @@ export const koreanSuneungExam: Note = {
       t: "cards",
       items: [
         { mark: "✏️", ko: "수험생", en: "test taker" },
-        { mark: "📝", ko: "시험을 보다", en: "to take a test" },
-        { mark: "🎉", ko: "붙다", en: "to pass (lit. to stick)" },
+        { mark: "📝", ko: "시험을 보다", en: "to take a test", sub: "= 시험을 치다" },
+        { mark: "🎉", ko: "붙다", en: "to pass (lit. to stick)", sub: "= 합격하다" },
         { mark: "😢", ko: "떨어지다", en: "to fail (lit. to fall)" },
       ],
     },
     {
+      t: "tip",
+      ko: "‘시험을 보다’와 ‘시험을 치다’는 뜻이 같아요. ‘붙다’와 ‘합격하다’도 같아요. 말할 때는 ‘붙다’를 더 많이 써요.",
+      en: "시험을 보다 and 시험을 치다 mean the same thing: to take a test. 붙다 and 합격하다 both mean to pass. In everyday talk, 붙다 is more common.",
+    },
+    {
       t: "p",
-      ko: "수능 전에는 수험생에게 찹쌀떡이나 엿을 줘요. 끈적끈적해서 시험에 ‘붙으라’는 뜻이에요. 미역국은 미끄러워서 시험 날에는 안 먹어요.",
-      en: "Before the exam, people give test takers sticky rice cakes or taffy, hoping they’ll “stick” (붙다, pass). Seaweed soup is slippery, so nobody eats it on exam day. You don’t want to slip!",
+      ko: "‘붙다’는 원래 ‘딱 달라붙다’라는 뜻이에요. 그래서 수능 전에는 엿이나 찹쌀떡처럼 끈적끈적한 것을 선물하는 문화도 있어요. 시험에 꼭 붙으라는 뜻이에요. 반대로 미역국은 미끄러워서 시험 날에는 안 먹어요.",
+      en: "붙다 literally means “to stick.” So before the exam, there’s a custom of giving test takers something sticky, like 엿 (yeot, Korean taffy) or sticky rice cakes, so they’ll stick to the exam and pass. Seaweed soup is the opposite: it’s slippery, so nobody eats it on exam day. You don’t want to slip!",
     },
     {
       t: "ex",
@@ -96,11 +101,36 @@ export const koreanSuneungExam: Note = {
         { ko: "그동안 수고했어요.", en: "You worked so hard. Well done." },
       ],
     },
+    { t: "h", ko: "시험이 끝나면 할인!", en: "After the exam: discounts!" },
+    {
+      t: "p",
+      ko: "시험이 끝나면 수험생에게 즐거운 일이 기다려요. 수험표를 보여 주면 식당, 영화관, 옷 가게, 놀이공원 같은 곳에서 할인을 받을 수 있어요. 수험표는 시험 날 가져가는 작은 표예요. 그래서 시험이 끝나도 수험표를 꼭 챙겨요.",
+      en: "Once the exam is over, something fun is waiting. Show your 수험표 (suheompyo, exam admission ticket) and you can get discounts at restaurants, movie theaters, clothing stores, theme parks and more. So students hang on to that little ticket long after the exam ends.",
+    },
+    {
+      t: "ex",
+      items: [
+        { ko: "수험표 있으세요?", en: "Do you have your exam ticket?" },
+        { ko: "수험표 보여 주시면 할인돼요.", en: "Show your exam ticket and you get a discount." },
+      ],
+    },
     { t: "h", ko: "어떻게 생각하세요?", en: "What do you think?" },
     {
       t: "p",
       ko: "하루 시험 때문에 비행기가 멈추고, 온 나라가 조용해져요. 대단하다고 생각하는 사람도 있고, 너무 힘들다고 생각하는 사람도 있어요. 여러분 나라에도 이런 시험이 있어요? 이런 수능 문화에 대해 어떻게 생각하세요?",
       en: "For one exam, planes stop and the whole country goes quiet. Some people find it amazing; others think it puts too much pressure on students. Does your country have a test like this? What do you think of Korea’s Suneung culture?",
+    },
+    {
+      t: "p",
+      ko: "한국 수능에서 영어가 어떻게 나오는지 궁금하세요? 여기에서 도전해 보세요!",
+      en: "Curious what the English test on the Suneung looks like? Give it a try here!",
+    },
+    {
+      t: "link",
+      mark: "📄",
+      href: "https://cdn.kice.re.kr/27dae-suneung/27DaeSuneung_3.pdf",
+      ko: "2027학년도 수능 영어 문제지 (PDF, 한국교육과정평가원)",
+      en: "Suneung English test, November 2026 (PDF, official)",
     },
   ],
 };

@@ -31,6 +31,9 @@ describe("글 원본", () => {
       }
     }
   });
+  it("바깥 링크는 https", () => {
+    for (const n of NOTES) for (const b of n.blocks) if (b.t === "link") expect(b.href, n.slug).toMatch(/^https:\/\//);
+  });
 });
 
 describe("글 페이지 — 검색 · 정적 본문", () => {
