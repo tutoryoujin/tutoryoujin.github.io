@@ -38,7 +38,7 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
   switch (b.t) {
     case "h":
       return (
-        <h2 className="mt-10 mb-1 font-display text-[1.45rem] leading-[1.25] font-normal">
+        <h2 className="mt-10 mb-1 font-display text-[1.45rem] leading-[1.25] font-semibold">
           <Two b={b} lead={lead} smallClass="font-app text-[0.7em] font-bold" />
         </h2>
       );

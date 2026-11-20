@@ -20,7 +20,7 @@ export function TtiFinder() {
       {/* 안내는 영어 먼저 (#94). 「저는 ○띠예요」처럼 배우는 한국어는 크게 */}
       <label htmlFor={id} className="block text-[1.05rem] font-extrabold">
         Year you were born
-        <span className="ml-1.5 font-display text-[0.95rem] font-normal text-muted" lang="ko">
+        <span className="ml-1.5 font-display text-[0.95rem] font-semibold text-muted" lang="ko">
           태어난 해
         </span>
       </label>

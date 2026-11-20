@@ -17,7 +17,7 @@ const titleReading = "mt-0.5 block text-[0.95rem] font-bold text-muted";
 const week7 = "grid grid-cols-7 gap-1";
 const sparkle = "animate-[sparkle_1.6s_ease-in-out_infinite] motion-reduce:animate-none";
 const tag = "rounded-full border border-line bg-bg px-3 py-1 text-[0.85rem] font-bold";
-const tagWord = "font-display text-[1rem] font-normal";
+const tagWord = "font-display text-[1rem] font-semibold";
 /* TTS 가 없어서 들어 보기 버튼이 빠지면 남은 버튼이 한 줄을 다 쓴다 */
 const pickBtn = "mt-3 min-h-13 only:col-span-full";
 
@@ -275,7 +275,7 @@ function YearTab({ today, open }: { today: Date; open: (y: number, m: number) =>
           const isNow = isThisYear && mm === today.getMonth() + 1;
           const mini = [
             ...WEEK.map((w) => (
-              <span key={"h" + w[0]} className="font-display font-normal text-muted">
+              <span key={"h" + w[0]} className="font-display font-semibold text-muted">
                 {w[0]}
               </span>
             )),

@@ -134,7 +134,7 @@ export function Receipt({ issued, revealed, printing }: { issued: Issued; reveal
                   <>
                     <b
                       className={cn(
-                        "mr-1.5 inline-block min-w-[1.6em] rounded-[3px] text-center font-display text-[1rem] font-normal",
+                        "mr-1.5 inline-block min-w-[1.6em] rounded-[3px] text-center font-display text-[1rem] font-semibold",
                         j.kind === "jung" && "text-(--hn-red)",
                         j.kind === "jong" && "bg-(--hn-paper-ink) text-(--hn-paper)",
                       )}
@@ -166,7 +166,7 @@ export function Receipt({ issued, revealed, printing }: { issued: Issued; reveal
         dots={false}
         className="font-extrabold"
         l={<Label k="합계" e="TOTAL" />}
-        r={<span className="font-display text-[1.7rem] leading-none font-normal">{text}</span>}
+        r={<span className="font-display text-[1.7rem] leading-none font-semibold">{text}</span>}
       />
       <Rule />
 

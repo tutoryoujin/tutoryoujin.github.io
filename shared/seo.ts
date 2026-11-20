@@ -286,9 +286,9 @@ export const PRERENDER_HIDE = "[data-prerender]{display:none}";
 export const PRERENDER_SHOW = "<style>[data-prerender]{display:block}</style>";
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const wrap = "mx-auto w-full max-w-(--shell-width) px-4 pt-6 pb-10 text-ink";
-const h1 = "font-display text-[1.7rem] leading-[1.2] font-normal";
+const h1 = "font-display text-[1.7rem] leading-[1.2] font-semibold";
 const sub = "block text-[0.85rem] font-bold text-muted";
-const h2 = "mt-6 mb-2 font-display text-[1.2rem] font-normal";
+const h2 = "mt-6 mb-2 font-display text-[1.2rem] font-semibold";
 const li = "mt-1.5";
 const link = "text-primary underline";
 /** 영어 먼저인 페이지(lang="en") 안의 한국어 조각 */

@@ -51,7 +51,7 @@ const withYoujin = "text-[0.78em]";
 /**
  * 워드마크의 「with Youjin」 — 이름 속 You 를 드러낸다 (#83). Korean with You·jin = 너와 함께.
  * You 만 primary 색, 나머지(with · jin)는 둘레 글자색 그대로. 밑줄 · 굵기는 쓰지 않는다 (주인이 정함).
- * 꾸밈이라 색만 써도 된다 — 뜻을 알려 주는 표시가 아니다. Jua 는 굵기가 하나라 굵기로는 못 한다.
+ * 꾸밈이라 색만 써도 된다 — 뜻을 알려 주는 표시가 아니다. 제목 글꼴은 한 굵기라 굵기로는 구분하지 않는다.
  * You 와 jin 사이에 빈칸을 두지 않는다 — 화면 낭독기는 「Youjin」 한 단어로 읽어야 한다.
  * 문장 속 이름(© Made by Youjin)에는 쓰지 않는다. 워드마크에만.
  */
@@ -103,7 +103,7 @@ function RelatedNotes({ app }: { app: string }) {
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
       {/* 영어 먼저 (#100) — 꼬리말 바로 위이고, 영어 먼저인 글 페이지로 가는 문이다 */}
-      <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
+      <h2 id="related-notes" className="font-display text-[1.2rem] font-semibold">
         <span lang="en">{RELATED_NOTES.en}</span>
         <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted" lang="ko">
           {RELATED_NOTES.ko}

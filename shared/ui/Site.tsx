@@ -72,7 +72,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
         <div className="flex items-start gap-2.5">
           <Mark className="size-8" />
           <div>
-            <b className="block font-display text-[1.1rem] font-normal text-ink">
+            <b className="block font-display text-[1.1rem] font-semibold text-ink">
               Korean <WithYoujin />
             </b>
             <span>
@@ -91,7 +91,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
 export function SiteTitle({ big, small, lead, children }: { big: string; small: string; lead?: "ko" | "en"; children?: ReactNode }) {
   return (
     <header className="break-keep">
-      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal text-balance" lang={lead}>
+      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-semibold text-balance" lang={lead}>
         {big}
         <span className="mt-1.5 block font-app text-[1.05rem] font-bold text-muted" lang={lead && (lead === "ko" ? "en" : "ko")}>
           {small}

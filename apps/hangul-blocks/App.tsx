@@ -95,7 +95,7 @@ const enOnTone = "text-[0.75rem] font-bold opacity-85";
  */
 const stage = cn(boxClass, "relative grid min-h-[170px] grid-cols-2 items-center gap-3 overflow-hidden");
 const glyph = "flex flex-col items-center gap-2 text-center";
-/** 블록 옆의 진짜 글자. 학생이 책·간판에서 보는 모양이라 Jua 대신 읽기 글꼴 */
+/** 블록 옆의 진짜 글자. 학생이 책·간판에서 보는 모양이라 제목 글꼴 대신 읽기 글꼴 */
 const sylClass = "font-reading text-[4rem] leading-none text-ink min-[480px]:text-[5.5rem]";
 const lines = "flex flex-col gap-0.5 leading-[1.3]";
 const tip = "flex flex-col items-center text-center leading-[1.3]";
@@ -262,7 +262,7 @@ function BuildTab() {
               aria-label={parts[r] ? `${ROLE_NAME[r].ko} ${ch} 빼기 · remove` : ROLE_NAME[r].ko}
             >
               <small className="font-display text-[0.75rem]">{ROLE_NAME[r].ko}</small>
-              <b className={cn("font-display text-[1.4rem] font-normal", isGhost && "opacity-55")}>{ch ?? "—"}</b>
+              <b className={cn("font-display text-[1.4rem] font-semibold", isGhost && "opacity-55")}>{ch ?? "—"}</b>
               <em className="text-[0.62rem] font-bold not-italic">{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
             </button>
           );

@@ -1,6 +1,6 @@
 /* ============================================================
    영수증 그림 저장 — 화면 영수증과 같은 데이터(receipt.ts)를 <canvas> 에 그린다.
-   의존성 없음. 글꼴은 페이지가 이미 받은 웹폰트(Jua · Nunito · Pretendard)를 그대로 쓴다
+   의존성 없음. 글꼴은 페이지가 이미 받은 웹폰트(Fredoka · Nunito · Pretendard)를 그대로 쓴다
    (canvas 는 document.fonts 를 본다 — SVG 처럼 글꼴을 따로 넣을 필요가 없다).
 
    저장 방법
@@ -61,7 +61,7 @@ function paint(ctx: CanvasRenderingContext2D, it: Issued, c: Colors, f: Fonts, d
   };
   /** 한국어 라벨 + 작은 영어. 끝난 x 를 돌려준다 */
   const label = (k: string, e: string, x: number, yy: number, px = 36) => {
-    font(px, f.display);
+    font(px, f.display, 600);
     put(k, x, yy);
     x += width(k) + 12;
     font(Math.round(px * 0.62), f.app, 700);
@@ -101,7 +101,7 @@ function paint(ctx: CanvasRenderingContext2D, it: Issued, c: Colors, f: Fonts, d
   };
 
   // 머리
-  font(76, f.display);
+  font(76, f.display, 600);
   put("한글 이름 영수증", W / 2, y + 40, "center");
   y += 82;
   font(26, f.app, 700);
@@ -120,8 +120,8 @@ function paint(ctx: CanvasRenderingContext2D, it: Issued, c: Colors, f: Fonts, d
 
   // 큰 이름 — 넘치면 줄인다
   let big = 210;
-  font(big, f.display);
-  while (width(text) > W - 2 * P && big > 80) font((big -= 10), f.display);
+  font(big, f.display, 600);
+  while (width(text) > W - 2 * P && big > 80) font((big -= 10), f.display, 600);
   y += big * 0.95;
   put(text, W / 2, y, "center");
   y += 30;
@@ -201,7 +201,7 @@ function paint(ctx: CanvasRenderingContext2D, it: Issued, c: Colors, f: Fonts, d
   // 자기소개 — 어미만 빨강
   y += 60;
   let px = 50;
-  font(px, f.display);
+  font(px, f.display, 600);
   while (width(intro.sentence) > W - 2 * P && px > 26) font((px -= 2), f.display);
   let x = P;
   for (const [s, col] of [

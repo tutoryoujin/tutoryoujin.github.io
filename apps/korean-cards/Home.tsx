@@ -78,8 +78,8 @@ const folder =
   "focus-visible:z-2 focus-visible:-translate-y-1.5 active:z-2 active:-translate-y-0.5 motion-reduce:translate-none! motion-reduce:transition-none";
 /* 제목은 알약 — 서류철에 붙이는 이름표다. 카드가 -bg 이므로 알약은 -ink 로
    채우고 글자를 -bg 로 뺀다. 흰 알약은 파스텔 위에서 1.3:1 이라 안 보인다.
-   위아래 padding 이 다른 건 Jua 의 글자가 기준선보다 위에 쏠려 있어서다. */
-const label = "inline-block rounded-full px-4 pt-2.75 pb-2.25 font-display text-[1.2rem] leading-none";
+   한글은 Pretendard 라 기준선이 가운데에 있어 위아래 padding 을 같게 둔다. */
+const label = "inline-block rounded-full px-4 py-2.5 font-display text-[1.2rem] leading-none";
 /* 폴더 위에서는 muted 를 쓰지 않는다 — 파스텔 8색 중 넷이 4.5:1 에 못 미친다.
    영문도 ink 로 두고 크기와 굵기로만 눌러 준다. */
 const gloss = "mt-1.5 text-[0.76rem] font-semibold";
@@ -123,8 +123,8 @@ export function Home() {
             <a key={deck.id} className={cn(folder, TONE[deck.color], "bg-(--g-bg)")} href={`#/deck/${deck.id}`}>
               <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{deck.title.ko}</span>
               {isLast && <span className="sr-only">마지막으로 연 덱 / Last opened</span>}
-              {/* 한글은 font-app 의 두 번째 글꼴인 Jua 로 떨어진다. 둥근 서체라
-                  .85rem 에서는 뭉쳐서, 본문보다 한 단계만 작게 둔다. */}
+              {/* 한글은 font-app 의 두 번째 글꼴인 Pretendard 로 떨어진다.
+                  .85rem 에서는 빽빽해서, 본문보다 한 단계만 작게 둔다. */}
               <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{meta.ko}</p>
               <p className={gloss}>
                 {/* 덩어리째로만 줄을 바꾼다 — "Not opened / yet" 처럼 꺾이지 않게 */}

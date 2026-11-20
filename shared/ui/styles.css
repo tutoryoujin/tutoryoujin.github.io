@@ -31,9 +31,13 @@
     background: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-app);
-    font-synthesis: none; /* Jua 는 굵기가 하나뿐 — 가짜 볼드 방지 */
+    font-synthesis: none; /* 불러온 굵기만 쓴다 — 가짜 볼드 방지 */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+  }
+  /* 제목 글꼴은 한 굵기(600). Fredoka 는 600 만 불러오고, 한글 Pretendard 도 같은 굵기로 맞춘다 */
+  .font-display {
+    font-weight: 600;
   }
   /* React 가 그리는 자리. 헤더·본문·꼬리말이 body 의 flex 에 그대로 놓이게 */
   #root {
