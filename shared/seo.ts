@@ -42,7 +42,7 @@ const HOME_TITLE = SITE.name;
 const AUTHOR = { name: "Youjin", jobTitle: "Korean teacher", description: "A Korean teacher in Seoul" }; // llmsTxt 에도 같은 말
 
 /** 브라우저 주소창 색 — tokens.json 의 bg (라이트 · 다크) */
-const THEME_COLOR = { light: "#f5f8ff", dark: "#131a2c" };
+const THEME_COLOR = { light: "#fbf5ec", dark: "#15172b" }; // tokens.json 의 bg
 
 export type PageMeta = { url: string; title: string; description: string; image?: { url: string; alt: string } };
 
