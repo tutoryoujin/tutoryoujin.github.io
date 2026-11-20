@@ -34,11 +34,11 @@ export type NavLink = { href: string; ko: string; en: string; active?: boolean }
 /** 꼬리말 고지. ko 가 없으면 영어만 (출처 같은 법적 문구, #92) */
 export type Legal = { en: ReactNode; ko?: ReactNode };
 
-/* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
-   preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
+/* 브랜드 마크는 레트로 이응이 그대로 — 동그라미 바탕 없이 선 채로 선다.
+   정사각 칸 + 정사각 symbol viewBox 라 preserveAspectRatio 가 손댈 일이 없다. */
 export const Mark = ({ className }: { className?: string }) => (
   <span
-    className={cn("block size-9 shrink-0 overflow-hidden rounded-full bg-sky transition-transform duration-150 [&_svg]:size-full", className)}
+    className={cn("block size-10 shrink-0 transition-transform duration-150 [&_svg]:size-full", className)}
     aria-hidden="true"
   >
     <svg>
@@ -103,7 +103,7 @@ function RelatedNotes({ app }: { app: string }) {
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
       {/* 영어 먼저 (#100) — 꼬리말 바로 위이고, 영어 먼저인 글 페이지로 가는 문이다 */}
-      <h2 id="related-notes" className="font-display text-[1.2rem] font-semibold">
+      <h2 id="related-notes" className="font-display text-[1.2rem] font-extrabold">
         <span lang="en">{RELATED_NOTES.en}</span>
         <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted" lang="ko">
           {RELATED_NOTES.ko}

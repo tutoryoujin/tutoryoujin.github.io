@@ -79,7 +79,7 @@ function ClockTab() {
               {d > 0 ? "+" : "−"}
               {Math.abs(d)}
               {/* 브라우저 기본 small 은 smaller (preflight 는 80%) */}
-              <small className="ml-0.5 font-display text-[smaller] font-semibold">분</small>
+              <small className="ml-0.5 font-display text-[smaller] font-extrabold">분</small>
             </button>
           ))}
         </div>
@@ -136,7 +136,7 @@ function ClockTab() {
 /* ---------- 읽는 법 ---------- */
 const rule = "flex flex-col gap-0.5 rounded-lg p-3 text-center leading-[1.2]";
 const ruleSmall = "text-[0.75rem] font-extrabold";
-const ruleB = "font-display text-[1.6rem] font-semibold";
+const ruleB = "font-display text-[1.6rem] font-extrabold";
 const ruleSpan = "font-display text-[1rem]";
 const ruleEm = "text-[0.75rem] font-bold not-italic";
 // 상자 제목(h3, #101). 크기는 예전 h2 의 브라우저 기본(1.5em) 그대로 — 영어 줄의 줄 높이가 여기서 나온다

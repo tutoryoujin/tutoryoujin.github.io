@@ -1,12 +1,12 @@
 // 이응 그림 데이터 — 레트로 이응이 (리브랜딩).
-// 그림은 유진 님의 「IEUNG-I · RETRO EXPRESSIONS」 시트에서 표정마다 잘라 낸 것 (public/ieung/<표정>.webp).
+// 그림은 유진 님이 준 레트로 이응이 표정 원본(표정마다 한 장, 투명 배경) — public/ieung/<표정>.webp.
 // 다시 그리지 않는다 — 시트의 이응이가 곧 이응이다. 새 표정은 시트에 그려서 잘라 넣는다.
 // 몸 전체 움직임(숨쉬기 · 점프 · 기울기)은 shared/ui/ieung.css 의 mv-move · mv-breathe 에 그대로 걸린다.
 
-/** 시트의 표정 12 */
+/** 받은 표정 10 */
 export const ART = [
   "neutral", "laughing", "excited", "winking", "surprised", "bashful",
-  "curious", "thinking", "sad", "worried", "sleepy", "proud",
+  "curious", "thinking", "sleepy", "proud",
 ] as const;
 export type Art = (typeof ART)[number];
 
@@ -24,9 +24,9 @@ export const MOOD_ART: Record<Mood, Art> = {
   sleepy: "sleepy",
   huh: "curious",
   proud: "proud",
-  moved: "sad",
+  moved: "bashful", // 감동 — 두 손 모은 수줍은 얼굴
   love: "bashful",
-  tongue: "laughing",
+  tongue: "winking", // 메롱 — 혀 내민 윙크
 };
 
 export const artSrc = (a: Art) => `/ieung/${a}.webp`;

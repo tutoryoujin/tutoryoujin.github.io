@@ -205,7 +205,7 @@ function Article({ n }: { n: Note }) {
       </article>
       {apps.length > 0 && (
         <section className="mt-12" aria-labelledby="practice">
-          <h2 id="practice" className="font-display text-[1.45rem] font-semibold">
+          <h2 id="practice" className="font-display text-[1.45rem] font-extrabold">
             Practice in the app
             <span className="block font-app text-[0.95rem] font-bold text-muted" lang="ko">
               앱에서 연습하기

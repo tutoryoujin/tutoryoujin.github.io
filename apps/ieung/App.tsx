@@ -81,7 +81,7 @@ const Badge = ({ tone, icon, ko, en, className }: { tone: string; icon: string; 
     style={{ background: `var(--${tone}-bg)`, color: `var(--${tone}-ink)` }}
   >
     <span aria-hidden="true">{icon}</span>
-    <span className="font-display text-[1rem] font-semibold">{ko}</span>
+    <span className="font-display text-[1rem] font-extrabold">{ko}</span>
     <span>· {en}</span>
   </span>
 );

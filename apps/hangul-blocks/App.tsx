@@ -262,7 +262,7 @@ function BuildTab() {
               aria-label={parts[r] ? `${ROLE_NAME[r].ko} ${ch} 빼기 · remove` : ROLE_NAME[r].ko}
             >
               <small className="font-display text-[0.75rem]">{ROLE_NAME[r].ko}</small>
-              <b className={cn("font-display text-[1.4rem] font-semibold", isGhost && "opacity-55")}>{ch ?? "—"}</b>
+              <b className={cn("font-display text-[1.4rem] font-extrabold", isGhost && "opacity-55")}>{ch ?? "—"}</b>
               <em className="text-[0.62rem] font-bold not-italic">{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
             </button>
           );

@@ -35,9 +35,9 @@
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
-  /* 제목 글꼴은 한 굵기(600). Fredoka 는 600 만 불러오고, 한글 Pretendard 도 같은 굵기로 맞춘다 */
+  /* 제목 글꼴은 한 굵기(800). Fraunces 는 800 만 불러오고, 한글 Pretendard 도 같은 굵기로 맞춘다 */
   .font-display {
-    font-weight: 600;
+    font-weight: 800;
   }
   /* React 가 그리는 자리. 헤더·본문·꼬리말이 body 의 flex 에 그대로 놓이게 */
   #root {

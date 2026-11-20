@@ -39,7 +39,7 @@ mount(
       <Link href="/" en="Home — Korean with Youjin" ko="첫 화면" />
       <Link href="/notes/" en={NOTES_TITLE.en} ko={NOTES_TITLE.ko} />
     </ul>
-    <h2 className="mt-8 font-display text-[1.3rem] font-semibold">
+    <h2 className="mt-8 font-display text-[1.3rem] font-extrabold">
       All apps <span className="text-[0.9rem] font-app font-bold text-muted" lang="ko">모든 앱</span>
     </h2>
     <ul className="mt-3 grid gap-2.5 min-[440px]:grid-cols-2">

@@ -35,7 +35,7 @@ type Props = {
 
 type Round = { q: Question; choices: Choice[]; picked: Choice | null };
 
-const scoreNum = "font-display text-[1rem] font-semibold text-ink";
+const scoreNum = "font-display text-[1rem] font-extrabold text-ink";
 const enLine = "block text-[0.85rem] font-bold text-muted";
 
 /** 문제·결과 위의 작은 제목. 한국어 한 줄, 영어 한 줄 */
@@ -196,7 +196,7 @@ function Result({ score, length, missed, onRestart }: { score: number; length: n
             {missed.map((q) => (
               <li key={q.id} className="flex justify-between gap-2 rounded-sm bg-bg px-3 py-2 font-bold">
                 <span>{q.review}</span>
-                <b className="font-display font-semibold text-ok-ink">{q.answer}</b>
+                <b className="font-display font-extrabold text-ok-ink">{q.answer}</b>
               </li>
             ))}
           </ul>
