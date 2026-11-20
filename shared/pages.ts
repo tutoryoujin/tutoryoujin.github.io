@@ -50,7 +50,8 @@ export const PAGES: SitePage[] = [
     slug: "notes",
     ko: NOTES_TITLE.ko,
     en: NOTES_TITLE.en,
-    searchTitle: "Korean Learning Blog: Grammar, Words & Culture",
+    // 「| Korean with Youjin」까지 65자 안 (#72)
+    searchTitle: "Korean Learning Blog: Grammar & Culture",
     description:
       "Short posts on Korean grammar, words and culture for beginners, by Youjin, a Korean teacher in Seoul. 한국어를 배우는 사람을 위한 짧은 글.",
     lead: "en",
