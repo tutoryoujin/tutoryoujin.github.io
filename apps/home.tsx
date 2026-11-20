@@ -306,14 +306,10 @@ function IeungStage() {
         <span lang="ko">이응이를 소개해요</span> Meet Ieung{"‑"}i
       </h2>
       {/* 하늘 구름 · 서울 · 떠 있는 자모 — 꾸밈 */}
-      <span className="home-cloud absolute inset-x-[2%] top-[8%] bottom-[10%] bg-sky" aria-hidden="true" />
-      <Skyline className="absolute right-0 bottom-[10%] w-[62%] max-w-[440px] max-[600px]:w-[60%]" />
+      <CloudBand className="absolute top-[22%] -left-[4%] h-[72%] w-[108%]" />
+      <Skyline className="absolute -right-[4%] bottom-[10%] w-[62%] max-w-[440px] max-[600px]:w-[60%]" />
       <span className="home-jamo top-[6%] right-[16%] -rotate-6 text-lavender-bg max-[600px]:hidden" aria-hidden="true">ㄱ</span>
       <span className="home-jamo top-[16%] right-[3%] rotate-6 text-primary max-[600px]:hidden" aria-hidden="true">ㅏ</span>
-      <Spark className="absolute top-[30%] left-[6%] size-9 -rotate-[30deg]" />
-      <svg className="absolute top-[54%] left-[12%] size-6 text-primary" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M10 0 Q11.5 8.5 20 10 Q11.5 11.5 10 20 Q8.5 11.5 0 10 Q8.5 8.5 10 0Z" fill="currentColor" />
-      </svg>
 
       <div className="relative z-2 flex w-full flex-col items-center">
         {/* 말풍선 — 이응이 머리 위 왼쪽, 꼬리는 이응이 쪽 */}
@@ -379,6 +375,34 @@ function IeungStage() {
         </p>
       </div>
     </div>
+  );
+}
+
+/** 하늘 구름 띠 — 목업처럼 옆으로 길고 가장자리가 뭉게뭉게, 옅은 점묘 결 */
+const PUFFS: [number, number, number][] = [
+  [70, 210, 62], [150, 160, 80], [250, 118, 92], [360, 110, 96], [468, 140, 86], [548, 196, 64],
+  [58, 300, 52], [150, 328, 58], [206, 344, 44], [262, 340, 54], [320, 346, 44], [380, 338, 58], [490, 322, 56], [560, 288, 46],
+];
+function CloudBand({ className }: { className?: string }) {
+  const puffs = (fill: string) => (
+    <g fill={fill}>
+      <rect x="44" y="160" width="520" height="180" rx="70" />
+      {PUFFS.map(([cx, cy, r]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} />
+      ))}
+    </g>
+  );
+  return (
+    <svg className={cn("pointer-events-none", className)} viewBox="0 0 610 400" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <pattern id="home-cloud-grain" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(24)">
+          <circle cx="1.5" cy="1.5" r=".7" fill="var(--sky-ink)" opacity=".13" />
+          <circle cx="4.5" cy="4.2" r=".5" fill="var(--surface)" opacity=".7" />
+        </pattern>
+      </defs>
+      {puffs("var(--sky)")}
+      {puffs("url(#home-cloud-grain)")}
+    </svg>
   );
 }
 
