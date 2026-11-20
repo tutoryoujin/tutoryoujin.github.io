@@ -9,7 +9,7 @@
 import { APPS, CATEGORIES, type AppInfo, type Category } from "@yj/apps";
 import { readRecent, type Recent } from "@yj/recent";
 import { NOTES_NAV } from "@yj/notes";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   cn,
   Footer,
@@ -307,7 +307,7 @@ function IeungStage() {
       </h2>
       {/* 하늘 구름 · 서울 · 떠 있는 자모 — 꾸밈 */}
       <span className="home-cloud absolute inset-x-[2%] top-[8%] bottom-[10%] bg-sky" aria-hidden="true" />
-      <Skyline className="absolute right-[1%] bottom-[9%] w-[34%] max-w-[240px] text-ink max-[600px]:w-[40%]" />
+      <Skyline className="absolute right-0 bottom-[10%] w-[62%] max-w-[440px] max-[600px]:w-[60%]" />
       <span className="home-jamo top-[6%] right-[16%] -rotate-6 text-lavender-bg max-[600px]:hidden" aria-hidden="true">ㄱ</span>
       <span className="home-jamo top-[16%] right-[3%] rotate-6 text-primary max-[600px]:hidden" aria-hidden="true">ㅏ</span>
       <Spark className="absolute top-[30%] left-[6%] size-9 -rotate-[30deg]" />
@@ -335,6 +335,22 @@ function IeungStage() {
           aria-label="이응이 누르기 / Tap Ieung-i"
           className="relative w-[min(78%,340px)] cursor-pointer rounded-full bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary min-[960px]:w-[min(80%,400px)]"
         >
+          {/* 발밑 점묘 그림자 — 목업처럼 땅에 선 느낌 */}
+          <svg className="absolute -bottom-[2%] left-1/2 h-[7%] w-[62%] -translate-x-1/2" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <pattern id="ieung-ground" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+                <circle cx="1.2" cy="1.2" r=".95" fill="var(--ink)" />
+              </pattern>
+              <radialGradient id="ieung-ground-f">
+                <stop offset=".35" stopColor="#fff" />
+                <stop offset="1" stopColor="#fff" stopOpacity="0" />
+              </radialGradient>
+              <mask id="ieung-ground-m">
+                <ellipse cx="100" cy="10" rx="100" ry="10" fill="url(#ieung-ground-f)" />
+              </mask>
+            </defs>
+            <ellipse cx="100" cy="10" rx="100" ry="10" fill="url(#ieung-ground)" mask="url(#ieung-ground-m)" />
+          </svg>
           <span className={pokeClass} key={`${n}-${asleep}`}>
             <Ieung mood={line.mood} />
           </span>
@@ -366,30 +382,83 @@ function IeungStage() {
   );
 }
 
-/** 서울 — 남산타워와 건물 실루엣. 잉크색 한 가지, 창문은 바탕색 */
+/** 서울 — 점묘 남산 위 타워, 외곽선 건물, 앞을 덮는 뭉게구름. 목업의 판화 느낌 */
 function Skyline({ className }: { className?: string }) {
+  const id = useId().replace(/:/g, "");
+  const ink = "var(--ink)";
+  const out = { fill: "var(--lavender-bg)", stroke: ink, strokeWidth: 2.5, strokeLinejoin: "round" as const };
+  // 건물: x, 위쪽 y, 너비, 창문 열 수
+  const blocks: [number, number, number, number][] = [
+    [96, 150, 22, 2],
+    [122, 132, 26, 2],
+    [152, 146, 22, 2],
+    [178, 124, 26, 2],
+    [208, 142, 24, 2],
+  ];
   return (
-    <svg className={cn("pointer-events-none", className)} viewBox="0 0 300 150" aria-hidden="true">
-      <g fill="currentColor">
-        <path d="M0 150 Q40 118 80 126 Q120 104 160 120 Q210 96 300 112 V150Z" opacity=".18" />
-        <rect x="20" y="96" width="26" height="54" rx="2" />
-        <rect x="50" y="82" width="22" height="68" rx="2" />
-        <rect x="76" y="104" width="30" height="46" rx="2" />
-        <rect x="150" y="90" width="24" height="60" rx="2" />
-        <rect x="178" y="106" width="34" height="44" rx="2" />
-        <rect x="246" y="98" width="28" height="52" rx="2" />
-        {/* 남산 + 타워 */}
-        <path d="M100 150 Q150 92 230 150Z" />
-        <rect x="160" y="38" width="6" height="74" rx="2" />
-        <rect x="153" y="52" width="20" height="9" rx="4" />
-        <rect x="156" y="44" width="14" height="6" rx="3" />
-        <rect x="162" y="18" width="2" height="22" />
+    <svg className={cn("pointer-events-none", className)} viewBox="0 0 360 190" aria-hidden="true">
+      <defs>
+        <pattern id={`${id}d`} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+          <circle cx="1.4" cy="1.4" r="1.25" fill={ink} />
+        </pattern>
+        <pattern id={`${id}s`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+          <circle cx="2" cy="2" r=".8" fill="var(--sky-ink)" opacity=".55" />
+        </pattern>
+        <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fff" />
+          <stop offset=".55" stopColor="#fff" stopOpacity=".35" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <mask id={`${id}m`}>
+          <rect width="360" height="190" fill={`url(#${id}f)`} />
+        </mask>
+      </defs>
+
+      {/* 남산 — 점묘, 꼭대기가 더 촘촘 */}
+      <path d="M190 190 C220 138 248 96 288 90 C322 86 346 116 360 160 V190Z" fill="var(--lavender-bg)" opacity=".9" />
+      <path d="M190 190 C220 138 248 96 288 90 C322 86 346 116 360 160 V190Z" fill={`url(#${id}d)`} mask={`url(#${id}m)`} />
+
+      {/* N서울타워 */}
+      <g stroke={ink} strokeWidth="2.5" strokeLinejoin="round" fill="var(--surface)">
+        <path d="M283 92 L286 40 H294 L297 92Z" />
+        <rect x="279" y="26" width="22" height="14" rx="5" />
+        <rect x="283" y="17" width="14" height="9" rx="3" />
       </g>
-      <g fill="var(--bg)">
-        {[[26, 104], [36, 104], [26, 118], [36, 118], [56, 92], [64, 92], [56, 106], [64, 106], [84, 112], [96, 112], [184, 114], [198, 114], [252, 106], [262, 106], [252, 120], [262, 120], [156, 98], [166, 98]].map(([x, y]) => (
-          <rect key={`${x}-${y}`} x={x} y={y} width="5" height="6" rx="1" />
-        ))}
-      </g>
+      <path d="M290 17 V2" stroke={ink} strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M287 9 H293" stroke={ink} strokeWidth="2" strokeLinecap="round" />
+      <path d="M282 33 H298" stroke={ink} strokeWidth="1.5" />
+
+      {/* 건물 — 라벤더 면 + 잉크 외곽선 + 잉크 창문 */}
+      {blocks.map(([x, y, w, cols]) => {
+        const rows = Math.floor((182 - y - 10) / 12);
+        const gap = (w - cols * 5) / (cols + 1);
+        return (
+          <g key={x}>
+            <rect x={x} y={y} width={w} height={190 - y} rx="1.5" {...out} />
+            {Array.from({ length: rows * cols }, (_, i) => (
+              <rect
+                key={i}
+                x={x + gap + (i % cols) * (5 + gap)}
+                y={y + 7 + Math.floor(i / cols) * 12}
+                width="5"
+                height="6"
+                rx=".8"
+                fill={ink}
+              />
+            ))}
+          </g>
+        );
+      })}
+
+      {/* 앞 구름 — 밝은 면 + 옅은 점묘, 남산 아랫자락을 덮음 */}
+      <path
+        d="M212 190 C210 176 224 168 238 174 C242 158 264 152 276 166 C286 152 310 150 318 164 C330 150 356 150 360 158 V190Z"
+        fill="var(--surface)"
+      />
+      <path
+        d="M212 190 C210 176 224 168 238 174 C242 158 264 152 276 166 C286 152 310 150 318 164 C330 150 356 150 360 158 V190Z"
+        fill={`url(#${id}s)`}
+      />
     </svg>
   );
 }
