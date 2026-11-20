@@ -27,6 +27,8 @@ export type Block =
   | ({ t: "tip" } & Bi)
   /** 작은 카드 격자 — mark(그림 글자) · ko · en · sub(한 줄 더) */
   | { t: "cards"; items: (Bi & { mark: string; sub?: string })[] }
+  /** 바깥 링크 (새 탭) — 공식 자료처럼 글이 가리키는 곳. href 는 https */
+  | ({ t: "link"; href: string; mark?: string } & Bi)
   /** 화면에서만 움직이는 부품 (예: 내 띠 찾기). 정적 본문에는 안 나간다 */
   | { t: "widget"; id: string };
 
@@ -68,6 +70,8 @@ export function docHtml(blocks: Block[], lead: Lead): string {
           return `<ul class="mt-3">${b.items
             .map((i) => `<li class="mt-1.5">${esc(i.mark)} ${two(i)}${i.sub ? ` — ${esc(i.sub)}` : ""}</li>`)
             .join("")}</ul>`;
+        case "link":
+          return `<p class="mt-4"><a href="${esc(b.href)}" rel="noopener">${b.mark ? `${esc(b.mark)} ` : ""}${two(b)}</a></p>`;
         case "widget":
           return "";
       }

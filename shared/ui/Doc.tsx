@@ -111,6 +111,28 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
           ))}
         </ul>
       );
+    case "link":
+      return (
+        <p className="mt-4">
+          <a
+            href={b.href}
+            target="_blank"
+            rel="noopener"
+            className="flex min-h-11 items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 font-bold text-ink no-underline shadow-card"
+          >
+            {b.mark && (
+              <span className="text-[1.6rem] leading-none" aria-hidden="true">
+                {b.mark}
+              </span>
+            )}
+            <span className="min-w-0 flex-1">
+              <Two b={b} lead={lead} />
+            </span>
+            <span aria-hidden="true">↗</span>
+            <span className="sr-only">(opens in a new tab · 새 탭)</span>
+          </a>
+        </p>
+      );
     case "widget":
       return <>{widgets[b.id] ?? null}</>;
   }
