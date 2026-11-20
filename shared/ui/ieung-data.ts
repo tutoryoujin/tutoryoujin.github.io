@@ -1,5 +1,5 @@
 // 이응 그림 데이터 — 레트로 이응이 (리브랜딩).
-// 그림은 유진 님이 준 레트로 이응이 표정 원본(표정마다 한 장, 투명 배경) — public/ieung/<표정>.webp.
+// 그림은 유진 님이 준 레트로 이응이 표정 원본(표정마다 한 장, 투명 배경) — public/mascot/<표정>.webp (앱 /ieung/ 과 겹치지 않게 mascot).
 // 다시 그리지 않는다 — 시트의 이응이가 곧 이응이다. 새 표정은 시트에 그려서 잘라 넣는다.
 // 몸 전체 움직임(숨쉬기 · 점프 · 기울기)은 shared/ui/ieung.css 의 mv-move · mv-breathe 에 그대로 걸린다.
 
@@ -29,13 +29,13 @@ export const MOOD_ART: Record<Mood, Art> = {
   tongue: "winking", // 메롱 — 혀 내민 윙크
 };
 
-export const artSrc = (a: Art) => `/ieung/${a}.webp`;
+export const artSrc = (a: Art) => `/mascot/${a}.webp`;
 
 /** 문서에 한 번만 두는 defs — 작은 자리(헤더 · 꼬리말)용 마크. <svg><use href="#ieung-mark"/></svg> 로 쓴다 */
 export const IEUNG_DEFS =
   `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>` +
-  `<symbol id="ieung-mark" viewBox="0 0 128 128"><image href="/ieung/mark.webp" width="128" height="128"/></symbol>` +
-  `<symbol id="ieung-flat" viewBox="0 0 128 128"><image href="/ieung/mark.webp" width="128" height="128"/></symbol>` +
+  `<symbol id="ieung-mark" viewBox="0 0 128 128"><image href="/mascot/mark.webp" width="128" height="128"/></symbol>` +
+  `<symbol id="ieung-flat" viewBox="0 0 128 128"><image href="/mascot/mark.webp" width="128" height="128"/></symbol>` +
   `</defs></svg>`;
 
 /** 표정마다 SVG 의 안쪽 (viewBox 0 0 240 250). 바닥에 발을 붙여 표정이 바뀌어도 키가 같다 */
