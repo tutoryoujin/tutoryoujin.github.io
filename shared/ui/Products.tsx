@@ -24,7 +24,7 @@ export function Products({ source, className, config = SITE }: { source: string;
         {visibleProducts(config).map((p) => (
           <li key={p.id}>
             <a
-              className="flex min-h-11 items-center gap-3.5 rounded-lg bg-surface px-4 py-3.5 text-ink no-underline shadow-card"
+              className="flex min-h-11 items-center gap-3.5 rounded-lg border-2 border-ink bg-surface px-4 py-3.5 text-ink no-underline"
               href={p.href}
               target="_blank"
               rel="noopener"

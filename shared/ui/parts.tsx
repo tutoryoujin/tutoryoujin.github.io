@@ -17,8 +17,8 @@ export type Accent = "blue" | "pink" | "yellow" | "mint" | "lavender" | "coral" 
 export type Tone = Accent | (string & {});
 const toneStyle = (t: Tone): CSSProperties => ({ background: `var(--${t}-bg)`, color: `var(--${t}-ink)` });
 
-/** 흰 상자. 화면의 큰 덩어리마다 하나 */
-export const boxClass = "rounded-[24px] bg-surface p-4 shadow-card";
+/** 흰 상자. 화면의 큰 덩어리마다 하나. 레트로 — 남색 굵은 테, 그림자 없이 (홈 카드와 같은 모양) */
+export const boxClass = "rounded-[24px] border-2 border-ink bg-surface p-4";
 /**
  * labelledBy 에 상자 제목(h3 …)의 id 를 주면 <section aria-labelledby> 로 그린다 (#101).
  * 제목이 없는 상자는 div 그대로 — 이름 없는 section 은 뜻이 없다.
@@ -35,7 +35,8 @@ export const Box = ({ children, className, labelledBy, ...rest }: { children: Re
   );
 
 /**
- * 큰 버튼. variant="ghost" 는 흰 바탕. tone 을 주면 그 쌍(-bg 바탕 · -ink 글자 · -ink 테)으로 칠한다.
+ * 큰 버튼. variant="ghost" 는 흰 바탕. tone 을 주면 그 쌍(-bg 바탕 · -ink 글자)으로 칠한다.
+ * 레트로 — 테는 늘 남색 잉크, 아래로 딱딱한 잉크 그림자. 누르면 그림자만큼 내려간다 (홈 버튼과 같은 모양).
  * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant · tone 으로.
  */
 export function Btn(props: {
@@ -59,12 +60,12 @@ export function Btn(props: {
       onClick={props.onClick}
       disabled={props.disabled}
       aria-busy={props["aria-busy"]}
-      style={toned ? { ...toneStyle(props.tone!), borderColor: `var(--${props.tone}-ink)` } : undefined}
+      style={toned ? toneStyle(props.tone!) : undefined}
       className={cn(
-        "mt-3.5 flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[18px] border-2 leading-[1.2]",
-        "transition-transform duration-80 ease-[ease] motion-safe:active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:brightness-95",
-        "disabled:opacity-60",
-        props.variant === "ghost" ? "border-line bg-surface text-ink" : toned ? "" : "border-primary bg-primary text-primary-ink",
+        "mt-3.5 mb-1 flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-full border-2 border-ink leading-[1.2] shadow-[0_4px_0_var(--ink)]",
+        "transition-[translate,box-shadow] duration-80 ease-[ease] motion-safe:active:translate-y-0.5 motion-safe:active:shadow-[0_2px_0_var(--ink)] motion-reduce:transition-none motion-reduce:active:brightness-95",
+        "disabled:opacity-60 disabled:active:translate-y-0",
+        props.variant === "ghost" ? "bg-surface text-ink" : toned ? "" : "bg-primary text-primary-ink",
         props.className,
       )}
     >
@@ -162,7 +163,7 @@ export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef
     document.getElementById(tabId(k))?.focus();
   };
   return (
-    <div className="grid auto-cols-fr grid-flow-col rounded-full border border-line bg-surface p-1" role="tablist" onKeyDown={onKey}>
+    <div className="grid auto-cols-fr grid-flow-col rounded-full border-2 border-ink bg-surface p-1" role="tablist" onKeyDown={onKey}>
       {tabs.map((t) => (
         <button
           key={t.key}

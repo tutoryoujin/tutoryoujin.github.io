@@ -114,7 +114,7 @@ function RelatedNotes({ app }: { app: string }) {
           <li key={n.slug}>
             <a
               href={`/notes/${n.slug}/`}
-              className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
+              className="flex min-h-11 items-center gap-3 rounded-lg border-2 border-ink bg-surface px-4 py-3 text-ink no-underline transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
             >
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-[1.1rem] leading-[1.25]" lang="en">
@@ -210,7 +210,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   const bar = "block h-0.5 w-4.5 rounded-[2px] bg-ink transition-[transform,background] duration-200";
 
   return (
-    <header className="sticky top-0 z-10 border-b border-line bg-bg/82 backdrop-blur-[14px] backdrop-saturate-[1.4]">
+    <header className="sticky top-0 z-10 border-b-2 border-ink bg-bg/90 backdrop-blur-[14px] backdrop-saturate-[1.4]">
       <div className={cn(inner, "flex min-h-15 items-center justify-between gap-3")}>
         <div className="flex min-w-0 items-center gap-2.5 text-ink">
           {/* 이응 = 모든 앱 첫 화면, 이름 = 이 앱 첫 화면. 앱 사이를 오가는 길이 메뉴 안에만 있으면 못 찾는다 */}
@@ -254,7 +254,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
               「All apps」 · 블로그 · 앱 안 링크는 맨 아래에 고정 — 앱이 많아져도 늘 닿는다.
               높이는 보이는 화면(dvh)에서 헤더(60px)와 위아래 틈(8px씩)을 뺀 만큼 */}
           <nav
-            className="absolute top-[calc(100%+8px)] right-0 z-1 flex max-h-[calc(100dvh-76px)] w-max max-w-[calc(100vw-32px)] min-w-64 flex-col overflow-hidden rounded-md border border-line bg-surface shadow-card"
+            className="absolute top-[calc(100%+8px)] right-0 z-1 flex max-h-[calc(100dvh-76px)] w-max max-w-[calc(100vw-32px)] min-w-64 flex-col overflow-hidden rounded-md border-2 border-ink bg-surface shadow-[0_4px_0_var(--ink)]"
             id="siteNav"
             aria-label="Menu / 메뉴"
             hidden={!open}

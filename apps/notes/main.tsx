@@ -157,7 +157,7 @@ function List() {
         <span className="sr-only">Search posts / 글 찾기</span>
         <input
           type="search"
-          className="min-h-12 w-full rounded-full border-2 border-line bg-surface px-5 font-bold text-ink placeholder:text-muted focus-visible:border-primary"
+          className="min-h-12 w-full rounded-full border-2 border-ink bg-surface px-5 font-bold text-ink placeholder:text-muted focus-visible:border-primary"
           placeholder="Search · 찾기"
           value={q}
           onChange={(e) => search(e.target.value)}

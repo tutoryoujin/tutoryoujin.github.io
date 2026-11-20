@@ -34,7 +34,7 @@ export function Subscribe({ source, className, config = SITE }: { source: string
 
   return (
     <section
-      className={cn("rounded-xl bg-surface px-5 py-6 text-left shadow-card", className)}
+      className={cn("rounded-xl border-2 border-ink bg-surface px-5 py-6 text-left", className)}
       aria-labelledby={`${id}-title`}
       lang="en"
     >
@@ -78,7 +78,7 @@ export function Subscribe({ source, className, config = SITE }: { source: string
               aria-invalid={status === "invalid"}
               aria-describedby={`${id}-msg ${id}-fine`}
               className={cn(
-                "min-h-12 w-full min-w-0 flex-1 rounded-full border-2 border-line bg-bg px-4 text-body text-ink placeholder:text-muted",
+                "min-h-12 w-full min-w-0 flex-1 rounded-full border-2 border-ink bg-bg px-4 text-body text-ink placeholder:text-muted",
                 "focus-visible:border-primary disabled:opacity-60",
                 status === "invalid" && "border-bad-ink",
               )}
@@ -88,7 +88,7 @@ export function Subscribe({ source, className, config = SITE }: { source: string
               disabled={sending}
               aria-busy={sending}
               className={cn(
-                "flex min-h-12 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-primary px-5 text-body-strong text-primary-ink",
+                "flex min-h-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-primary px-5 text-body-strong text-primary-ink",
                 "motion-safe:active:scale-[0.98] disabled:cursor-default disabled:opacity-70",
               )}
             >

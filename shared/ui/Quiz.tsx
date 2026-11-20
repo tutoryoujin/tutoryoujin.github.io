@@ -116,7 +116,7 @@ export function Quiz({ make, length = 10, label }: Props) {
               disabled={!!picked}
               onClick={() => pick(c)}
               className={cn(
-                "min-h-14 rounded-[16px] border-2 border-line bg-surface p-2 font-display text-[1.25rem]",
+                "min-h-14 rounded-[16px] border-2 border-ink bg-surface p-2 font-display text-[1.25rem]",
                 state === "right" && "border-ok-ink bg-ok-bg text-ok-ink",
                 state === "wrong" && "border-bad-ink bg-bad-bg text-bad-ink",
               )}

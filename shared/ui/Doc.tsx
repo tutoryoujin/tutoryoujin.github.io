@@ -69,7 +69,7 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
       return (
         <ul className="mt-4 flex flex-col gap-2">
           {b.items.map((it, i) => (
-            <li key={i} className="flex items-center gap-3 rounded-lg bg-surface py-2.5 pr-2 pl-4 shadow-card">
+            <li key={i} className="flex items-center gap-3 rounded-lg border-2 border-ink bg-surface py-2.5 pr-2 pl-4">
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-[1.3rem] leading-[1.3]" lang="ko">
                   {it.ko}
@@ -96,7 +96,7 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
       return (
         <ul className="mt-4 grid grid-cols-2 gap-2 min-[440px]:grid-cols-3">
           {b.items.map((it, i) => (
-            <li key={i} className="rounded-lg bg-surface px-3 py-3 text-center shadow-card">
+            <li key={i} className="rounded-lg border-2 border-ink bg-surface px-3 py-3 text-center">
               <span className="block text-[1.9rem] leading-none" aria-hidden="true">
                 {it.mark}
               </span>
@@ -118,7 +118,7 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
             href={b.href}
             target="_blank"
             rel="noopener"
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3 font-bold text-ink no-underline shadow-card"
+            className="flex min-h-11 items-center gap-3 rounded-lg border-2 border-ink bg-surface px-4 py-3 font-bold text-ink no-underline"
           >
             {b.mark && (
               <span className="text-[1.6rem] leading-none" aria-hidden="true">

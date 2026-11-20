@@ -8,7 +8,7 @@ import { cn, mount, SitePage, SiteTitle } from "@yj/ui";
 
 const focus = "focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary";
 const row = cn(
-  "flex min-h-11 flex-col justify-center rounded-lg border-2 border-line bg-surface px-4 py-2.5 text-ink no-underline break-keep hover:border-primary",
+  "flex min-h-11 flex-col justify-center rounded-lg border-2 border-ink bg-surface px-4 py-2.5 text-ink no-underline break-keep hover:border-primary",
   focus,
 );
 
