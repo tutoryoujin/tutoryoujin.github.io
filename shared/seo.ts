@@ -41,6 +41,9 @@ const HOME_TITLE = SITE.name;
 /** 사이트를 만든 사람 — 구조화 데이터의 저자. 구독 폼 문구와 같은 사실만 */
 const AUTHOR = { name: "Youjin", jobTitle: "Korean teacher", description: "A Korean teacher in Seoul" }; // llmsTxt 에도 같은 말
 
+/** 파비콘 판 — 그림(tools/home/build_favicon.py)을 다시 구우면 하나 올린다. 2 = 레트로 이응이 (#110) */
+const FAVICON_V = 2;
+
 /** 브라우저 주소창 색 — tokens.json 의 bg (라이트 · 다크) */
 const THEME_COLOR = { light: "#fbf5ec", dark: "#15172b" }; // tokens.json 의 bg
 
@@ -111,9 +114,10 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
     // 404 는 어느 주소에서나 같은 글이 나온다 — 색인하지 않고, 대표 주소도 두지 않는다
     notFound ? meta("name", "robots", "noindex") : { tag: "link", attrs: { rel: "canonical", href: m.url } },
     // 세 파일 모두 로고 마크(public/mascot/mark.webp)를 tools/home/build_favicon.py 가 구운 것 (public/, #110)
-    { tag: "link", attrs: { rel: "icon", href: "/favicon.ico", sizes: "32x32" } },
-    { tag: "link", attrs: { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" } },
-    { tag: "link", attrs: { rel: "apple-touch-icon", href: "/apple-touch-icon.png" } },
+    // 브라우저는 파비콘을 오래 붙잡아 둔다. 그림을 바꾸면 FAVICON_V 를 올려 새로 받게 한다
+    { tag: "link", attrs: { rel: "icon", href: `/favicon.ico?v=${FAVICON_V}`, sizes: "32x32" } },
+    { tag: "link", attrs: { rel: "icon", href: `/favicon.svg?v=${FAVICON_V}`, type: "image/svg+xml" } },
+    { tag: "link", attrs: { rel: "apple-touch-icon", href: `/apple-touch-icon.png?v=${FAVICON_V}` } },
     { tag: "meta", attrs: { name: "theme-color", content: THEME_COLOR.light, media: "(prefers-color-scheme: light)" } },
     { tag: "meta", attrs: { name: "theme-color", content: THEME_COLOR.dark, media: "(prefers-color-scheme: dark)" } },
     meta("property", "og:type", "website"),

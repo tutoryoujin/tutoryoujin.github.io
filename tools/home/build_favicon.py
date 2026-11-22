@@ -9,6 +9,7 @@ Usage (홈 공유 그림과 같은 .venv — Pillow 만 있으면 된다):
   favicon.ico          16 · 32 · 48 (투명 바탕) — 옛 브라우저 · 검색 결과
   apple-touch-icon.png 180, 크림 종이 바탕 — iOS 는 투명을 검게 칠한다. 바탕색은 tokens.css 의 --bg (라이트)
 마크 그림이 바뀌면 다시 돌린다. 결과는 저장소에 올린다.
+다시 구웠으면 shared/seo.ts 의 FAVICON_V 를 하나 올린다 — 안 그러면 브라우저가 옛 그림을 계속 보여 준다.
 """
 import base64, io, os, re
 from PIL import Image
