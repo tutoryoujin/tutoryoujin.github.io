@@ -572,7 +572,7 @@ function AppCard({ a }: { a: AppInfo }) {
       <span className="block min-w-0 py-2 pr-6">
         {NEW.has(a.slug) && (
           <span className="mb-1.5 inline-block rounded-full bg-primary px-2.5 py-0.5 text-[0.75rem] font-extrabold text-primary-ink">
-            New <span lang="ko">새 앱</span>
+            New
           </span>
         )}
         <b className="block font-display text-[1.35rem] leading-[1.12] text-balance">{a.en}</b>
