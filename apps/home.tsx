@@ -117,15 +117,17 @@ function Home() {
 function Nav() {
   return (
     <SiteHeader wide>
-      {/* 폰에서는 숨긴다 — 첫 화면의 「앱 모두 보기」가 같은 곳으로 간다 */}
-      <SiteNavLink href="#apps" en="Free apps" ko="무료 앱" className="hidden sm:inline-flex" />
-      <SiteNavLink href="/notes/" en={NOTES_NAV.en} ko={NOTES_NAV.ko} />
+      {/* 주색 테 버튼 — 홈의 주된 길. 폰에서는 숨긴다 — 첫 화면의 「앱 모두 보기」가 같은 곳으로 간다 */}
       <a
-        href="/hangul-blocks/"
-        className={cn("mx-1.5 hidden min-h-11 items-center gap-2 rounded-full border-2 border-primary px-4 font-extrabold whitespace-nowrap text-primary no-underline hover:bg-primary hover:text-primary-ink min-[860px]:inline-flex", focus)}
+        href="#apps"
+        className={cn("mx-1.5 hidden min-h-11 items-center rounded-full border-2 border-primary px-4 font-extrabold whitespace-nowrap text-primary no-underline hover:bg-primary hover:text-primary-ink sm:inline-flex", focus)}
       >
-        Start learning <Arrow className="size-4" />
+        Free apps
+        <span className="ml-1.5 text-[0.8rem] font-semibold max-[460px]:hidden" lang="ko">
+          무료 앱
+        </span>
       </a>
+      <SiteNavLink href="/notes/" en={NOTES_NAV.en} ko={NOTES_NAV.ko} />
     </SiteHeader>
   );
 }
@@ -261,8 +263,8 @@ const LINES: Line[] = [
   { mood: "love", ko: "여러분이 외운 단어도 제 안에 담겨요.", en: "Every word you learn goes inside me.", fx: "in" },
   { mood: "wow", ko: "받침에 가면 ‘ng’ 소리가 나요!", en: "At the bottom, I say “ng”!" },
   { mood: "tongue", ko: "동그란 몸은 포도알이에요.", en: "My round body is a grape." },
-  { mood: "proud", ko: "머리 위는 포도 꼭지! ㅎ의 윗획이랑 닮았지요?", en: "The T on top is the stem, just like the top of ㅎ!" },
-  { mood: "yay", ko: "빈자리에 하나씩, 매일 조금씩.", en: "One seat at a time, a little every day." },
+  { mood: "proud", ko: "머리 위는 포도 꼭지! ㅎ의 윗획이랑 닮았죠?", en: "The T on top is the stem, just like the top of ㅎ!" },
+  { mood: "yay", ko: "빈자리에 하나씩, 매일 조금씩 같이 해봐요!", en: "One seat at a time, a little every day. Let’s do it together!" },
 ];
 const POP = ["ㅇ", "아", "오", "우", "이", "응", "앙", "영"];
 const WORDS = ["사과", "하늘", "친구", "학교", "사랑", "바다"];
@@ -644,13 +646,16 @@ function Maker() {
     <section className={cn(wrap, "pb-6 min-[960px]:pb-8")} aria-labelledby="maker-title">
       <div className="grid items-center gap-8 min-[960px]:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]">
         <div className="min-w-0 break-keep">
-          <h2 id="maker-title" className="font-display text-[clamp(2.4rem,5vw,4.4rem)] leading-[1.06] text-balance" lang="ko">
-            빈자리에 하나씩, 매일 조금씩.
+          {/* 영어가 크고 한국어가 아래 (홈 규칙 #84 — 주인이 정함). 문구는 이응이 마지막 말풍선과 같다 */}
+          <h2 id="maker-title" className="font-display text-[clamp(2.2rem,4.6vw,4rem)] leading-[1.06] text-balance">
+            One seat at a time, a little every day. Let’s do it together!
+            <span className="mt-3 block font-app text-[1.2rem] leading-[1.4] font-bold text-muted" lang="ko">
+              빈자리에 하나씩, 매일 조금씩 같이 해봐요!
+            </span>
           </h2>
-          <p className="mt-3 text-[1.2rem] font-bold text-muted">One seat at a time, a little every day.</p>
           <div className="mt-8 grid gap-5 min-[720px]:grid-cols-[repeat(2,minmax(0,1fr))] min-[720px]:gap-10">
             <p className="leading-[1.5] font-bold">
-              Made by Youjin, a Korean teacher in Seoul
+              <span className="text-primary">Made by Youjin</span>, a Korean teacher in Seoul
               <span className="mt-1 block text-[0.9rem] font-semibold text-muted" lang="ko">만든 사람: 유진, 서울의 한국어 선생님</span>
             </p>
             {/* 워드마크의 You 를 여기서 한 번 말로 풀어 준다 (#83) */}
