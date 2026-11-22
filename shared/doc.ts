@@ -58,7 +58,7 @@ export function docHtml(blocks: Block[], lead: Lead): string {
     .map((b) => {
       switch (b.t) {
         case "h":
-          return `<h2 class="mt-8 mb-2 font-display text-[1.35rem] font-normal">${two(b)}</h2>`;
+          return `<h2 class="mt-8 mb-2 font-display text-[1.35rem] font-semibold">${two(b)}</h2>`;
         case "p":
           return `<p class="mt-3">${two(b)}</p>`;
         case "tip":

@@ -34,11 +34,11 @@ export type NavLink = { href: string; ko: string; en: string; active?: boolean }
 /** 꼬리말 고지. ko 가 없으면 영어만 (출처 같은 법적 문구, #92) */
 export type Legal = { en: ReactNode; ko?: ReactNode };
 
-/* 브랜드 마크는 마스코트 이응. 정사각 칸 + 정사각 symbol viewBox 라
-   preserveAspectRatio 가 손댈 일이 없다. margin 으로 위치를 밀지 않는다. */
+/* 브랜드 마크는 레트로 이응이 그대로 — 동그라미 바탕 없이 선 채로 선다.
+   정사각 칸 + 정사각 symbol viewBox 라 preserveAspectRatio 가 손댈 일이 없다. */
 export const Mark = ({ className }: { className?: string }) => (
   <span
-    className={cn("block size-9 shrink-0 overflow-hidden rounded-full bg-sky transition-transform duration-150 [&_svg]:size-full", className)}
+    className={cn("block size-10 shrink-0 transition-transform duration-150 [&_svg]:size-full", className)}
     aria-hidden="true"
   >
     <svg>
@@ -51,7 +51,7 @@ const withYoujin = "text-[0.78em]";
 /**
  * 워드마크의 「with Youjin」 — 이름 속 You 를 드러낸다 (#83). Korean with You·jin = 너와 함께.
  * You 만 primary 색, 나머지(with · jin)는 둘레 글자색 그대로. 밑줄 · 굵기는 쓰지 않는다 (주인이 정함).
- * 꾸밈이라 색만 써도 된다 — 뜻을 알려 주는 표시가 아니다. Jua 는 굵기가 하나라 굵기로는 못 한다.
+ * 꾸밈이라 색만 써도 된다 — 뜻을 알려 주는 표시가 아니다. 제목 글꼴은 한 굵기라 굵기로는 구분하지 않는다.
  * You 와 jin 사이에 빈칸을 두지 않는다 — 화면 낭독기는 「Youjin」 한 단어로 읽어야 한다.
  * 문장 속 이름(© Made by Youjin)에는 쓰지 않는다. 워드마크에만.
  */
@@ -103,7 +103,7 @@ function RelatedNotes({ app }: { app: string }) {
   return (
     <section className={cn(inner, "mt-9")} aria-labelledby="related-notes">
       {/* 영어 먼저 (#100) — 꼬리말 바로 위이고, 영어 먼저인 글 페이지로 가는 문이다 */}
-      <h2 id="related-notes" className="font-display text-[1.2rem] font-normal">
+      <h2 id="related-notes" className="font-display text-[1.2rem] font-extrabold">
         <span lang="en">{RELATED_NOTES.en}</span>
         <span className="ml-1.5 font-app text-[0.8rem] font-bold text-muted" lang="ko">
           {RELATED_NOTES.ko}
@@ -114,7 +114,7 @@ function RelatedNotes({ app }: { app: string }) {
           <li key={n.slug}>
             <a
               href={`/notes/${n.slug}/`}
-              className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3 text-ink no-underline shadow-card transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
+              className="flex min-h-11 items-center gap-3 rounded-lg border-2 border-ink bg-surface px-4 py-3 text-ink no-underline transition-transform duration-150 hover:-translate-y-0.5 motion-reduce:transition-none"
             >
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-[1.1rem] leading-[1.25]" lang="en">
@@ -210,7 +210,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
   const bar = "block h-0.5 w-4.5 rounded-[2px] bg-ink transition-[transform,background] duration-200";
 
   return (
-    <header className="sticky top-0 z-10 border-b border-line bg-bg/82 backdrop-blur-[14px] backdrop-saturate-[1.4]">
+    <header className="sticky top-0 z-10 border-b-2 border-ink bg-bg/90 backdrop-blur-[14px] backdrop-saturate-[1.4]">
       <div className={cn(inner, "flex min-h-15 items-center justify-between gap-3")}>
         <div className="flex min-w-0 items-center gap-2.5 text-ink">
           {/* 이응 = 모든 앱 첫 화면, 이름 = 이 앱 첫 화면. 앱 사이를 오가는 길이 메뉴 안에만 있으면 못 찾는다 */}
@@ -254,7 +254,7 @@ function Header({ slug, h1, links }: { slug: string; h1: boolean; links: NavLink
               「All apps」 · 블로그 · 앱 안 링크는 맨 아래에 고정 — 앱이 많아져도 늘 닿는다.
               높이는 보이는 화면(dvh)에서 헤더(60px)와 위아래 틈(8px씩)을 뺀 만큼 */}
           <nav
-            className="absolute top-[calc(100%+8px)] right-0 z-1 flex max-h-[calc(100dvh-76px)] w-max max-w-[calc(100vw-32px)] min-w-64 flex-col overflow-hidden rounded-md border border-line bg-surface shadow-card"
+            className="absolute top-[calc(100%+8px)] right-0 z-1 flex max-h-[calc(100dvh-76px)] w-max max-w-[calc(100vw-32px)] min-w-64 flex-col overflow-hidden rounded-md border-2 border-ink bg-surface shadow-[0_4px_0_var(--ink)]"
             id="siteNav"
             aria-label="Menu / 메뉴"
             hidden={!open}

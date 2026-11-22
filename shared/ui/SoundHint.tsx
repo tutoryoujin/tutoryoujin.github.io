@@ -40,7 +40,7 @@ export function SoundHint() {
   };
   return (
     <div className="fixed inset-x-0 bottom-[calc(--spacing(3)+env(safe-area-inset-bottom,0px))] z-20 mx-auto w-full max-w-(--shell-width) px-4" role="status">
-      <div className="relative rounded-md bg-surface shadow-card">
+      <div className="relative rounded-md border-2 border-ink bg-surface">
         <Note tone="gray" className="mt-0 pr-13" ko="소리가 안 들리면 아이폰의 무음 모드를 꺼 주세요." en="No sound? Turn off Silent mode on your iPhone." />
         <button
           type="button"

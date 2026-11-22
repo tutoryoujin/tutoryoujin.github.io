@@ -23,7 +23,7 @@ export function SiteNavLink({ href, en, ko, className, current }: { href: string
       {...(current ? { "aria-current": "page" as const } : {})}
     >
       {en}
-      <span className="ml-1.5 text-[0.8rem] font-semibold text-muted" lang="ko">
+      <span className="ml-1.5 text-[0.8rem] font-semibold text-muted max-[460px]:hidden" lang="ko">
         {ko}
       </span>
     </a>
@@ -32,11 +32,11 @@ export function SiteNavLink({ href, en, ko, className, current }: { href: string
 
 export function SiteHeader({ wide, children }: { wide?: boolean; children?: ReactNode }) {
   return (
-    <header className="sticky top-0 z-10 border-b border-line bg-bg/85 backdrop-blur-[14px]">
-      <div className={cn(wide ? homeWrap : siteWrap, "flex min-h-16 items-center justify-between gap-3")}>
+    <header className="sticky top-0 z-10 border-b-2 border-ink bg-bg/90 backdrop-blur-[14px]">
+      <div className={cn(wide ? homeWrap : siteWrap, "flex min-h-[72px] items-center justify-between gap-3")}>
         <a className={cn("flex min-w-0 items-center gap-2.5 rounded-full text-ink no-underline", focus)} href="/">
-          <Mark />
-          <span className="font-display text-[1.15rem] whitespace-nowrap">
+          <Mark className="size-11 max-[460px]:size-9" />
+          <span className="font-display text-[1.3rem] whitespace-nowrap max-[460px]:text-[1.05rem]">
             Korean <WithYoujin />
           </span>
         </a>
@@ -72,7 +72,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
         <div className="flex items-start gap-2.5">
           <Mark className="size-8" />
           <div>
-            <b className="block font-display text-[1.1rem] font-normal text-ink">
+            <b className="block font-display text-[1.1rem] font-extrabold text-ink">
               Korean <WithYoujin />
             </b>
             <span>
@@ -91,7 +91,7 @@ export function SitePage({ children, title, nav }: { children: ReactNode; title?
 export function SiteTitle({ big, small, lead, children }: { big: string; small: string; lead?: "ko" | "en"; children?: ReactNode }) {
   return (
     <header className="break-keep">
-      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-normal text-balance" lang={lead}>
+      <h1 className="font-display text-[clamp(2.1rem,7vw,2.8rem)] leading-[1.15] font-extrabold text-balance" lang={lead}>
         {big}
         <span className="mt-1.5 block font-app text-[1.05rem] font-bold text-muted" lang={lead && (lead === "ko" ? "en" : "ko")}>
           {small}

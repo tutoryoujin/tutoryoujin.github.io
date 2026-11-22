@@ -157,7 +157,7 @@ function List() {
         <span className="sr-only">Search posts / 글 찾기</span>
         <input
           type="search"
-          className="min-h-12 w-full rounded-full border-2 border-line bg-surface px-5 font-bold text-ink placeholder:text-muted focus-visible:border-primary"
+          className="min-h-12 w-full rounded-full border-2 border-ink bg-surface px-5 font-bold text-ink placeholder:text-muted focus-visible:border-primary"
           placeholder="Search · 찾기"
           value={q}
           onChange={(e) => search(e.target.value)}
@@ -205,7 +205,7 @@ function Article({ n }: { n: Note }) {
       </article>
       {apps.length > 0 && (
         <section className="mt-12" aria-labelledby="practice">
-          <h2 id="practice" className="font-display text-[1.45rem] font-normal">
+          <h2 id="practice" className="font-display text-[1.45rem] font-extrabold">
             Practice in the app
             <span className="block font-app text-[0.95rem] font-bold text-muted" lang="ko">
               앱에서 연습하기

@@ -72,21 +72,21 @@
 
 @theme {
   --font-*: initial;
-  --font-app: "Nunito", "Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --font-display: "Jua", "Nunito", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-app: "Nunito", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "Caprasimo", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif;
   --font-reading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 
   /* 글자 — 디자인 시스템 타입 스케일. 글꼴은 따로: font-display text-display-md */
   --text-*: initial;
   --text-display-xl: 2.2rem;
   --text-display-xl--line-height: 1;
-  --text-display-xl--font-weight: 400;
+  --text-display-xl--font-weight: 800;
   --text-display-lg: 1.55rem;
   --text-display-lg--line-height: 1.15;
-  --text-display-lg--font-weight: 400;
+  --text-display-lg--font-weight: 800;
   --text-display-md: 1.2rem;
   --text-display-md--line-height: 1.2;
-  --text-display-md--font-weight: 400;
+  --text-display-md--font-weight: 800;
   --text-folder-title: 1.5rem;
   --text-folder-title--line-height: 1.1;
   --text-folder-title--font-weight: 800;

@@ -41,8 +41,11 @@ const HOME_TITLE = SITE.name;
 /** 사이트를 만든 사람 — 구조화 데이터의 저자. 구독 폼 문구와 같은 사실만 */
 const AUTHOR = { name: "Youjin", jobTitle: "Korean teacher", description: "A Korean teacher in Seoul" }; // llmsTxt 에도 같은 말
 
+/** 파비콘 판 — 그림(tools/home/build_favicon.py)을 다시 구우면 하나 올린다. 2 = 레트로 이응이 (#110) */
+const FAVICON_V = 2;
+
 /** 브라우저 주소창 색 — tokens.json 의 bg (라이트 · 다크) */
-const THEME_COLOR = { light: "#f5f8ff", dark: "#131a2c" };
+const THEME_COLOR = { light: "#fbf5ec", dark: "#15172b" }; // tokens.json 의 bg
 
 export type PageMeta = { url: string; title: string; description: string; image?: { url: string; alt: string } };
 
@@ -110,10 +113,11 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
     meta("name", "description", m.description),
     // 404 는 어느 주소에서나 같은 글이 나온다 — 색인하지 않고, 대표 주소도 두지 않는다
     notFound ? meta("name", "robots", "noindex") : { tag: "link", attrs: { rel: "canonical", href: m.url } },
-    // favicon.ico · apple-touch-icon.png 는 favicon.svg 를 그대로 구운 것 (public/)
-    { tag: "link", attrs: { rel: "icon", href: "/favicon.ico", sizes: "32x32" } },
-    { tag: "link", attrs: { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" } },
-    { tag: "link", attrs: { rel: "apple-touch-icon", href: "/apple-touch-icon.png" } },
+    // 세 파일 모두 로고 마크(public/mascot/mark.webp)를 tools/home/build_favicon.py 가 구운 것 (public/, #110)
+    // 브라우저는 파비콘을 오래 붙잡아 둔다. 그림을 바꾸면 FAVICON_V 를 올려 새로 받게 한다
+    { tag: "link", attrs: { rel: "icon", href: `/favicon.ico?v=${FAVICON_V}`, sizes: "32x32" } },
+    { tag: "link", attrs: { rel: "icon", href: `/favicon.svg?v=${FAVICON_V}`, type: "image/svg+xml" } },
+    { tag: "link", attrs: { rel: "apple-touch-icon", href: `/apple-touch-icon.png?v=${FAVICON_V}` } },
     { tag: "meta", attrs: { name: "theme-color", content: THEME_COLOR.light, media: "(prefers-color-scheme: light)" } },
     { tag: "meta", attrs: { name: "theme-color", content: THEME_COLOR.dark, media: "(prefers-color-scheme: dark)" } },
     meta("property", "og:type", "website"),
@@ -286,9 +290,9 @@ export const PRERENDER_HIDE = "[data-prerender]{display:none}";
 export const PRERENDER_SHOW = "<style>[data-prerender]{display:block}</style>";
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const wrap = "mx-auto w-full max-w-(--shell-width) px-4 pt-6 pb-10 text-ink";
-const h1 = "font-display text-[1.7rem] leading-[1.2] font-normal";
+const h1 = "font-display text-[1.7rem] leading-[1.2] font-semibold";
 const sub = "block text-[0.85rem] font-bold text-muted";
-const h2 = "mt-6 mb-2 font-display text-[1.2rem] font-normal";
+const h2 = "mt-6 mb-2 font-display text-[1.2rem] font-semibold";
 const li = "mt-1.5";
 const link = "text-primary underline";
 /** 영어 먼저인 페이지(lang="en") 안의 한국어 조각 */

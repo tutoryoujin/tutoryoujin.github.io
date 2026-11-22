@@ -16,11 +16,11 @@ export function TtiFinder() {
   const say = t ? `저는 ${ttiName(t)}예요.` : "";
 
   return (
-    <div className="mt-4 rounded-xl bg-surface p-4 shadow-card">
+    <div className="mt-4 rounded-xl border-2 border-ink bg-surface p-4">
       {/* 안내는 영어 먼저 (#94). 「저는 ○띠예요」처럼 배우는 한국어는 크게 */}
       <label htmlFor={id} className="block text-[1.05rem] font-extrabold">
         Year you were born
-        <span className="ml-1.5 font-display text-[0.95rem] font-normal text-muted" lang="ko">
+        <span className="ml-1.5 font-display text-[0.95rem] font-extrabold text-muted" lang="ko">
           태어난 해
         </span>
       </label>

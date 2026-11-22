@@ -9,39 +9,39 @@
    사용자가 테마를 직접 고른 순간 그 색만 빠진다. */
 :root {
   /* 바탕과 글자 */
-  --bg: #f5f8ff;
-  --surface: #ffffff;
-  --ink: #1e2742;
-  --muted: #56618a;
-  --line: #c9d5f2;
-  --primary: #4356cf;
+  --bg: #fbf5ec;
+  --surface: #fffcf7;
+  --ink: #1b1f45;
+  --muted: #5c5f80;
+  --line: #e3d8c5;
+  --primary: #c9432a;
   --primary-ink: #ffffff;
-  --sky: #d2e0fb;
-  --sky-ink: #23356f;
+  --sky: #e4e7f8;
+  --sky-ink: #2b3379;
 
   /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
-  --blue-bg: #9cb2eb;
-  --blue-ink: #17265e;
-  --pink-bg: #ffd0d2;
-  --pink-ink: #8a2535;
-  --yellow-bg: #f4e271;
-  --yellow-ink: #5f5300;
-  --mint-bg: #bdeace;
-  --mint-ink: #14543a;
-  --lavender-bg: #ddd4fb;
-  --lavender-ink: #412b8c;
-  --coral-bg: #ffd0b8;
-  --coral-ink: #8a3714;
-  --orange-bg: #ffe2ad;
-  --orange-ink: #6f4206;
-  --gray-bg: #dde4f3;
-  --gray-ink: #333d5c;
+  --blue-bg: #b4c2ee;
+  --blue-ink: #1c2a6a;
+  --pink-bg: #f6cfd0;
+  --pink-ink: #842a38;
+  --yellow-bg: #f2da86;
+  --yellow-ink: #584405;
+  --mint-bg: #cbe5cd;
+  --mint-ink: #1b5533;
+  --lavender-bg: #d8d5f6;
+  --lavender-ink: #3a3488;
+  --coral-bg: #f7c8b4;
+  --coral-ink: #88301a;
+  --orange-bg: #f6dbab;
+  --orange-ink: #683d08;
+  --gray-bg: #e6dfd2;
+  --gray-ink: #46403a;
 
   /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
-  --ieung-body: #9cb2eb;
-  --ieung-limb: #7f97dd;
-  --ieung-face: #1e2742;
-  --ieung-blush: #ffd0d2;
+  --ieung-body: #bfc0ef;
+  --ieung-limb: #3e4aa0;
+  --ieung-face: #141b3e;
+  --ieung-blush: #f8bec0;
 
   /* 입체 이응 — 테마가 바뀌어도 같은 값이라 라이트 블록에만 있다 */
   --ieung-light: #dce6fd;
@@ -51,9 +51,9 @@
   --ieung-cheek: #ff9fb3;
 
   /* 달력 전용 */
-  --sun: #c62f44;
-  --sat: #2f62c9;
-  --special: #b07400;
+  --sun: #c2372a;
+  --sat: #2e52b4;
+  --special: #9a6400;
 
   /* 뜻 이름은 별칭이다. 여기에 hex 를 다시 적지 말 것 */
   --cal-year-bg: var(--blue-bg);
@@ -69,9 +69,9 @@
   --bad-bg: var(--coral-bg);
   --bad-ink: var(--coral-ink);
 
-  /* 글꼴 — Nunito 가 영문·숫자, Jua 가 한글을 맡는다 (한 스택에서 글자별로 분기) */
-  --font-app: "Nunito", "Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --font-display: "Jua", "Nunito", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* 글꼴 — 영문·숫자는 Nunito(본문) · Caprasimo(제목, Cooper Black 계열), 한글은 언제나 Pretendard (한 스택에서 글자별로 분기) */
+  --font-app: "Nunito", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: "Caprasimo", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", serif;
   --font-reading: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 
   /* 간격 */
@@ -94,8 +94,8 @@
   --radius-full: 999px;
 
   /* 그림자 — folder 는 위쪽으로 드리운다 */
-  --shadow-card: 0 14px 30px -12px rgba(30, 39, 66, 0.22);
-  --shadow-folder: 0 -6px 16px -8px rgba(30, 39, 66, 0.28);
+  --shadow-card: 0 14px 30px -12px rgba(27, 31, 69, 0.22);
+  --shadow-folder: 0 -6px 16px -8px rgba(27, 31, 69, 0.28);
 
   color-scheme: light;
   box-sizing: border-box;
@@ -106,44 +106,44 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* 바탕과 글자 */
-    --bg: #131a2c;
-    --surface: #1d2740;
-    --ink: #e7ecfb;
-    --muted: #97a3c6;
-    --line: #36426a;
-    --primary: #95a8ff;
-    --primary-ink: #0d1428;
-    --sky: #27365e;
-    --sky-ink: #c3d4fb;
+    --bg: #15172b;
+    --surface: #1f2238;
+    --ink: #f3ece1;
+    --muted: #a9a8c2;
+    --line: #363a5c;
+    --primary: #ff8466;
+    --primary-ink: #1b1d38;
+    --sky: #272b4f;
+    --sky-ink: #d3d6f7;
 
     /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
-    --blue-bg: #24335f;
-    --blue-ink: #b6c7ff;
-    --pink-bg: #4b2630;
-    --pink-ink: #ffbcc1;
-    --yellow-bg: #443c14;
-    --yellow-ink: #f2e48d;
-    --mint-bg: #17432f;
-    --mint-ink: #a3ebc6;
-    --lavender-bg: #2d2659;
-    --lavender-ink: #cfc3ff;
-    --coral-bg: #4b2718;
-    --coral-ink: #ffbda2;
-    --orange-bg: #453112;
-    --orange-ink: #ffcf96;
-    --gray-bg: #2a3450;
-    --gray-ink: #c6cfe6;
+    --blue-bg: #24305c;
+    --blue-ink: #bfcbf7;
+    --pink-bg: #4a2531;
+    --pink-ink: #f8c2c8;
+    --yellow-bg: #433812;
+    --yellow-ink: #f1dd96;
+    --mint-bg: #1c3e2d;
+    --mint-ink: #b7e3c3;
+    --lavender-bg: #2c2959;
+    --lavender-ink: #d6d2fb;
+    --coral-bg: #4d2619;
+    --coral-ink: #ffc3ab;
+    --orange-bg: #46310f;
+    --orange-ink: #f8d3a0;
+    --gray-bg: #2e2d3c;
+    --gray-ink: #d9d3c8;
 
     /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
-    --ieung-body: #8095d4;
-    --ieung-limb: #6478b8;
-    --ieung-face: #141c33;
-    --ieung-blush: #e8a8ad;
+    --ieung-body: #bfc0ef;
+    --ieung-limb: #3e4aa0;
+    --ieung-face: #141b3e;
+    --ieung-blush: #f8bec0;
 
     /* 달력 전용 */
-    --sun: #ff8a96;
-    --sat: #8db2ff;
-    --special: #ffd45c;
+    --sun: #ff8f87;
+    --sat: #97b2ff;
+    --special: #f2c95c;
 
     --shadow-card: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
     --shadow-folder: 0 -6px 16px -8px rgba(0, 0, 0, 0.7);
@@ -153,44 +153,44 @@
 
 :root[data-theme="dark"] {
   /* 바탕과 글자 */
-  --bg: #131a2c;
-  --surface: #1d2740;
-  --ink: #e7ecfb;
-  --muted: #97a3c6;
-  --line: #36426a;
-  --primary: #95a8ff;
-  --primary-ink: #0d1428;
-  --sky: #27365e;
-  --sky-ink: #c3d4fb;
+  --bg: #15172b;
+  --surface: #1f2238;
+  --ink: #f3ece1;
+  --muted: #a9a8c2;
+  --line: #363a5c;
+  --primary: #ff8466;
+  --primary-ink: #1b1d38;
+  --sky: #272b4f;
+  --sky-ink: #d3d6f7;
 
   /* 악센트 8쌍 — -bg 와 -ink 는 쌍이다. 섞으면 한쪽 테마에서 글자가 안 보인다 */
-  --blue-bg: #24335f;
-  --blue-ink: #b6c7ff;
-  --pink-bg: #4b2630;
-  --pink-ink: #ffbcc1;
-  --yellow-bg: #443c14;
-  --yellow-ink: #f2e48d;
-  --mint-bg: #17432f;
-  --mint-ink: #a3ebc6;
-  --lavender-bg: #2d2659;
-  --lavender-ink: #cfc3ff;
-  --coral-bg: #4b2718;
-  --coral-ink: #ffbda2;
-  --orange-bg: #453112;
-  --orange-ink: #ffcf96;
-  --gray-bg: #2a3450;
-  --gray-ink: #c6cfe6;
+  --blue-bg: #24305c;
+  --blue-ink: #bfcbf7;
+  --pink-bg: #4a2531;
+  --pink-ink: #f8c2c8;
+  --yellow-bg: #433812;
+  --yellow-ink: #f1dd96;
+  --mint-bg: #1c3e2d;
+  --mint-ink: #b7e3c3;
+  --lavender-bg: #2c2959;
+  --lavender-ink: #d6d2fb;
+  --coral-bg: #4d2619;
+  --coral-ink: #ffc3ab;
+  --orange-bg: #46310f;
+  --orange-ink: #f8d3a0;
+  --gray-bg: #2e2d3c;
+  --gray-ink: #d9d3c8;
 
   /* 마스코트 이응 — 다크에서도 밝게 남는다. blue-bg 의 별칭이 아니다 */
-  --ieung-body: #8095d4;
-  --ieung-limb: #6478b8;
-  --ieung-face: #141c33;
-  --ieung-blush: #e8a8ad;
+  --ieung-body: #bfc0ef;
+  --ieung-limb: #3e4aa0;
+  --ieung-face: #141b3e;
+  --ieung-blush: #f8bec0;
 
   /* 달력 전용 */
-  --sun: #ff8a96;
-  --sat: #8db2ff;
-  --special: #ffd45c;
+  --sun: #ff8f87;
+  --sat: #97b2ff;
+  --special: #f2c95c;
 
   --shadow-card: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
   --shadow-folder: 0 -6px 16px -8px rgba(0, 0, 0, 0.7);

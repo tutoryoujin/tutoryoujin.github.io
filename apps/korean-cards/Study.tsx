@@ -12,7 +12,7 @@ import type { Deck } from "./types";
 
 /* 큰 버튼 — 회차 끝 화면에도 같이 쓴다 */
 const btn =
-  "flex min-h-17 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[20px] border-2 border-line bg-surface px-2 py-2.5 text-ink " +
+  "flex min-h-17 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[20px] border-2 border-ink bg-surface px-2 py-2.5 text-ink " +
   "transition-transform duration-80 ease-[ease] focus-visible:outline-offset-3 active:scale-97 disabled:cursor-default disabled:opacity-40";
 const known = "border-primary bg-primary text-primary-ink";
 const btnKo = "text-[1.15rem] leading-[1.2] font-bold";
@@ -270,7 +270,7 @@ export function Study({ deck }: { deck: Deck }) {
 }
 
 /* 완료 화면 */
-const panel = "w-full rounded-xl bg-surface px-5 py-8 text-center shadow-card";
+const panel = "w-full rounded-xl border-2 border-ink bg-surface px-5 py-8 text-center";
 /* 이응이 sky 바닥 위에 선다. 눌러서 다시 축하하기 */
 const mascot = "mx-auto mb-3 grid h-28 w-37 items-end justify-items-center overflow-hidden rounded-xl bg-sky [&_svg]:-mb-1.5 [&_svg]:block [&_svg]:h-26 [&_svg]:w-25";
 const panelP = "mb-5.5 text-[1rem] leading-[1.5] text-muted";
@@ -306,7 +306,7 @@ function Reaction({ r }: { r: { mood: Mood; miss: boolean; n: number } | null })
 
 /* 카드 앞·뒷면. 뒤집을 때 뒷면이 비치지 않게 backface-hidden */
 const face =
-  "absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-xl px-5 pt-6 pb-14 text-center shadow-card backface-hidden";
+  "absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-ink px-5 pt-6 pb-14 text-center backface-hidden";
 /* 그림을 못 불러왔을 때 대신 보이는 이모지 */
 const emoji = "mb-4 text-[clamp(4.5rem,24vw,7rem)] leading-none";
 const swipeTag =

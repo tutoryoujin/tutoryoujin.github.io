@@ -12,46 +12,21 @@ Usage (홈 공유 그림과 같은 .venv — tools/home/build_og.py 참고):
 새 글을 쓰면 한 번 돌린다 (그림이 없으면 테스트가 알려 준다). PNG 는 저장소에 올린다.
 
 재료는 사이트와 같은 것 — 값을 여기 옮겨 적지 않는다.
-  앱 · 글 · 이응이  tools/og/data.ts (shared/apps.ts · shared/notes · shared/ui/ieung-data.ts 를 JSON 으로)
+  앱 · 글           tools/og/data.ts (shared/apps.ts · shared/notes 를 JSON 으로)
   앱 화면           public/home/<slug>.webp (tools/home/build_shots.py — 첫 화면 썸네일과 같은 그림)
-  색 · 그림자       shared/tokens/tokens.css (라이트)
-  글꼴              Google Fonts Jua · Nunito
+  색 · 글꼴 · 이응이 tools/og/retro.py (토큰 · Caprasimo · Nunito · Pretendard · public/mascot) — 레트로 (#110)
 """
 import argparse, base64, html, json, os, subprocess
 from playwright.sync_api import sync_playwright
+import retro
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 W, H = 1200, 630
 esc = html.escape
 
-DATA = json.loads(subprocess.run(["npx", "vite-node", "tools/og/data.ts"], cwd=ROOT, check=True, capture_output=True, text=True).stdout)
-TOKENS = "file://" + os.path.join(ROOT, "shared", "tokens", "tokens.css")
-IEUNG_CSS = "file://" + os.path.join(ROOT, "shared", "ui", "ieung.css")
-
-HEAD = f"""<!doctype html>
-<html data-theme="light"><head><meta charset="utf-8">
-<link rel="stylesheet" href="{TOKENS}">
-<link rel="stylesheet" href="{IEUNG_CSS}">
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@600;800&display=block" rel="stylesheet">
-<style>
-  * {{ box-sizing: border-box; margin: 0; padding: 0; animation: none !important; }}
-  html, body {{ width: {W}px; height: {H}px; overflow: hidden; }}
-  body {{ font-family: "Nunito", "Jua", sans-serif; color: var(--ink); font-synthesis: none; }}
-  .ko {{ font-family: "Jua"; font-weight: 400; }}
-  .brand {{ font-size: 26px; font-weight: 800; }}
-  .brand u {{ text-decoration: none; color: var(--primary); }}  /* 워드마크 You (#83) */
-</style>"""
-
-
-def bg(tone):
-    """모서리에만 파스텔이 번지는 바탕 — 다른 공유 그림과 같은 틀. 오른쪽 위는 앱 고유색"""
-    return f"""background:
-      radial-gradient(340px 340px at 96% -8%, color-mix(in srgb, var(--{tone}-bg) 90%, transparent), transparent 70%),
-      radial-gradient(300px 300px at 104% 104%, color-mix(in srgb, var(--yellow-bg) 70%, transparent), transparent 70%),
-      radial-gradient(300px 300px at -8% 108%, color-mix(in srgb, var(--mint-bg) 70%, transparent), transparent 70%),
-      radial-gradient(300px 300px at -8% -12%, color-mix(in srgb, var(--lavender-bg) 75%, transparent), transparent 70%),
-      var(--bg);"""
+DATA = json.loads(subprocess.run(["npx", "vite-node", "tools/og/data.ts"], cwd=ROOT, check=True, capture_output=True, text=True, encoding="utf-8", shell=os.name == "nt").stdout)
+HEAD = retro.head(W, H)
 
 
 def app_page(a):
@@ -60,61 +35,63 @@ def app_page(a):
         raise SystemExit(f"앱 화면이 없어요: {os.path.relpath(shot, ROOT)} — tools/home/build_shots.py {a['slug']} 를 먼저")
     with open(shot, "rb") as f:
         src = "data:image/webp;base64," + base64.b64encode(f.read()).decode()
-    t = a["tone"]
-    return f"""{HEAD}<style>
-  body {{ {bg(t)} display: grid; grid-template-columns: 1fr 440px; align-items: center; padding: 0 64px 0 80px; gap: 32px; }}
-  h1 {{ font-size: 112px; line-height: 1.05; white-space: nowrap; }}
-  .en {{ margin-top: 12px; font-size: 36px; font-weight: 800; color: var(--primary); white-space: nowrap; }}
+    # 앱 본문은 한국어 먼저 — 이름도 한국어가 크다
+    return f"""<!doctype html>
+<html lang="ko" data-theme="light"><head>{HEAD}<style>
+  body {{ display: grid; grid-template-columns: minmax(0, 1fr) 440px; align-items: center; padding: 0 56px 0 80px; gap: 32px; }}
+  h1 {{ font-size: 108px; line-height: 1.05; white-space: nowrap; }}
+  .en {{ margin-top: 14px; font-size: 38px; color: var(--primary); white-space: nowrap; }}
   .about {{ margin-top: 30px; font-size: 32px; }}
   .about-en {{ margin-top: 6px; font-size: 23px; font-weight: 800; color: var(--muted); }}
+  .brand {{ margin-top: 44px; }}
   .stage {{ position: relative; height: {H}px; overflow: hidden; }}
-  /* 앱 화면 — 폰 화면처럼 위가 보이게 비스듬히, 아래는 바탕으로 사라진다 */
+  /* 앱 화면 — 레트로 스티커처럼 남색 테 · 잉크 그림자, 비스듬히. 아래는 바탕으로 사라진다 */
   .stage img {{
-    position: absolute; left: 34px; top: 48px; width: 372px; border-radius: 28px; border: 6px solid var(--surface); transform: rotate(-3deg);
-    box-shadow: var(--shadow-card), 0 18px 40px rgb(0 0 0 / 0.12);
-    -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 96%);
-    mask-image: linear-gradient(to bottom, #000 66%, transparent 96%);
+    position: absolute; left: 40px; top: 50px; width: 360px; border-radius: 28px; transform: rotate(-3deg);
+    border: 4px solid var(--ink); box-shadow: 8px 10px 0 var(--ink);
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 97%);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent 97%);
   }}
 </style></head>
-<body>
+<body class="paper">
   <main>
     <h1 class="ko">{esc(a['ko'])}</h1>
-    <p class="en">{esc(a['en'])} with Youjin</p>
+    <p class="en d" lang="en">{esc(a['en'])}</p>
     <p class="about ko">{esc(a['about']['ko'])}</p>
-    <p class="about-en">{esc(a['about']['en'])}</p>
+    <p class="about-en" lang="en">{esc(a['about']['en'])}</p>
+    {retro.brand()}
   </main>
   <div class="stage"><img src="{src}" alt=""></div>
 </body></html>"""
 
 
-# 글 그림의 이응이 — 디자인 시스템 표정 그대로. 글마다 고르지 않고 하나로 (설정을 지어내지 않는다)
-NOTE_MOOD = "wow"
+# 글 그림의 이응이 — 받은 표정 그대로. 글마다 고르지 않고 하나로 (설정을 지어내지 않는다)
+NOTE_ART = "surprised"
 
 
 def note_page(n):
     nt = DATA["notesTitle"]
-    mood = DATA["ieung"]["moods"][NOTE_MOOD]
     # 블로그는 영어가 크고 한국어가 아래 (#94)
-    return f"""{HEAD}<style>
-  body {{ {bg("blue")} display: grid; grid-template-columns: 1fr 360px; align-items: center; padding: 0 48px 0 80px; gap: 24px; }}
-  .tag {{ display: inline-flex; gap: 10px; align-items: baseline; background: var(--surface); border-radius: 999px; padding: 10px 22px; box-shadow: var(--shadow-card); font-size: 24px; font-weight: 800; }}
+    return f"""<!doctype html>
+<html lang="en" data-theme="light"><head>{HEAD}<style>
+  body {{ display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: center; padding: 0 48px 0 80px; gap: 28px; }}
+  .tag {{ display: inline-flex; gap: 10px; align-items: baseline; background: var(--surface); border-radius: 999px; padding: 8px 22px; font-size: 24px; font-weight: 800; border-width: 2.5px; box-shadow: 0 4px 0 var(--ink); }}
   .tag span {{ font-size: 20px; color: var(--muted); }}
-  h1 {{ margin-top: 30px; font-size: 64px; line-height: 1.12; font-weight: 800; text-wrap: balance; }}
-  .ko-title {{ margin-top: 14px; font-size: 40px; color: var(--muted); line-height: 1.2; }}
+  h1 {{ margin-top: 30px; font-size: 62px; line-height: 1.08; text-wrap: balance; }}
+  .ko-title {{ margin-top: 16px; font-size: 36px; color: var(--muted); line-height: 1.25; }}
   .brand {{ margin-top: 40px; }}
   .stage {{ position: relative; height: 420px; }}
-  .floor {{ position: absolute; inset: 40px 0 10px; border-radius: 50%; background: var(--sky); }}
-  .ieung {{ position: absolute; left: 20px; bottom: 20px; width: 320px; height: 333px; }}
+  .floor {{ position: absolute; inset: 40px 0 10px; border-radius: 50%; background: var(--sky); border: 3px solid var(--ink); }}
+  .ieung {{ position: absolute; left: 30px; bottom: 26px; width: 300px; height: 305px; object-fit: contain; object-position: bottom; }}
 </style></head>
-<body>
-  {DATA["ieung"]["defs"]}
+<body class="paper">
   <main>
-    <p class="tag">{esc(nt['en'])} <span class="ko">{esc(nt['ko'])}</span></p>
-    <h1>{esc(n['title']['en'])}</h1>
-    <p class="ko-title ko">{esc(n['title']['ko'])}</p>
-    <p class="brand">Korean with <u>You</u>jin</p>
+    <p class="tag ink">{esc(nt['en'])} <span class="ko" lang="ko">{esc(nt['ko'])}</span></p>
+    <h1 class="d">{esc(n['title']['en'])}</h1>
+    <p class="ko-title ko" lang="ko">{esc(n['title']['ko'])}</p>
+    {retro.brand()}
   </main>
-  <div class="stage"><div class="floor"></div><svg class="ieung mv ex-{NOTE_MOOD}" viewBox="0 0 240 250" aria-hidden="true">{mood}</svg></div>
+  <div class="stage"><div class="floor"></div><img class="ieung" src="{retro.mascot(NOTE_ART)}" alt=""></div>
 </body></html>"""
 
 
@@ -146,7 +123,7 @@ def main():
             path = os.path.join(cache, key.replace("/", "_") + ".html")
             with open(path, "w", encoding="utf-8") as f:
                 f.write(page)
-            pg.goto("file://" + path, wait_until="networkidle")
+            pg.goto(retro.file_url(path), wait_until="networkidle")
             pg.evaluate("document.fonts.ready")
             # 글자가 넘치면 멈춘다 — 작은 미리보기에서 잘리면 안 된다
             over = pg.evaluate("[...document.querySelectorAll('main *')].filter(e => e.scrollWidth > e.clientWidth + 1 || e.getBoundingClientRect().bottom > innerHeight).map(e => e.textContent.trim().slice(0, 30))")

@@ -1,5 +1,4 @@
-
-/* 꼬리말(shared Footer)도 같은 1312px 선에 놓이게. 앱 색은 apps.ts 의 tone 으로 정한다 */
+/* 홈 — 레트로 리브랜딩. 색은 모두 토큰, 여기는 모양 · 움직임만 */
 :root {
   --shell-width: 1344px;
 }
@@ -9,8 +8,38 @@ body {
   overflow-x: clip;
 }
 
-/* 이응이 — 튀는 글자 키프레임만 여기. 말풍선 · 눌림은 shared/ui/ieung.css */
-/* 튀는 글자는 --x · --r 을 style 로 받는다 */
+
+/* 떠 있는 자모 — 잉크 외곽선 + 잉크 그림자 (레트로 스티커) */
+.home-jamo {
+  position: absolute;
+  z-index: 1;
+  font: 900 clamp(3rem, 6vw, 5.4rem) / 1 var(--font-app);
+  -webkit-text-stroke: 3px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--ink);
+}
+
+/* 말풍선 꼬리 — 오른쪽 아래, 이응이 쪽 */
+.home-bubble::after {
+  content: "";
+  position: absolute;
+  right: 22%;
+  bottom: -13px;
+  width: 22px;
+  height: 22px;
+  background: var(--surface);
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  border-bottom-right-radius: 5px;
+  transform: rotate(45deg);
+}
+@media (max-width: 600px) {
+  .home-bubble::after {
+    right: calc(50% - 11px);
+  }
+}
+
+/* 이응이 — 튀는 글자. --x · --r 을 style 로 받는다 */
 @keyframes ieung-out {
   0% { transform: translate(-50%, 0) scale(0.4); opacity: 0; }
   15% { opacity: 1; }

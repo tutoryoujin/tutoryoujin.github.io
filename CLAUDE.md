@@ -64,8 +64,10 @@ scripts/             build-tokens.mjs · new-app.mjs · check-classes.mjs
 tools/<slug>/        앱 전용 Python 도구 (카드 그림 · 공유 이미지)
 tools/home/          홈 공유 그림 build_og.py — 토큰 · 이응 · apps.ts 를 그대로 읽어 브라우저로 찍는다
                      앱 썸네일 build_shots.py — public/home/<slug>.webp (새 앱을 더하면 한 번 돌린다)
+                     파비콘 build_favicon.py — 로고 마크(public/mascot/mark.webp) → favicon.svg · .ico · apple-touch-icon.png
 tools/og/            앱 · 블로그 글 공유 그림 build_og.py — public/og/<slug>.png · public/og/notes/<slug>.png (#95)
                      앱 썸네일 + apps.ts 이름 · 설명, 글은 제목 + 이응이. 새 글 · 새 앱(og: /og/<slug>.png)이면 한 번 돌린다
+                     레트로 재료(글꼴 · 이응이 그림 · 잉크 테)는 tools/og/retro.py 하나 — 홈 · 한국어 이름 공유 그림도 같이 쓴다
 public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/…
 ```
 
@@ -121,7 +123,7 @@ Artifact 툴 `read` 로 `project/README.md` 를 먼저. 토큰은 `project/token
 - **한국어가 먼저, 영어는 바로 아래 더 작게 `muted`.** 외국인 학습자용이라 설명·피드백에 영어가 빠지면 안 됩니다. 컴포넌트가 `ko` / `en` 을 따로 받는 이유입니다. 해요체. 한자 쓰지 않음.
   **예외 — 앱 밖 페이지** 홈(`/`, #84) · 블로그(`/notes/`, #94) · 처방침(`/privacy/`)의 설명 글(한 줄 소개 · 버튼 · 섹션 제목 · 앱 이름 · 앱 설명 · 검색 · 분류 · 글 본문)은 영어가 크고 한국어가 아래 작습니다. 처음 온 사람은 아직 한글을 못 읽어요.
   그래도 예문(🔊) · 낱말 · 띠 이름처럼 **배우는 한국어**는 한국어가 큽니다. 규칙 정리는 #92.
-  홈 헤더 · 히어로 제목 · 꼬리말 워드마크는 「Korean with Youjin」. 홈에서도 이응이 말풍선 · 표어는 한국어가 큽니다. 앱 본문은 한국어 먼저.
+  홈 헤더 · 히어로 제목 · 꼬리말 워드마크는 「Korean with Youjin」. 홈에서도 이응이 말풍선은 한국어가 큽니다. 표어 「One seat at a time, a little every day. Let’s do it together! / 빈자리에 하나씩, 매일 조금씩 같이 해봐요!」는 영어가 크고 한국어가 아래(#110, 주인이 정함). 앱 본문은 한국어 먼저.
   **예외 — 앱의 헤더 · 메뉴 · 「Read more」(관련 글) · 꼬리말**(`shared/ui/Page.tsx`, #100, 주인이 정함)은 영어가 크고 한국어가 아래: 워드마크(영어 앱 이름 / 한국어 이름 with Youjin) · 메뉴 분류 · 앱 이름 · 관련 글 제목 · 꼬리말 한 줄 · `legal`(`{ en, ko }` 로 받는다) · 처방침 링크. 메뉴 맨 밑은 「All apps」. 카드 앱 출처 문구는 영어만.
 - 꼬리말은 `<하는 일>, 매일 조금씩.` — "매일 조금씩" 은 바꾸지 않습니다.
 - 누를 수 있는 것은 최소 44px.
