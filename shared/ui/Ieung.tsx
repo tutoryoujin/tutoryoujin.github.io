@@ -1,4 +1,4 @@
-import { IEUNG_DEFS, MOOD_SVG, type Mood } from "./ieung-data";
+import { IEUNG_DEFS, MOOD_SVG, SCENE_MOTION, SCENE_SVG, type Mood, type Scene } from "./ieung-data";
 
 /** 평면 이응 symbol 과 입체 이응 그라데이션. <Page> 가 한 번만 둔다. */
 export function IeungDefs() {
@@ -10,19 +10,20 @@ export function IeungDefs() {
  * 그보다 작으면 헤더 마크처럼 평면 이응(#ieung-mark)을 쓴다.
  *
  * label 을 주면 그림으로 읽히고, 없으면 장식으로 숨긴다.
+ * scene 을 주면 표정 대신 장면 그림(소품을 든 이응이, #111)을 같은 틀 · 같은 움직임으로 그린다.
  */
-export function Ieung({ mood = "basic", label }: { mood?: Mood; label?: string }) {
+export function Ieung({ mood = "basic", scene, label }: { mood?: Mood; scene?: Scene; label?: string }) {
   const a11y = label
     ? { role: "img", "aria-label": label }
     : { "aria-hidden": true as const, focusable: "false" as const };
   return (
     <svg
-      className={`mv ex-${mood}`}
+      className={`mv ex-${scene ? SCENE_MOTION[scene] : mood}`}
       viewBox="0 0 240 250"
       {...a11y}
-      dangerouslySetInnerHTML={{ __html: MOOD_SVG[mood] }}
+      dangerouslySetInnerHTML={{ __html: scene ? SCENE_SVG[scene] : MOOD_SVG[mood] }}
     />
   );
 }
 
-export type { Mood };
+export type { Mood, Scene };

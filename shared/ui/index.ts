@@ -7,7 +7,7 @@ export { SitePage, SiteHeader, SiteNavLink, SiteTitle, siteWrap, homeWrap } from
 export { Doc } from "./Doc";
 export { cn } from "./cn";
 export { useTheme, THEME_KEY, type ThemePref } from "./theme";
-export { Ieung, type Mood } from "./Ieung";
+export { Ieung, type Mood, type Scene } from "./Ieung";
 export { Bubble, pokeClass } from "./Bubble";
 export { Quiz, type Question, type Choice } from "./Quiz";
 export { Box, boxClass, Btn, ListenBtn, Seg, Segments, Note, Tabs, TabPanel, useHashTab, type TabDef, type Accent, type Tone } from "./parts";
