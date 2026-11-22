@@ -45,3 +45,38 @@ export const MOOD_SVG: Record<Mood, string> = Object.fromEntries(
     `<g class="mv-move"><g class="mv-breathe"><image href="${artSrc(MOOD_ART[m])}" x="0" y="0" width="240" height="250" preserveAspectRatio="xMidYMax meet"/></g></g>`,
   ]),
 ) as Record<Mood, string>;
+
+/* ── 장면 그림 (#111) — 소품을 든 이응이. 유진 님이 준 그림 그대로 public/mascot/<장면>.webp (640×640) ──
+   표정(mood)은 얼굴만 바뀌지만 장면은 그 자체로 하나의 상황이다. 뜻은 늘 글자로 같이 둔다 — 그림은 꾸밈. */
+export const SCENES = ["laptop", "travel", "dance", "sing", "coffee", "study", "game", "bungeoppang"] as const;
+export type Scene = (typeof SCENES)[number];
+
+/**
+ * 장면마다 쓰는 자리 · 몸 움직임(표정의 ex-* 를 빌린다). 자리를 바꾸면 여기 메모도 고친다.
+ *   laptop       노트북 — 블로그 목록 (From Seoul to your screen)
+ *   travel       여행 가방 · 손 흔들기 — 404 (길을 잘못 들었어요)
+ *   dance        춤 · 음표 — 퀴즈 만점 · 카드 모두 외웠어요
+ *   sing         마이크 — 한국어 이응 받침 자리 (ㅇ 이 ng 소리를 낸다)
+ *   coffee       커피 한 잔 — 카드 「곧 추가돼요」 (쉬면서 기다려요)
+ *   study        공책 · 연필 — 퀴즈 「조금만 더」 · 카드 n회차 끝
+ *   game         게임기 — 퀴즈 「다시 해 봐요」 (한 판 더!)
+ *   bungeoppang  붕어빵 — 블로그 찾는 글이 없을 때
+ */
+export const SCENE_MOTION: Record<Scene, Mood> = {
+  laptop: "basic",
+  travel: "basic",
+  dance: "yay",
+  sing: "basic",
+  coffee: "basic",
+  study: "focus",
+  game: "focus",
+  bungeoppang: "basic",
+};
+
+/** 장면마다 SVG 의 안쪽 — 표정과 같은 틀(viewBox 0 0 240 250, 바닥 맞춤)이라 표정 자리에 그대로 들어간다 */
+export const SCENE_SVG: Record<Scene, string> = Object.fromEntries(
+  SCENES.map((s) => [
+    s,
+    `<g class="mv-move"><g class="mv-breathe"><image href="/mascot/${s}.webp" x="0" y="0" width="240" height="250" preserveAspectRatio="xMidYMax meet"/></g></g>`,
+  ]),
+) as Record<Scene, string>;

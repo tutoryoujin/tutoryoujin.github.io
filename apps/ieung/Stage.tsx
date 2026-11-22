@@ -116,7 +116,8 @@ export function Stage({ vowel, rom, seat, onMove }: { vowel: string; rom: string
         aria-label={top ? "이응이를 받침으로 / Drop ㅇ to the bottom" : "이응이를 첫자리로 / Jump ㅇ back to the top"}
       >
         <span key={hops} className="block size-full motion-safe:animate-[ie-hop_0.5s_cubic-bezier(0.3,0.7,0.4,1)] [&_svg]:h-auto [&_svg]:w-full">
-          <Ieung mood={top ? "sleepy" : "yay"} />
+          {/* 첫자리는 소리 없이 졸고, 받침에서는 마이크를 들고 ng 소리를 낸다 (#111) */}
+          {top ? <Ieung mood="sleepy" /> : <Ieung scene="sing" />}
         </span>
       </button>
     </div>

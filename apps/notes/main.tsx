@@ -6,7 +6,7 @@ import { appBySlug } from "@yj/apps";
 import { docText } from "@yj/doc";
 import { noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, type Note } from "@yj/notes";
 import { pageMeta } from "@yj/seo";
-import { cn, Doc, mount, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
+import { cn, Doc, Ieung, mount, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { TtiFinder } from "./TtiFinder";
 
@@ -145,14 +145,22 @@ function List() {
 
   return (
     <SitePage nav={nav(true)}>
-      <SiteTitle big={NOTES_TITLE.en} small={NOTES_TITLE.ko} lead="en">
-        <p className="mt-3 font-bold">
-          Short posts on the Korean you’ll actually run into.
-          <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
-            한국어를 배우다 궁금해지는 것들을 짧게 풀어요.
-          </span>
-        </p>
-      </SiteTitle>
+      {/* 노트북 앞 이응이 — 서울에서 여러분 화면으로 (#111) */}
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <SiteTitle big={NOTES_TITLE.en} small={NOTES_TITLE.ko} lead="en">
+            <p className="mt-3 font-bold">
+              Short posts on the Korean you’ll actually run into.
+              <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
+                한국어를 배우다 궁금해지는 것들을 짧게 풀어요.
+              </span>
+            </p>
+          </SiteTitle>
+        </div>
+        <div className="w-24 shrink-0 min-[440px]:w-36 [&_svg]:h-auto [&_svg]:w-full">
+          <Ieung scene="laptop" />
+        </div>
+      </div>
       <label className="mt-6 block">
         <span className="sr-only">Search posts / 글 찾기</span>
         <input
@@ -173,12 +181,18 @@ function List() {
           ))}
         </ul>
       ) : (
-        <p className="mt-2 rounded-lg bg-surface px-5 py-4 font-bold">
-          No posts match yet. Try another word.
-          <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
-            찾는 글이 아직 없어요. 다른 말로 찾아보세요.
-          </span>
-        </p>
+        <div className="mt-2 flex items-center gap-3 rounded-lg border-2 border-ink bg-surface px-5 py-4 font-bold">
+          {/* 붕어빵 먹으며 기다리는 이응이 — 꾸밈 (#111) */}
+          <div className="w-20 shrink-0 [&_svg]:h-auto [&_svg]:w-full">
+            <Ieung scene="bungeoppang" />
+          </div>
+          <p>
+            No posts match yet. Try another word.
+            <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
+              찾는 글이 아직 없어요. 다른 말로 찾아보세요.
+            </span>
+          </p>
+        </div>
       )}
       {found.length > 0 && <Pager page={view.page} pages={view.pages} go={go} />}
     </SitePage>

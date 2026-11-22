@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Ieung, type Mood } from "./Ieung";
+import { Ieung, type Mood, type Scene } from "./Ieung";
 import { canSpeak, speak } from "./speech";
 import { Btn, boxClass } from "./parts";
 import { cn } from "./cn";
@@ -166,21 +166,22 @@ export function Quiz({ make, length = 10, label }: Props) {
 
 function Result({ score, length, missed, onRestart }: { score: number; length: number; missed: Question[]; onRestart: () => void }) {
   const r = score / length;
-  const [mood, ko, en]: [Mood, string, string] =
+  // 이응이 — 만점은 춤, 조금만 더는 공책, 다시 해 봐요는 「한 판 더!」 게임기 (장면 그림 #111). 잘했어요는 표정 그대로
+  const [art, ko, en]: [{ scene: Scene } | { mood: Mood }, string, string] =
     r === 1
-      ? ["yay", "완벽해요! 🎉", "Perfect score!"]
+      ? [{ scene: "dance" }, "완벽해요! 🎉", "Perfect score!"]
       : r >= 0.7
-        ? ["proud", "잘했어요! 👏", "Great job!"]
+        ? [{ mood: "proud" }, "잘했어요! 👏", "Great job!"]
         : r >= 0.4
-          ? ["focus", "좋아요, 조금만 더! 💪", "Good, keep practicing!"]
-          : ["huh", "다시 한번 해 봐요! 🌱", "Let’s try again!"];
+          ? [{ scene: "study" }, "좋아요, 조금만 더! 💪", "Good, keep practicing!"]
+          : [{ scene: "game" }, "다시 한번 해 봐요! 🌱", "Let’s try again!"];
   const again = useRef<HTMLDivElement>(null);
   useEffect(() => again.current?.querySelector("button")?.focus(), []);
   return (
     <div className={cn(boxClass, "text-center")} aria-live="polite">
       <QLabel ko="결과" en="Result" />
       <div className="mx-auto mt-2 w-30 [&_svg]:h-auto [&_svg]:w-full">
-        <Ieung mood={mood} />
+        <Ieung {...art} />
       </div>
       <div className="mt-2 mb-1 font-display text-[3rem] leading-[1.1]">
         {score} / {length}

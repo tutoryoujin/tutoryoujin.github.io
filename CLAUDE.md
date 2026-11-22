@@ -82,7 +82,7 @@ public/              그대로 복사되는 파일. 앱 그림은 public/<slug>/
 | `Seg` · `Segments`                  | 문장을 뜻마다 색 알약으로 쪼개기                                                                    |
 | `Note`                              | ✨ 알아 두기 (ko · en · ex)                                                                         |
 | `Quiz`                              | 보기 넷 퀴즈 — 채점 · 오답 이유 · 결과 · 다시 보기                                                  |
-| `Ieung`                             | 움직이는 입체 이응 (표정 12종)                                                                      |
+| `Ieung`                             | 움직이는 이응이 — `mood` 표정 12종, `scene` 장면 8종(노트북 · 여행 · 춤 · 노래 · 커피 · 공부 · 게임 · 붕어빵, 자리는 `ieung-data.ts`) |
 | `speak()`                           | 한국어 TTS                                                                                          |
 | `Subscribe`                         | 이메일 구독 폼 (Kit). `site.ts` 에 폼 id 가 없으면 안 그린다                                        |
 | `Products`                          | 상품 목록. `site.ts` 의 `products` 가 비면 안 그린다                                                |

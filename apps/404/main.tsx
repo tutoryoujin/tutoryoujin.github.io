@@ -4,7 +4,7 @@
 import { APPS } from "@yj/apps";
 import { NOTES_TITLE } from "@yj/notes";
 import { NOT_FOUND } from "@yj/pages";
-import { cn, mount, SitePage, SiteTitle } from "@yj/ui";
+import { cn, Ieung, mount, SitePage, SiteTitle } from "@yj/ui";
 
 const focus = "focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary";
 const row = cn(
@@ -27,14 +27,22 @@ function Link({ href, en, ko }: { href: string; en: string; ko: string }) {
 
 mount(
   <SitePage>
-    <SiteTitle big={NOT_FOUND.en} small={NOT_FOUND.ko} lead="en">
-      <p className="mt-3 font-bold">
-        {NOT_FOUND.lead.en}
-        <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted" lang="ko">
-          {NOT_FOUND.lead.ko}
-        </span>
-      </p>
-    </SiteTitle>
+    {/* 여행 가방 끌고 손 흔드는 이응이 — 길을 잘못 들어도 같이 돌아가요 (#111) */}
+    <div className="flex items-center gap-3">
+      <div className="min-w-0 flex-1">
+        <SiteTitle big={NOT_FOUND.en} small={NOT_FOUND.ko} lead="en">
+          <p className="mt-3 font-bold">
+            {NOT_FOUND.lead.en}
+            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted" lang="ko">
+              {NOT_FOUND.lead.ko}
+            </span>
+          </p>
+        </SiteTitle>
+      </div>
+      <div className="w-24 shrink-0 min-[440px]:w-36 [&_svg]:h-auto [&_svg]:w-full">
+        <Ieung scene="travel" />
+      </div>
+    </div>
     <ul className="mt-6 grid gap-2.5">
       <Link href="/" en="Home — Korean with Youjin" ko="첫 화면" />
       <Link href="/notes/" en={NOTES_TITLE.en} ko={NOTES_TITLE.ko} />

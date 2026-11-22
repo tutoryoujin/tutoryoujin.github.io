@@ -193,7 +193,7 @@ export function Study({ deck }: { deck: Deck }) {
           <section className={panel}>
             <div className={mascot}>
               <span className={cn(pop, "block focus-visible:rounded-sm")} role="button" tabIndex={0} aria-label="다시 축하하기 / Celebrate again" onClick={celebrate} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && celebrate()}>
-                <Ieung mood="proud" />
+                <Ieung scene="dance" />
               </span>
             </div>
             <h2 className="mb-1 text-[1.8rem] font-bold">모두 외웠어요!</h2>
@@ -217,7 +217,7 @@ export function Study({ deck }: { deck: Deck }) {
         ) : (
           <section className={panel}>
             <div className={mascot}>
-              <Ieung mood="yay" />
+              <Ieung scene="study" />
             </div>
             <h2 className="mb-1 text-[1.8rem] font-bold">{state.round}회차 끝!</h2>
             <p className="mb-3.5 text-[0.9rem] leading-[1.5] font-bold text-muted">Round {state.round} done!</p>

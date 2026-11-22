@@ -167,7 +167,8 @@ export function Home() {
               tease.current = window.setTimeout(() => setMood(rest), 2800);
             }}
           >
-            <Ieung mood={mood} />
+            {/* 평소에는 커피 한 잔 하며 새 덱을 기다린다 (#111). 오래 쉬다 오면 졸고, 누르면 메롱 */}
+            {mood === "basic" ? <Ieung scene="coffee" /> : <Ieung mood={mood} />}
           </button>
         </div>
       </nav>
