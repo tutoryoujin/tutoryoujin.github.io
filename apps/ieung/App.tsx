@@ -516,7 +516,7 @@ function QuizTab() {
         ))}
       </div>
       {mode === "seat" ? (
-        <Quiz key="seat" make={makeSeatQuestion} label={{ ko: "이 ㅇ은 소리가 날까?", en: "Does this ㅇ make a sound?" }} />
+        <Quiz key="seat" make={makeSeatQuestion} listen={false} label={{ ko: "이 ㅇ은 소리가 날까?", en: "Does this ㅇ make a sound?" }} />
       ) : canSpeak ? (
         <Quiz key="listen" make={makeListenQuestion} label={{ ko: "들리는 건 ㅇ 받침? ㄱ 받침?", en: "Do you hear ㅇ (ng) or ㄱ (k) at the end?" }} />
       ) : (

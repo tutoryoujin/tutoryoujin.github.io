@@ -31,6 +31,8 @@ type Props = {
   make: (index: number, seen: string[]) => Question;
   length?: number;
   label: { ko: string; en: string };
+  /** 답을 고른 뒤 🔊 들어 보기 — 답이 한국어 낱말이 아니면 끈다 (#113) */
+  listen?: boolean;
 };
 
 type Round = { q: Question; choices: Choice[]; picked: Choice | null };
@@ -46,7 +48,7 @@ const QLabel = ({ ko, en }: { ko: string; en: string }) => (
   </div>
 );
 
-export function Quiz({ make, length = 10, label }: Props) {
+export function Quiz({ make, length = 10, label, listen = true }: Props) {
   const [seen, setSeen] = useState<string[]>([]);
   const [round, setRound] = useState<Round | null>(null);
   const [score, setScore] = useState(0);
@@ -152,7 +154,7 @@ export function Quiz({ make, length = 10, label }: Props) {
       </div>
       {picked && (
         <div ref={nextRef}>
-          {canSpeak && <Btn variant="ghost" ko="🔊 들어 보기" en="Listen" onClick={() => speak(q.answer)} />}
+          {listen && canSpeak && <Btn variant="ghost" ko="🔊 들어 보기" en="Listen" onClick={() => speak(q.answer)} />}
           {done >= length ? (
             <Btn ko="결과 보기" en="See results" onClick={() => setFinished(true)} />
           ) : (
