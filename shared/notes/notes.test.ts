@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "../apps";
 import { docHtml } from "../doc";
 import { jsonLd, llmsTxt, pageMeta, prerenderHtml, sitemapXml } from "../seo";
-import { noteBySlug, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate } from "./index";
+import { CATEGORIES, categoryOf, moreIn, noteBySlug, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate, sameCategory } from "./index";
 
 const HANJA = /[一-鿿]/;
 
@@ -63,10 +63,11 @@ describe("글 페이지 — 검색 · 정적 본문", () => {
       expect(llmsTxt()).toContain(`(https://tutoryoujin.github.io/notes/${n.slug}/)`);
     }
   });
-  it("구조화 데이터: 글은 Article + 경로(첫 화면 → 목록 → 글), 목록은 CollectionPage", () => {
+  it("구조화 데이터: 글은 BlogPosting(+ 분류 articleSection) + 경로(첫 화면 → 목록 → 글), 목록은 CollectionPage", () => {
     for (const n of NOTES) {
       const g = (jsonLd(`notes/${n.slug}`) as { "@graph": Record<string, unknown>[] })["@graph"];
-      expect(g[0]["@type"]).toBe("Article");
+      expect(g[0]["@type"]).toBe("BlogPosting");
+      expect(g[0].articleSection).toBe(categoryOf(n).en);
       expect(g[0].datePublished).toBe(n.added);
       expect((g[1].itemListElement as unknown[]).length).toBe(3);
       expect(JSON.stringify(g)).not.toMatch(/aggregateRating|review/i);
@@ -146,5 +147,34 @@ describe("글: 무슨 띠예요?", () => {
     expect(docHtml(n.blocks, "en")).toContain("말 (horse) + 띠 → 말띠");
     const cards = n.blocks.flatMap((b) => (b.t === "cards" ? b.items : []));
     for (const c of cards) expect(c.ko).toMatch(/^[가-힣]+띠$/);
+  });
+});
+
+describe("분류 (#116)", () => {
+  it("분류 slug 는 영어 소문자, 겹치지 않는다. 이름은 영어 + 한국어", () => {
+    for (const c of CATEGORIES) {
+      expect(c.slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
+      expect(c.en).toMatch(/[A-Za-z]/);
+      expect(c.ko).toMatch(/[가-힣]/);
+    }
+    expect(new Set(CATEGORIES.map((c) => c.slug)).size).toBe(CATEGORIES.length);
+  });
+  it("모든 글에 있는 분류", () => {
+    for (const n of NOTES) expect(CATEGORIES.map((c) => c.slug), n.slug).toContain(n.category);
+  });
+  it("같은 분류 글: 자기 자신은 빼고 같은 분류만, 정적 본문에도 링크", () => {
+    for (const n of NOTES) {
+      const more = sameCategory(n);
+      for (const x of more) {
+        expect(x.category).toBe(n.category);
+        expect(x.slug).not.toBe(n.slug);
+      }
+      const html = prerenderHtml(`notes/${n.slug}`);
+      expect(html).toContain(categoryOf(n).en.replace(/&/g, "&amp;"));
+      if (more.length) {
+        expect(html).toContain(moreIn(n).en);
+        for (const x of more) expect(html).toContain(`href="/notes/${x.slug}/"`);
+      } else expect(html).not.toContain(moreIn(n).en);
+    }
   });
 });

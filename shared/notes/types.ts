@@ -1,5 +1,6 @@
 import type { Bi, Block } from "../doc";
 import type { Accent } from "../ui/parts";
+import type { CategorySlug } from "./categories";
 
 /** 글 하나 = 주소 하나 /notes/<slug>/ (#50) */
 export type Note = {
@@ -17,6 +18,8 @@ export type Note = {
   description: string;
   /** 목록 · 앱 아래 링크 카드의 한 줄 */
   summary: Bi;
+  /** 분류 하나 (shared/notes/categories.ts, #116) */
+  category: CategorySlug;
   /** 목록 썸네일 — 악센트 바탕 네모 + 그림 글자(이모지). 색만으로 구분하지 않게 mark 를 같이 */
   thumb: { tone: Accent; mark: string };
   /** 관련 앱 slug — 글 끝 「앱에서 연습하기」, 그 앱 아래 링크 카드 */

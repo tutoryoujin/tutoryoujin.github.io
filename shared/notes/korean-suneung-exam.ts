@@ -12,6 +12,7 @@ export const koreanSuneungExam: Note = {
     ko: "1년에 한 번, 모두 같은 날 같은 시험. 비행기까지 멈추는 수능 이야기.",
     en: "One day a year, one test for everyone, and even the planes stop.",
   },
+  category: "korean-culture",
   thumb: { tone: "lavender", mark: "✏️" },
   apps: ["calendar-practice", "korean-clock"],
   blocks: [

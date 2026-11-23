@@ -16,7 +16,7 @@
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
 import { docHtml } from "./doc";
-import { NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, type Note } from "./notes";
+import { categoryOf, moreIn, NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, sameCategory, type Note } from "./notes";
 import { NOT_FOUND, pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -205,10 +205,11 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
     const main =
       p.kind === "note"
         ? {
-            "@type": "Article",
+            "@type": "BlogPosting",
             "@id": m.url + "#article",
             url: m.url,
             headline: p.note!.searchTitle,
+            articleSection: categoryOf(p.note!).en,
             name: `${p.ko} (${p.en})`,
             description: p.description,
             datePublished: p.note!.added,
@@ -379,6 +380,7 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
     return `<main data-prerender class="${wrap}">${title}<p class="mt-2">${esc(p.description)}</p><ul class="mt-4">${paginate(NOTES, 1).items.map((n) => noteLink(n, "en")).join("")}</ul>${home}</main>`; // 화면 첫 쪽과 같게
   if (p.kind === "note") {
     const n = p.note!;
+    const more = sameCategory(n);
     const practice = n.apps
       .map((s) => apps.find((a) => a.slug === s))
       .filter((a): a is AppInfo => !!a)
@@ -388,8 +390,9 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
       `<main data-prerender class="${wrap}">` +
       `<p><a class="${link}" href="/notes/">${esc(NOTES_TITLE.en)} · ${ko(NOTES_TITLE.ko)}</a></p>` +
       title +
-      `<p class="mt-2 text-muted">${esc(n.added)} · Youjin</p>` +
+      `<p class="mt-2 text-muted">${esc(categoryOf(n).en)} · ${ko(categoryOf(n).ko)} · ${esc(n.added)} · Youjin</p>` +
       docHtml(n.blocks, "en") +
+      (more.length ? `<h2 class="${h2}">${esc(moreIn(n).en)} · ${ko(moreIn(n).ko)}</h2><ul>${more.map((x) => noteLink(x, "en")).join("")}</ul>` : "") +
       (practice ? `<h2 class="${h2}">Practice in the app · ${ko("앱에서 연습하기")}</h2><ul>${practice}</ul>` : "") +
       home +
       `</main>`
