@@ -43,7 +43,7 @@ export function analyticsScript(c: SiteConfig = SITE): ScriptTag | null {
 }
 
 /** 이벤트 이름. 여기 모아 두면 대시보드에서 찾기 쉽다 */
-export type EventName = "deck-complete" | "subscribe" | "product-click" | "name-share";
+export type EventName = "deck-complete" | "subscribe" | "product-click" | "name-share" | "share";
 
 /** 커스텀 이벤트. 분석이 꺼져 있거나 스크립트가 아직 안 왔거나 막혀 있으면 조용히 넘어간다 */
 export function track(name: EventName, props?: EventProps, c: SiteConfig = SITE, w: Win | undefined = globalThis as Win) {

@@ -6,6 +6,7 @@ export { Page, Footer, Mark, ThemeToggle, WithYoujin, mainClass, type NavLink } 
 export { SitePage, SiteHeader, SiteNavLink, SiteTitle, siteWrap, homeWrap } from "./Site";
 export { Doc } from "./Doc";
 export { ClockFace } from "./ClockFace";
+export { Share, shareLink, pageUrl, type ShareHow } from "./Share";
 export { cn } from "./cn";
 export { useTheme, THEME_KEY, type ThemePref } from "./theme";
 export { Ieung, type Mood, type Scene } from "./Ieung";

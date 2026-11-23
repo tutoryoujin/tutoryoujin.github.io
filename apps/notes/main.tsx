@@ -6,7 +6,7 @@ import { appBySlug } from "@yj/apps";
 import { docText, headings } from "@yj/doc";
 import { categoryOf, moreIn, neighbors, NOTE_UI, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, sameCategory, TOC_MIN, type Note } from "@yj/notes";
 import { pageMeta } from "@yj/seo";
-import { cn, Doc, Ieung, mount, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
+import { cn, Doc, Ieung, mount, Share, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { TtiFinder } from "./TtiFinder";
 
@@ -267,6 +267,7 @@ function Article({ n }: { n: Note }) {
           </nav>
         )}
         <Doc blocks={n.blocks} lead="en" widgets={WIDGETS} />
+        <Share lead="en" where="note" title={n.title.en} text={n.summary.en} className="mx-auto mt-10 max-w-80" />
       </article>
       {more.length > 0 && (
         <section className="mt-12" aria-labelledby="more">
