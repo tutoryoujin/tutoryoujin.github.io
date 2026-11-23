@@ -15,11 +15,23 @@ import type { Note } from "./types";
 import { whatTimeIsItInKorean } from "./what-time-is-it-in-korean";
 
 export type { Note } from "./types";
+export { CATEGORIES, categoryBySlug, type Category, type CategorySlug } from "./categories";
+import { categoryBySlug } from "./categories";
 
 /** 최신순 */
 export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam, whatTimeIsItInKorean].sort((a, b) => b.added.localeCompare(a.added));
 
 export const noteBySlug = (slug: string) => NOTES.find((n) => n.slug === slug);
+/** 글의 분류 */
+export const categoryOf = (n: Note) => categoryBySlug(n.category);
+/** 같은 분류의 다른 글 — 최신순, 많아야 max 개 (글 끝 「More in …」, #116) */
+export const sameCategory = (n: Note, max = 3) => NOTES.filter((x) => x.category === n.category && x.slug !== n.slug).slice(0, max);
+/** 글 끝 같은 분류 묶음의 제목 — 화면 · 정적 본문이 같은 말 */
+export const moreIn = (n: Note) => {
+  const c = categoryOf(n);
+  return { en: `More in ${c.en}`, ko: `${c.ko} 글 더 보기` };
+};
+
 /** 이 앱과 관련된 글 */
 export const notesForApp = (app: string) => NOTES.filter((n) => n.apps.includes(app));
 

@@ -4,7 +4,7 @@
    글 원본은 shared/notes/ */
 import { appBySlug } from "@yj/apps";
 import { docText } from "@yj/doc";
-import { noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, type Note } from "@yj/notes";
+import { categoryOf, moreIn, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, sameCategory, type Note } from "@yj/notes";
 import { pageMeta } from "@yj/seo";
 import { cn, Doc, Ieung, mount, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -127,7 +127,11 @@ function List() {
   }, []);
   // 제목 · 한 줄 · 본문에서 찾는다. 띄어쓰기 · 대소문자는 무시
   const index = useMemo(
-    () => NOTES.map((n) => ({ n, text: [n.title.ko, n.title.en, n.summary.ko, n.summary.en, docText(n.blocks)].join(" ").toLowerCase() })),
+    () =>
+      NOTES.map((n) => ({
+        n,
+        text: [n.title.ko, n.title.en, n.summary.ko, n.summary.en, categoryOf(n).en, categoryOf(n).ko, docText(n.blocks)].join(" ").toLowerCase(),
+      })),
     [],
   );
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -212,6 +216,8 @@ function List() {
 
 function Article({ n }: { n: Note }) {
   const apps = n.apps.map(appBySlug);
+  const cat = categoryOf(n);
+  const more = sameCategory(n);
   return (
     <SitePage nav={nav(false)} title={pageMeta(`notes/${n.slug}`).title}>
       <a href="/notes/" className={cn("mb-4 inline-flex min-h-11 items-center gap-1.5 rounded-full font-bold text-muted no-underline hover:text-ink", focus)}>
@@ -222,12 +228,35 @@ function Article({ n }: { n: Note }) {
       </a>
       <article>
         <SiteTitle big={n.title.en} small={n.title.ko} lead="en">
-          <p className="mt-3 text-[0.9rem] font-bold text-muted">
-            <time dateTime={n.added}>{n.added}</time> · Youjin
+          <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9rem] font-bold text-muted">
+            <span className="rounded-full border border-line bg-surface px-3 py-0.5 text-ink">
+              {cat.en}{" "}
+              <span className="text-[0.85em] font-semibold text-muted" lang="ko">
+                {cat.ko}
+              </span>
+            </span>
+            <span>
+              <time dateTime={n.added}>{n.added}</time> · Youjin
+            </span>
           </p>
         </SiteTitle>
         <Doc blocks={n.blocks} lead="en" widgets={WIDGETS} />
       </article>
+      {more.length > 0 && (
+        <section className="mt-12" aria-labelledby="more">
+          <h2 id="more" className="font-display text-[1.45rem] font-extrabold">
+            {moreIn(n).en}
+            <span className="block font-app text-[0.95rem] font-bold text-muted" lang="ko">
+              {moreIn(n).ko}
+            </span>
+          </h2>
+          <ul className="mt-2 border-t-2 border-ink">
+            {more.map((x) => (
+              <Row key={x.slug} n={x} />
+            ))}
+          </ul>
+        </section>
+      )}
       {apps.length > 0 && (
         <section className="mt-12" aria-labelledby="practice">
           <h2 id="practice" className="font-display text-[1.45rem] font-extrabold">

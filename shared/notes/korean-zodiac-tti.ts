@@ -14,6 +14,7 @@ export const koreanZodiacTti: Note = {
     ko: "태어난 해의 동물로 나이를 알아요. 내 띠 찾기와 말하는 법.",
     en: "Your birth-year animal, how to find it, and how to say it.",
   },
+  category: "korean-culture",
   thumb: { tone: "yellow", mark: "🐴" },
   apps: ["calendar-practice"],
   blocks: [

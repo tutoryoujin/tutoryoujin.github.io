@@ -36,6 +36,7 @@ export const whatTimeIsItInKorean: Note = {
     ko: "지금 몇 시예요? 시간을 묻는 말, 대답하는 말, 시계 읽는 법.",
     en: "How to ask the time, how to answer, and how to read the clock.",
   },
+  category: "words-expressions",
   thumb: { tone: "orange", mark: "🕒" },
   apps: ["korean-clock"],
   blocks: [
