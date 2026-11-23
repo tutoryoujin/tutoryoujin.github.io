@@ -2,10 +2,7 @@
 :root {
   /* 뜻 이름은 악센트 8쌍의 별칭이다. 여기에 hex 를 다시 적지 말 것.
      다크 값은 원본 쌍이 tokens.css 의 세 블록에서 바뀌므로 따라온다. */
-  --clk-hour-bg: var(--orange-bg); /* 시 · 고유어 */
-  --clk-hour-ink: var(--orange-ink);
-  --clk-min-bg: var(--lavender-bg); /* 분 · 한자어 */
-  --clk-min-ink: var(--lavender-ink);
+  /* 시(--clk-hour-*) · 분(--clk-min-*) 은 시계판과 같이 shared/ui/styles.css 에 (#114) */
   --clk-ampm-bg: var(--gray-bg); /* 오전 · 오후 */
   --clk-ampm-ink: var(--gray-ink);
 }

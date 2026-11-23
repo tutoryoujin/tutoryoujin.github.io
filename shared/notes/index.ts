@@ -5,18 +5,19 @@
    그러면 목록 · 검색 · 주소(/notes/<slug>/) · sitemap · llms.txt ·
    관련 앱 아래 링크에 저절로 들어간다.
 
-   - 화면은 영어가 크고 한국어가 아래 (#94). 예문처럼 배우는 한국어는 그대로 크게. 해요체. 한자 쓰지 않음
+   - 설명 글(h · p · tip · list · link)은 영어만, 한국어 병기 없음 (#122). 예문 · 카드 · 이응이 말풍선처럼 배우는 한국어는 한국어가 크고 영어가 아래. 해요체. 한자 쓰지 않음
    - 수업 · 튜터링 · 예약 · 외부 결제 안내 없이 학습 팁만
    - 읽기 규칙(숫자 · 띠 …)을 적으면 shared/korean 의 함수로 만들고 테스트한다
    ============================================================ */
 import { koreanSuneungExam } from "./korean-suneung-exam";
 import { koreanZodiacTti } from "./korean-zodiac-tti";
 import type { Note } from "./types";
+import { whatTimeIsItInKorean } from "./what-time-is-it-in-korean";
 
 export type { Note } from "./types";
 
 /** 최신순 */
-export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam].sort((a, b) => b.added.localeCompare(a.added));
+export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam, whatTimeIsItInKorean].sort((a, b) => b.added.localeCompare(a.added));
 
 export const noteBySlug = (slug: string) => NOTES.find((n) => n.slug === slug);
 /** 이 앱과 관련된 글 */

@@ -23,14 +23,25 @@ const nav = (current: boolean) => (
   </>
 );
 
-/** 게시판 한 줄 — 제목 · 한 줄 · 날짜. 영어가 크고 한국어가 아래 (#94) */
+/** 목록 썸네일 — 악센트 바탕 네모 + 글의 이모지. 제목이 옆에 있으니 장식 */
+function Thumb({ n }: { n: Note }) {
+  return (
+    <span
+      className="grid size-20 flex-none place-items-center rounded-lg border-2 border-ink text-[2.4rem] leading-none min-[440px]:size-24 min-[440px]:text-[2.8rem]"
+      style={{ background: `var(--${n.thumb.tone}-bg)` }}
+      aria-hidden="true"
+    >
+      {n.thumb.mark}
+    </span>
+  );
+}
+
+/** 게시판 한 줄 — 썸네일 · 제목 · 한 줄 · 날짜. 영어가 크고 한국어가 아래 (#94) */
 function Row({ n }: { n: Note }) {
   return (
     <li className="border-b border-line">
-      <a
-        href={`/notes/${n.slug}/`}
-        className={cn("flex flex-col gap-1 px-2 py-4 text-ink no-underline hover:bg-surface sm:flex-row sm:items-start sm:gap-4", focus)}
-      >
+      <a href={`/notes/${n.slug}/`} className={cn("flex items-start gap-4 px-2 py-4 text-ink no-underline hover:bg-surface", focus)}>
+        <Thumb n={n} />
         <span className="min-w-0 flex-1 break-keep">
           <span className="block text-[1.12rem] leading-[1.3] font-extrabold">{n.title.en}</span>
           <span className="block font-display text-[1.02rem] text-muted" lang="ko">
@@ -40,10 +51,10 @@ function Row({ n }: { n: Note }) {
           <span className="block text-[0.85rem] font-semibold text-muted" lang="ko">
             {n.summary.ko}
           </span>
+          <time dateTime={n.added} className="mt-1.5 block text-[0.85rem] font-bold text-muted tabular-nums">
+            {n.added}
+          </time>
         </span>
-        <time dateTime={n.added} className="shrink-0 text-[0.85rem] font-bold text-muted tabular-nums">
-          {n.added}
-        </time>
       </a>
     </li>
   );

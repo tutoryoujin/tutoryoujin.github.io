@@ -5,6 +5,7 @@ import "./styles.css";
 export { Page, Footer, Mark, ThemeToggle, WithYoujin, mainClass, type NavLink } from "./Page";
 export { SitePage, SiteHeader, SiteNavLink, SiteTitle, siteWrap, homeWrap } from "./Site";
 export { Doc } from "./Doc";
+export { ClockFace } from "./ClockFace";
 export { cn } from "./cn";
 export { useTheme, THEME_KEY, type ThemePref } from "./theme";
 export { Ieung, type Mood, type Scene } from "./Ieung";

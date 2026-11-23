@@ -78,3 +78,11 @@
 :root {
   --shell-width: 640px;
 }
+
+/* 시계판(ClockFace) 색 — 한국어 시계 앱 · 블로그 글이 같이 쓴다 (#114). 악센트 쌍의 별칭, hex 금지 */
+:root {
+  --clk-hour-bg: var(--orange-bg); /* 시 · 고유어 */
+  --clk-hour-ink: var(--orange-ink);
+  --clk-min-bg: var(--lavender-bg); /* 분 · 한자어 */
+  --clk-min-ink: var(--lavender-ink);
+}
