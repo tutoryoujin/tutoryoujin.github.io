@@ -26,7 +26,8 @@ export type Lead = "ko" | "en";
 
 export type Block =
   /** 소제목 (h2) */
-  | ({ t: "h" } & Prose)
+  /** 소제목 (h2). id = 목차 · 바로가기 주소(#…). 없으면 영어 제목에서 만든다 — 한번 나간 뒤 제목을 고치면 옛 id 를 적어 둔다 */
+  | ({ t: "h"; id?: string } & Prose)
   /** 문단 */
   | ({ t: "p" } & Prose)
   /** 점 목록 */
@@ -43,6 +44,16 @@ export type Block =
   | { t: "widget"; id: string }
   /** 이응이 말풍선 — 배우는 한국어 한 줄(크게) + 영어, 🔊 없음. mood 표정 또는 scene 장면 (shared/ui/ieung-data.ts) */
   | ({ t: "ieung"; mood?: Mood; scene?: Scene } & Bi);
+
+/** 소제목 id — 영어 제목을 소문자 낱말로 (AM, PM, and “around” → am-pm-and-around) */
+export const headingId = (b: { id?: string; en: string }) =>
+  b.id ??
+  b.en
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+/** 목차 — 소제목 차례대로 */
+export const headings = (blocks: Block[]) => blocks.flatMap((b) => (b.t === "h" ? [{ id: headingId(b), en: b.en, ko: b.ko }] : []));
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -75,7 +86,7 @@ export function docHtml(blocks: Block[], lead: Lead): string {
     .map((b) => {
       switch (b.t) {
         case "h":
-          return `<h2 class="mt-8 mb-2 font-display text-[1.35rem] font-semibold">${two(b)}</h2>`;
+          return `<h2 id="${esc(headingId(b))}" class="mt-8 mb-2 font-display text-[1.35rem] font-semibold">${two(b)}</h2>`;
         case "p":
           return `<p class="mt-3">${two(b)}</p>`;
         case "tip":
