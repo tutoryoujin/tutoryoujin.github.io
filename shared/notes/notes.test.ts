@@ -114,6 +114,32 @@ describe("쪽 나누기 (#94)", () => {
   });
 });
 
+describe("글: 지금 몇 시예요? (#114)", () => {
+  // 예문은 shared/korean/time.ts 로 만든다 — 시계 앱과 같은 읽기인지 글자로 한 번 더
+  const html = docHtml(noteBySlug("what-time-is-it-in-korean")!.blocks, "en");
+  it.each(["세 시예요.", "세 시 십 분이에요.", "세 시 반이에요. (= 세 시 삼십 분이에요.)", "네 시 사십오 분이에요.", "오전 아홉 시예요.", "오후 두 시 반이에요.", "저녁 일곱 시에 만나요.", "세 시쯤 갈게요.", "열두 시 정각이에요."])(
+    "%s",
+    (s) => expect(html).toContain(s),
+  );
+  it("예문 옆 시계는 같은 시각", () => {
+    const ex = noteBySlug("what-time-is-it-in-korean")!.blocks.flatMap((b) => (b.t === "ex" ? b.items : []));
+    const clock = (ko: string) => ex.find((i) => i.ko === ko)?.clock;
+    expect(clock("세 시 십 분이에요.")).toBe(3 * 60 + 10);
+    expect(clock("오후 두 시 반이에요.")).toBe(14 * 60 + 30);
+    expect(clock("저녁 일곱 시에 만나요.")).toBe(19 * 60);
+  });
+  it("분 — 한자어 숫자 1~10 과 분 읽기", () => {
+    const cards = noteBySlug("what-time-is-it-in-korean")!.blocks.flatMap((b) => (b.t === "cards" ? [b.items] : []));
+    expect(cards.some((c) => c.map((i) => i.ko).join(" ") === "일 이 삼 사 오 육 칠 팔 구 십")).toBe(true);
+    for (const s of ["오 분", "십 분", "십오 분", "이십 분", "이십삼 분", "삼십 분", "사십오 분", "오십구 분"]) expect(html).toContain(s);
+    expect(html).not.toContain("일십");
+  });
+  it("시 카드 12장 — 짧아지는 것만 표시", () => {
+    for (const s of ["한 시", "두 시", "세 시", "네 시", "열한 시", "열두 시", "하나 → 한", "열둘 → 열두"]) expect(html).toContain(s);
+    expect(html).not.toContain("다섯 → 다섯");
+  });
+});
+
 describe("글: 무슨 띠예요?", () => {
   it("대답은 동물 + 띠, 붙여 쓴다 — 카드도 같은 꼴", () => {
     const n = noteBySlug("korean-zodiac-tti")!;
