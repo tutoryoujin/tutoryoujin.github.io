@@ -16,7 +16,7 @@
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
 import { docHtml, headings } from "./doc";
-import { categoryOf, moreIn, neighbors, NOTE_UI, NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, sameCategory, TOC_MIN, type Note } from "./notes";
+import { categoryOf, neighbors, NOTE_UI, NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, TOC_MIN, type Note } from "./notes";
 import { NOT_FOUND, pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -422,7 +422,6 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
     return `<main data-prerender class="${wrap}">${title}<p class="mt-2">${esc(p.description)}</p><ul class="mt-4">${paginate(NOTES, 1).items.map((n) => noteLink(n, "en")).join("")}</ul>${home}</main>`; // 화면 첫 쪽과 같게
   if (p.kind === "note") {
     const n = p.note!;
-    const more = sameCategory(n);
     const toc = headings(n.blocks);
     const { older, newer } = neighbors(n);
     const side = (x: Note | undefined, l: { en: string; ko: string }) =>
@@ -441,7 +440,6 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
         ? `<nav><h2 class="${h2}">${esc(NOTE_UI.toc.en)} · ${ko(NOTE_UI.toc.ko)}</h2><ol>${toc.map((h) => `<li class="${li}"><a class="${link}" href="#${esc(h.id)}">${esc(h.en)}</a></li>`).join("")}</ol></nav>`
         : "") +
       docHtml(n.blocks, "en") +
-      (more.length ? `<h2 class="${h2}">${esc(moreIn(n).en)} · ${ko(moreIn(n).ko)}</h2><ul>${more.map((x) => noteLink(x, "en")).join("")}</ul>` : "") +
       (practice ? `<h2 class="${h2}">Practice in the app · ${ko("앱에서 연습하기")}</h2><ul>${practice}</ul>` : "") +
       (older || newer ? `<ul class="mt-6">${side(older, NOTE_UI.older)}${side(newer, NOTE_UI.newer)}</ul>` : "") +
       home +

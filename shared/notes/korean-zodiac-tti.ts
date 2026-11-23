@@ -16,7 +16,8 @@ export const koreanZodiacTti: Note = {
   },
   category: "korean-culture",
   thumb: { tone: "yellow", mark: "🐴" },
-  apps: ["calendar-practice"],
+  // 「Practice in the app」은 글과 직접 관련 있는 앱만 (#123)
+  apps: [],
   blocks: [
     {
       t: "p",

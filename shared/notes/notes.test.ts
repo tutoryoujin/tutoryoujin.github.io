@@ -162,19 +162,15 @@ describe("분류 (#116)", () => {
   it("모든 글에 있는 분류", () => {
     for (const n of NOTES) expect(CATEGORIES.map((c) => c.slug), n.slug).toContain(n.category);
   });
-  it("같은 분류 글: 자기 자신은 빼고 같은 분류만, 정적 본문에도 링크", () => {
+  it("같은 분류 글: 자기 자신은 빼고 같은 분류만. 글 끝 「More in」은 보류 (#123)", () => {
     for (const n of NOTES) {
-      const more = sameCategory(n);
-      for (const x of more) {
+      for (const x of sameCategory(n)) {
         expect(x.category).toBe(n.category);
         expect(x.slug).not.toBe(n.slug);
       }
       const html = prerenderHtml(`notes/${n.slug}`);
       expect(html).toContain(categoryOf(n).en.replace(/&/g, "&amp;"));
-      if (more.length) {
-        expect(html).toContain(moreIn(n).en);
-        for (const x of more) expect(html).toContain(`href="/notes/${x.slug}/"`);
-      } else expect(html).not.toContain(moreIn(n).en);
+      expect(html).not.toContain(moreIn(n).en);
     }
   });
 });
@@ -237,18 +233,12 @@ describe("글 안 퀴즈 (#120)", () => {
         expect(i.answer + texts.join(""), n.slug).not.toMatch(HANJA);
       }
   });
-  it("시간 글: 정답은 시계와 같은 읽기, 정적 본문에 문제와 정답", () => {
+  it("시간 글: 글 안 퀴즈 대신 시계 앱으로 (#123). 수능 · 띠는 연결할 앱 없음", () => {
     const n = noteBySlug("what-time-is-it-in-korean")!;
-    const q = n.blocks.find((b) => b.t === "quiz");
-    expect(q?.t).toBe("quiz");
-    if (q?.t !== "quiz") return;
-    expect(q.items.map((i) => [i.clock, i.answer])).toEqual([
-      [190, "세 시 십 분"],
-      [90, "한 시 삼십 분"],
-      [705, "열한 시 사십오 분"],
-    ]);
-    const html = docHtml(n.blocks, "en");
-    expect(html).toContain("(3:10) — 세 시 십 분");
-    expect(html).toContain("(11:45) — 열한 시 사십오 분");
+    expect(n.blocks.some((b) => b.t === "quiz")).toBe(false);
+    expect(n.apps).toEqual(["korean-clock"]);
+    expect(noteBySlug("korean-suneung-exam")!.apps).toEqual([]);
+    expect(noteBySlug("korean-zodiac-tti")!.apps).toEqual([]);
+    expect(prerenderHtml("notes/korean-zodiac-tti")).not.toContain("Practice in the app");
   });
 });

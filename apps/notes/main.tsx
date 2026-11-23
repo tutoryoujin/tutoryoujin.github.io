@@ -4,7 +4,7 @@
    글 원본은 shared/notes/ */
 import { appBySlug } from "@yj/apps";
 import { docText, headings } from "@yj/doc";
-import { categoryOf, moreIn, neighbors, NOTE_UI, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, sameCategory, TOC_MIN, type Note } from "@yj/notes";
+import { categoryOf, neighbors, NOTE_UI, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, TOC_MIN, type Note } from "@yj/notes";
 import { pageMeta } from "@yj/seo";
 import { cn, Doc, Ieung, mount, Share, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -217,7 +217,6 @@ function List() {
 function Article({ n }: { n: Note }) {
   const apps = n.apps.map(appBySlug);
   const cat = categoryOf(n);
-  const more = sameCategory(n);
   const toc = headings(n.blocks);
   const { older, newer } = neighbors(n);
   return (
@@ -269,21 +268,6 @@ function Article({ n }: { n: Note }) {
         <Doc blocks={n.blocks} lead="en" widgets={WIDGETS} />
         <Share lead="en" where="note" title={n.title.en} text={n.summary.en} className="mx-auto mt-10 max-w-80" />
       </article>
-      {more.length > 0 && (
-        <section className="mt-12" aria-labelledby="more">
-          <h2 id="more" className="font-display text-[1.45rem] font-extrabold">
-            {moreIn(n).en}
-            <span className="block font-app text-[0.95rem] font-bold text-muted" lang="ko">
-              {moreIn(n).ko}
-            </span>
-          </h2>
-          <ul className="mt-2 border-t-2 border-ink">
-            {more.map((x) => (
-              <Row key={x.slug} n={x} />
-            ))}
-          </ul>
-        </section>
-      )}
       {apps.length > 0 && (
         <section className="mt-12" aria-labelledby="practice">
           <h2 id="practice" className="font-display text-[1.45rem] font-extrabold">
