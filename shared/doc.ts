@@ -22,6 +22,9 @@ export type Bi = { ko: string; en: string };
 export type Prose = { ko?: string; en: string };
 /** 예문 한 줄. clock = 옆에 그릴 시계(자정부터 센 분, 0~1439) · also = 같은 뜻의 다른 말(「= …」로 아래에) */
 export type Example = Bi & { clock?: number; also?: string };
+/** 글 안 퀴즈 문제 하나 (#120). q = 묻는 말, clock = 문제 그림 시계(자정부터 센 분), answer = 정답(한국어),
+ *  wrong = 학생들이 실제로 하는 실수 + 고르면 보여 줄 이유 */
+export type QuizItem = { q: Prose; clock?: number; answer: string; wrong: { text: string; why?: Bi }[] };
 export type Lead = "ko" | "en";
 
 export type Block =
@@ -43,7 +46,12 @@ export type Block =
   /** 화면에서만 움직이는 부품 (예: 내 띠 찾기). 정적 본문에는 안 나간다 */
   | { t: "widget"; id: string }
   /** 이응이 말풍선 — 배우는 한국어 한 줄(크게) + 영어, 🔊 없음. mood 표정 또는 scene 장면 (shared/ui/ieung-data.ts) */
-  | ({ t: "ieung"; mood?: Mood; scene?: Scene } & Bi);
+  | ({ t: "ieung"; mood?: Mood; scene?: Scene } & Bi)
+  /** 보기 넷 퀴즈 (#120) — 화면은 공통 Quiz, 정적 본문에는 문제와 정답만 */
+  | { t: "quiz"; label: Bi; items: QuizItem[] };
+
+/** 시계 그림을 글자로 — 정적 본문용 (12시간, 3:05) */
+export const clockText = (t: number) => `${Math.floor(t / 60) % 12 || 12}:${String(t % 60).padStart(2, "0")}`;
 
 /** 소제목 id — 영어 제목을 소문자 낱말로 (AM, PM, and “around” → am-pm-and-around) */
 export const headingId = (b: { id?: string; en: string }) =>
@@ -68,6 +76,10 @@ export function docText(blocks: Block[]): string {
   const out: string[] = [];
   for (const b of blocks) {
     if (b.t === "widget") continue;
+    if (b.t === "quiz") {
+      for (const i of b.items) out.push(i.q.en, i.q.ko ?? "", i.answer);
+      continue;
+    }
     if ("items" in b) for (const i of b.items) out.push(i.ko ?? "", i.en, "sub" in i && i.sub ? i.sub : "", "also" in i && i.also ? i.also : "");
     else out.push(b.ko ?? "", b.en);
   }
@@ -97,6 +109,10 @@ export function docHtml(blocks: Block[], lead: Lead): string {
           return `<ul class="mt-3">${b.items.map((i) => `<li class="mt-1.5">${learn(i)}</li>`).join("")}</ul>`;
         case "ieung":
           return `<p class="mt-4">${learn(b)}</p>`;
+        case "quiz":
+          return `<h3 class="mt-6">${learn(b.label)}</h3><ol class="mt-3">${b.items
+            .map((i) => `<li class="mt-1.5">${two(i.q)}${i.clock === undefined ? "" : ` (${clockText(i.clock)})`} — ${esc(i.answer)}</li>`)
+            .join("")}</ol>`;
         case "cards":
           return `<ul class="mt-3">${b.items
             .map((i) => `<li class="mt-1.5">${esc(i.mark)} ${learn(i)}${i.sub ? ` — ${esc(i.sub)}` : ""}</li>`)
