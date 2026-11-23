@@ -14,7 +14,8 @@ export const koreanSuneungExam: Note = {
   },
   category: "korean-culture",
   thumb: { tone: "lavender", mark: "✏️" },
-  apps: ["calendar-practice", "korean-clock"],
+  // 「Practice in the app」은 글과 직접 관련 있는 앱만 (#123)
+  apps: [],
   blocks: [
     {
       t: "p",

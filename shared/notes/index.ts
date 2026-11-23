@@ -24,7 +24,7 @@ export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam, whatTimeIsItIn
 export const noteBySlug = (slug: string) => NOTES.find((n) => n.slug === slug);
 /** 글의 분류 */
 export const categoryOf = (n: Note) => categoryBySlug(n.category);
-/** 같은 분류의 다른 글 — 최신순, 많아야 max 개 (글 끝 「More in …」, #116) */
+/** 같은 분류의 다른 글 — 최신순, 많아야 max 개. 글 끝 「More in …」은 보류 (#123) — 다시 켤 때 쓴다 */
 export const sameCategory = (n: Note, max = 3) => NOTES.filter((x) => x.category === n.category && x.slug !== n.slug).slice(0, max);
 /** 글 끝 같은 분류 묶음의 제목 — 화면 · 정적 본문이 같은 말 */
 export const moreIn = (n: Note) => {
