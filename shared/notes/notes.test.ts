@@ -224,3 +224,31 @@ describe("글 페이지 다듬기 (#119)", () => {
     expect(feed("korean-clock")).toBe(false);
   });
 });
+
+describe("글 안 퀴즈 (#120)", () => {
+  const quizzes = NOTES.flatMap((n) => n.blocks.flatMap((b) => (b.t === "quiz" ? [{ n, b }] : [])));
+  it("정답은 보기 중 하나뿐, 오답은 서로 다르고 정답과 다르다, 한자 없음", () => {
+    for (const { n, b } of quizzes)
+      for (const i of b.items) {
+        const texts = i.wrong.map((w) => w.text);
+        expect(texts, n.slug).not.toContain(i.answer);
+        expect(new Set(texts).size, n.slug).toBe(texts.length);
+        expect(texts.length, n.slug).toBeGreaterThanOrEqual(2);
+        expect(i.answer + texts.join(""), n.slug).not.toMatch(HANJA);
+      }
+  });
+  it("시간 글: 정답은 시계와 같은 읽기, 정적 본문에 문제와 정답", () => {
+    const n = noteBySlug("what-time-is-it-in-korean")!;
+    const q = n.blocks.find((b) => b.t === "quiz");
+    expect(q?.t).toBe("quiz");
+    if (q?.t !== "quiz") return;
+    expect(q.items.map((i) => [i.clock, i.answer])).toEqual([
+      [190, "세 시 십 분"],
+      [90, "한 시 삼십 분"],
+      [705, "열한 시 사십오 분"],
+    ]);
+    const html = docHtml(n.blocks, "en");
+    expect(html).toContain("(3:10) — 세 시 십 분");
+    expect(html).toContain("(11:45) — 열한 시 사십오 분");
+  });
+});

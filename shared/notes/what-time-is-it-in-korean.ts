@@ -3,7 +3,7 @@
    설명 글은 영어만, 배우는 한국어(예문 · 카드 · 이응이)는 한국어 + 영어 (#122) */
 import { josa, native, nativeCounter, sino } from "../korean/numbers";
 import { readHalf, readHour, readMin, readTime } from "../korean/time";
-import type { Example } from "../doc";
+import type { Example, QuizItem } from "../doc";
 import type { Note } from "./types";
 
 /** 세 시 → 세 시예요, 세 시 십 분 → 세 시 십 분이에요 */
@@ -11,6 +11,26 @@ const isIt = (s: string) => josa(s, "이에요", "예요") + ".";
 /** 예문 + 옆에 같은 시각의 시계 (h 는 0~23) */
 const at = (h: number, m: number, ko: string, en: string, also?: string): Example => ({ ko, en, clock: h * 60 + m, ...(also && { also }) });
 const h12 = (h: number) => h % 12 || 12;
+/** 「이 시계는 몇 시예요?」 한 문제 (#120). 오답은 시계 앱 퀴즈와 같은 실수 — 시를 한자어로 · 분을 고유어로 · 셋 시 */
+const clockQuiz = (h: number, m: number): QuizItem => ({
+  q: { en: "What time does the clock show?" },
+  clock: h * 60 + m,
+  answer: readTime(h, m),
+  wrong: [
+    {
+      text: `${sino(h)} 시 ${readMin(m)}`,
+      why: { ko: `시는 고유어로 읽어요. ${sino(h)} 시가 아니라 ${readHour(h)}!`, en: "Hours use native Korean numbers: 한, 두, 세…" },
+    },
+    {
+      text: `${readHour(h)} ${native(m)} 분`,
+      why: { ko: `분은 한자어로 읽어요. ${native(m)} 분이 아니라 ${readMin(m)}!`, en: "Minutes use Sino-Korean numbers: 일, 이, 삼…" },
+    },
+    {
+      text: `${native(h)} 시 ${readMin(m)}`,
+      why: { ko: `${josa(native(h), "은", "는")} 시 앞에서 ${josa(nativeCounter(h), "이", "가")} 돼요.`, en: `${native(h)} becomes ${nativeCounter(h)} before 시.` },
+    },
+  ],
+});
 const ONES = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 /** 분 예시 — [분, 만드는 법]. 한 자리 · 10 은 만드는 법이 없다 */
 const MINUTES: [number, string][] = [
@@ -133,8 +153,9 @@ export const whatTimeIsItInKorean: Note = {
     { t: "h", en: "Your turn" },
     {
       t: "p",
-      en: "So, what time is it where you are? Look at a clock and say it in Korean. In the clock app, you can turn the hands to hear any time read aloud, then try the quiz.",
+      en: "So, what time is it where you are? Look at a clock and say it in Korean. Then try these three clocks. For more, the clock app lets you turn the hands and hear any time read aloud.",
     },
+    { t: "quiz", label: { ko: "이 시계는 몇 시예요?", en: "What time is it?" }, items: [clockQuiz(3, 10), clockQuiz(1, 30), clockQuiz(11, 45)] },
     { t: "ieung", mood: "yay", ko: "한국어로 말해 보세요!", en: "Say it in Korean!" },
   ],
 };

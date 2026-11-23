@@ -56,7 +56,7 @@ describe("개인정보 처리방침", () => {
   });
   it("모든 문단이 영어 · 한국어 둘 다", () => {
     for (const b of privacyBlocks(ON)) {
-      const items = "items" in b ? b.items : b.t === "widget" ? [] : [b];
+      const items = b.t === "quiz" ? b.items.map((i) => i.q) : "items" in b ? b.items : b.t === "widget" ? [] : [b];
       for (const i of items) {
         expect(i.en, JSON.stringify(i)).toMatch(/[A-Za-z]/);
         expect(i.ko, JSON.stringify(i)).toMatch(/[가-힣]/);

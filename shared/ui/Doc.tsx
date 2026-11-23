@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { headingId, ordered, type Block, type Lead, type Prose } from "../doc";
+import { clockText, headingId, ordered, type Block, type Lead, type Prose } from "../doc";
 import { Bubble } from "./Bubble";
 import { ClockFace } from "./ClockFace";
 import { cn } from "./cn";
 import { Ieung } from "./Ieung";
+import { Quiz } from "./Quiz";
 import { canSpeak, speak } from "./speech";
 
 /* ============================================================
@@ -158,6 +159,36 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
       );
     case "widget":
       return <>{widgets[b.id] ?? null}</>;
+    case "quiz":
+      return (
+        <div className="mt-6">
+          <Quiz
+            label={b.label}
+            length={b.items.length}
+            make={(i) => {
+              const it = b.items[i];
+              const [big, small] = ordered(it.q, lead);
+              return {
+                id: String(i),
+                answer: it.answer,
+                wrong: it.wrong,
+                review: it.clock === undefined ? big : clockText(it.clock),
+                prompt: (
+                  <>
+                    {it.clock !== undefined && (
+                      <span className="mx-auto mb-2 block w-44">
+                        <ClockFace t={it.clock} label={`시계 / Clock ${clockText(it.clock)}`} />
+                      </span>
+                    )}
+                    <span className="block text-center font-bold">{big}</span>
+                    {small && <span className="block text-center text-[0.85rem] font-semibold text-muted">{small}</span>}
+                  </>
+                ),
+              };
+            }}
+          />
+        </div>
+      );
     case "ieung":
       return (
         <div className="mt-6 flex items-center gap-3">
