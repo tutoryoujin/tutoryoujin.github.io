@@ -1,15 +1,14 @@
 /* ============================================================
-   시각 읽기 규칙
+   시각 읽기 규칙 — 읽기 자체는 shared/korean/time.ts (블로그 글과 같이 쓴다)
    - 시는 고유어. 시 앞에서 짧아진다 (하나 → 한, 열둘 → 열두)
    - 분은 한자어
    - 30분은 ‘반’이라고도 한다
    ============================================================ */
 import { josa, native, nativeCounter, sino } from "@yj/korean/numbers";
+import { readHour, readMin, readTime, wrapDay } from "@yj/korean/time";
 import type { Choice } from "@yj/ui";
 
-export const readHour = (h: number) => nativeCounter(h) + " 시";
-export const readMin = (m: number) => sino(m) + " 분";
-export const readTime = (h: number, m: number) => (m ? `${readHour(h)} ${readMin(m)}` : readHour(h));
+export { readHour, readMin, readTime, wrapDay };
 /** 하나 → 한 처럼 시 앞에서 꼴이 바뀌는지 */
 export const contracted = (h: number) => nativeCounter(h) !== native(h);
 
@@ -18,7 +17,6 @@ export const parts = (t: number) => {
   const h24 = Math.floor(t / 60);
   return { h: h24 % 12 || 12, m: t % 60, pm: h24 >= 12 };
 };
-export const wrapDay = (n: number) => ((n % 1440) + 1440) % 1440;
 
 /** 학생들이 실제로 하는 실수로 오답을 만든다 */
 export function wrongChoices(h: number, m: number, pickExtra = (xs: Choice[]) => xs[Math.floor(Math.random() * xs.length)]): Choice[] {

@@ -1,9 +1,11 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
-import { cn } from "@yj/ui";
-import { readHour, readMin, wrapDay } from "./reading";
+import { readHour, readMin, wrapDay } from "../korean/time";
+import { cn } from "./cn";
 
 /* ============================================================
    시계판. viewBox 300×300, 가운데 (150,150).
+   한국어 시계 앱(돌리는 시계 · 퀴즈) · 블로그 글(예문 옆 작은 시계, #114)이 같이 쓴다.
+   색은 shared/ui/styles.css 의 --clk-hour-* (시 · 고유어) · --clk-min-* (분 · 한자어) 별칭.
 
    바늘(줄기)은 통째로 돌리고, 손잡이는 끝자리로 옮기기만 한다.
    손잡이까지 돌리면 "분" 글자가 거꾸로 서서 "곰"처럼 보인다.

@@ -1,8 +1,7 @@
 import { useId, useState } from "react";
-import { Box, Btn, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, TabPanel, Tabs, speak, useHashTab, type Question } from "@yj/ui";
+import { Box, Btn, ClockFace, cn, ListenBtn, Note, Page, Quiz, Seg, Segments, TabPanel, Tabs, speak, useHashTab, type Question } from "@yj/ui";
 import { tabsOf } from "@yj/apps";
 import { native, nativeCounter } from "@yj/korean/numbers";
-import { ClockFace } from "./ClockFace";
 import { contracted, parts, readHour, readMin, readTime, wrapDay, wrongChoices } from "./reading";
 import "./clock.css";
 
