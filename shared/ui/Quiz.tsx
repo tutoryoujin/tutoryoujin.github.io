@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Ieung, type Mood, type Scene } from "./Ieung";
 import { canSpeak, speak } from "./speech";
 import { Btn, boxClass } from "./parts";
+import { Share } from "./Share";
 import { cn } from "./cn";
 import { shuffle } from "./shuffle";
 
@@ -208,6 +209,7 @@ function Result({ score, length, missed, onRestart }: { score: number; length: n
       <div ref={again}>
         <Btn ko="다시 하기" en="Play again" onClick={onRestart} />
       </div>
+      <Share where="quiz" title={document.title} text={`${score} / ${length} — 한국어 퀴즈, 같이 풀어 봐요! Can you beat my score?`} />
     </div>
   );
 }
