@@ -12,22 +12,21 @@ export const koreanSuneungExam: Note = {
     ko: "1년에 한 번, 모두 같은 날 같은 시험. 비행기까지 멈추는 수능 이야기.",
     en: "One day a year, one test for everyone, and even the planes stop.",
   },
+  thumb: { tone: "lavender", mark: "✏️" },
   apps: ["calendar-practice", "korean-clock"],
   blocks: [
     {
       t: "p",
-      ko: "11월이 되면 한국 뉴스에 이 말이 계속 나와요. ‘수능’이에요. 수능은 대학에 가려고 보는 시험이에요. 그런데 한국에서는 시험 하나가 아니라 나라 전체의 큰일이에요.",
       en: "Every November, one word fills the Korean news: 수능 (suneung). It’s the exam students take to get into university. But in Korea, it’s not just a test. It’s a day the whole country plans around.",
     },
-    { t: "h", ko: "1년에 딱 한 번", en: "Once a year, for everyone" },
+    { t: "ieung", scene: "study", ko: "수능이 뭐예요?", en: "What is Suneung?" },
+    { t: "h", en: "Once a year, for everyone" },
     {
       t: "p",
-      ko: "수능은 1년에 딱 한 번 있어요. 전국의 모든 수험생이 같은 날, 같은 시간에, 같은 시험을 봐요. 2026년에는 11월 19일 목요일이었어요. 이날 시험을 못 보면 1년을 기다려야 해요.",
       en: "Suneung happens only once a year. Every test taker in the country sits the same exam, on the same day, at the same time. In 2026 it was Thursday, November 19. Miss it, and you wait a whole year.",
     },
     {
       t: "p",
-      ko: "과목은 여러 개지만 제일 중요한 건 국어, 영어, 수학이에요. 세 과목을 줄여서 ‘국영수’라고 불러요.",
       en: "There are several subjects, but the big three are Korean, English, and math. Together they have a nickname: 국영수 (guk-yeong-su), the first syllable of each.",
     },
     {
@@ -38,15 +37,14 @@ export const koreanSuneungExam: Note = {
         { mark: "➗", ko: "수학", en: "Math" },
       ],
     },
-    { t: "h", ko: "비행기도 멈춰요", en: "Even the planes stop" },
+    { t: "h", en: "Even the planes stop" },
+    { t: "ieung", mood: "wow", ko: "비행기도 멈춰요?", en: "Even the planes stop?" },
     {
       t: "p",
-      ko: "영어 시험은 듣기로 시작해요. 이 듣기 시간에는 비행기가 뜨지도 내리지도 않아요. 비행기 소리가 시험을 방해하면 안 되니까요. 하늘을 날던 비행기도 높이 올라가서 기다려요.",
       en: "The English section starts with listening. During that part, planes don’t take off or land anywhere in the country, so no engine noise can get in the way. Planes already in the air circle high above and wait.",
     },
     {
       t: "p",
-      ko: "다른 것도 많이 바뀌어요. 회사는 출근 시간을 늦추고, 지하철과 버스는 더 많이 다녀요. 늦은 수험생을 경찰차가 시험장까지 태워 주기도 해요.",
       en: "Other things change too. Offices start later so the roads are clear, and subways and buses run more often. Police cars sometimes give late students a ride to the exam hall.",
     },
     {
@@ -56,23 +54,20 @@ export const koreanSuneungExam: Note = {
         { ko: "영어 듣기 시간에는 비행기가 안 떠요.", en: "Planes don’t fly during the English listening test." },
       ],
     },
-    { t: "h", ko: "올해는 휴대폰이 울렸어요", en: "This year, the phones rang" },
+    { t: "h", en: "This year, the phones rang" },
     {
       t: "p",
-      ko: "시험장에는 휴대폰 같은 전자 기기를 가져가면 안 돼요. 그런데 요즘은 인공 지능(AI)을 쓸 수 있는 기기가 많아져서 걱정이 커졌어요. 올해는 스마트 안경이나 작은 카메라를 가져온 사람도 있었어요.",
       en: "You can’t bring phones or other electronic devices into the exam room. But now that so many gadgets can run AI, worries have grown. This year, some people were even caught with smart glasses or tiny cameras.",
     },
     {
       t: "p",
-      ko: "그래서 정부는 시험 중에 전국 휴대폰에 재난 문자를 세 번 보냈어요. 시험장에서 휴대폰이 울리면 바로 들키니까요. 이 문자로만 50명 넘게 걸렸어요.",
       en: "So the government sent an emergency alert to every phone in the country, three times during the exam. If a phone went off in an exam room, its owner was caught on the spot. More than 50 people were caught by the alerts alone.",
     },
     {
       t: "tip",
-      ko: "‘재난 문자’는 지진이나 태풍 같은 일이 있을 때 모든 휴대폰에 오는 문자예요. 소리가 아주 커요.",
       en: "재난 문자 (jaenan munja) is the emergency text sent to every phone for earthquakes, storms and the like. It’s very loud.",
     },
-    { t: "h", ko: "수능 날 쓰는 말", en: "Words for exam day" },
+    { t: "h", en: "Words for exam day" },
     {
       t: "cards",
       items: [
@@ -84,14 +79,13 @@ export const koreanSuneungExam: Note = {
     },
     {
       t: "tip",
-      ko: "‘시험을 보다’와 ‘시험을 치다’는 뜻이 같아요. ‘붙다’와 ‘합격하다’도 같아요. 말할 때는 ‘붙다’를 더 많이 써요.",
       en: "시험을 보다 and 시험을 치다 mean the same thing: to take a test. 붙다 and 합격하다 both mean to pass. In everyday talk, 붙다 is more common.",
     },
     {
       t: "p",
-      ko: "‘붙다’는 원래 ‘딱 달라붙다’라는 뜻이에요. 그래서 수능 전에는 엿이나 찹쌀떡처럼 끈적끈적한 것을 선물하는 문화도 있어요. 시험에 꼭 붙으라는 뜻이에요. 반대로 미역국은 미끄러워서 시험 날에는 안 먹어요.",
       en: "붙다 literally means “to stick.” So before the exam, there’s a custom of giving test takers something sticky, like 엿 (yeot, Korean taffy) or sticky rice cakes, so they’ll stick to the exam and pass. Seaweed soup is the opposite: it’s slippery, so nobody eats it on exam day. You don’t want to slip!",
     },
+    { t: "ieung", mood: "yay", ko: "꼭 붙으세요!", en: "I hope you pass!" },
     {
       t: "ex",
       items: [
@@ -101,10 +95,9 @@ export const koreanSuneungExam: Note = {
         { ko: "그동안 수고했어요.", en: "You worked so hard. Well done." },
       ],
     },
-    { t: "h", ko: "시험이 끝나면 할인!", en: "After the exam: discounts!" },
+    { t: "h", en: "After the exam: discounts!" },
     {
       t: "p",
-      ko: "시험이 끝나면 수험생에게 즐거운 일이 기다려요. 수험표를 보여 주면 식당, 영화관, 옷 가게, 놀이공원 같은 곳에서 할인을 받을 수 있어요. 수험표는 시험 날 가져가는 작은 표예요. 그래서 시험이 끝나도 수험표를 꼭 챙겨요.",
       en: "Once the exam is over, something fun is waiting. Show your 수험표 (suheompyo, exam admission ticket) and you can get discounts at restaurants, movie theaters, clothing stores, theme parks and more. So students hang on to that little ticket long after the exam ends.",
     },
     {
@@ -114,22 +107,20 @@ export const koreanSuneungExam: Note = {
         { ko: "수험표 보여 주시면 할인돼요.", en: "Show your exam ticket and you get a discount." },
       ],
     },
-    { t: "h", ko: "어떻게 생각하세요?", en: "What do you think?" },
+    { t: "h", en: "What do you think?" },
     {
       t: "p",
-      ko: "하루 시험 때문에 비행기가 멈추고, 온 나라가 조용해져요. 대단하다고 생각하는 사람도 있고, 너무 힘들다고 생각하는 사람도 있어요. 여러분 나라에도 이런 시험이 있어요? 이런 수능 문화에 대해 어떻게 생각하세요?",
       en: "For one exam, planes stop and the whole country goes quiet. Some people find it amazing; others think it puts too much pressure on students. Does your country have a test like this? What do you think of Korea’s Suneung culture?",
     },
+    { t: "ieung", mood: "huh", ko: "어떻게 생각하세요?", en: "What do you think?" },
     {
       t: "p",
-      ko: "한국 수능에서 영어가 어떻게 나오는지 궁금하세요? 여기에서 도전해 보세요!",
       en: "Curious what the English test on the Suneung looks like? Give it a try here!",
     },
     {
       t: "link",
       mark: "📄",
       href: "https://cdn.kice.re.kr/27dae-suneung/27DaeSuneung_3.pdf",
-      ko: "2027학년도 수능 영어 문제지 (PDF, 한국교육과정평가원)",
       en: "Suneung English test, November 2026 (PDF, official)",
     },
   ],

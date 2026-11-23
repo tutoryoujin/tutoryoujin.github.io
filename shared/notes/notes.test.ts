@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "../apps";
 import { docHtml } from "../doc";
 import { jsonLd, llmsTxt, pageMeta, prerenderHtml, sitemapXml } from "../seo";
-import { NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate } from "./index";
+import { noteBySlug, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate } from "./index";
 
 const HANJA = /[一-鿿]/;
 
@@ -19,17 +19,26 @@ describe("글 원본", () => {
   it("관련 앱은 있는 앱", () => {
     for (const n of NOTES) for (const s of n.apps) expect(APPS.map((a) => a.slug), n.slug).toContain(s);
   });
-  it("모든 블록이 한국어 · 영어 둘 다, 한자 없음", () => {
+  it("제목 · 소개 · 배우는 한국어(예문 · 카드 · 이응이)는 한국어 + 영어, 한자 없음", () => {
     for (const n of NOTES) {
-      for (const b of [{ t: "title", ...n.title }, { t: "summary", ...n.summary }, ...n.blocks]) {
-        const items = "items" in b ? b.items : b.t === "widget" ? [] : [b as { ko: string; en: string }];
-        for (const i of items) {
-          expect(i.ko, `${n.slug} ${JSON.stringify(i)}`).toMatch(/[가-힣]/);
-          expect(i.en, `${n.slug} ${JSON.stringify(i)}`).toMatch(/[A-Za-z]/);
-          expect(i.ko + i.en, n.slug).not.toMatch(HANJA);
-        }
+      const learn = n.blocks.flatMap((b) => (b.t === "ex" || b.t === "cards" ? b.items : b.t === "ieung" ? [b] : []));
+      for (const i of [n.title, n.summary, ...learn]) {
+        expect(i.ko, `${n.slug} ${JSON.stringify(i)}`).toMatch(/[가-힣]/);
+        expect(i.en, `${n.slug} ${JSON.stringify(i)}`).toMatch(/[A-Za-z]/);
+        expect(i.ko + i.en, n.slug).not.toMatch(HANJA);
       }
     }
+  });
+  it("설명 글(소제목 · 문단 · 알아 두기 · 목록 · 링크)은 영어만 — 한국어 병기 없음 (#122)", () => {
+    for (const n of NOTES)
+      for (const b of n.blocks) {
+        const prose = b.t === "list" ? b.items : b.t === "h" || b.t === "p" || b.t === "tip" || b.t === "link" ? [b] : [];
+        for (const i of prose) {
+          expect(i.ko, `${n.slug} ${i.en}`).toBeUndefined();
+          expect(i.en, n.slug).toMatch(/[A-Za-z]/);
+          expect(i.en, n.slug).not.toMatch(HANJA);
+        }
+      }
   });
   it("바깥 링크는 https", () => {
     for (const n of NOTES) for (const b of n.blocks) if (b.t === "link") expect(b.href, n.slug).toMatch(/^https:\/\//);
@@ -102,5 +111,14 @@ describe("쪽 나누기 (#94)", () => {
   });
   it("관련 앱의 정적 본문에도 글 링크", () => {
     for (const a of APPS) for (const n of notesForApp(a.slug)) expect(prerenderHtml(a.slug)).toContain(`href="/notes/${n.slug}/"`);
+  });
+});
+
+describe("글: 무슨 띠예요?", () => {
+  it("대답은 동물 + 띠, 붙여 쓴다 — 카드도 같은 꼴", () => {
+    const n = noteBySlug("korean-zodiac-tti")!;
+    expect(docHtml(n.blocks, "en")).toContain("말 (horse) + 띠 → 말띠");
+    const cards = n.blocks.flatMap((b) => (b.t === "cards" ? b.items : []));
+    for (const c of cards) expect(c.ko).toMatch(/^[가-힣]+띠$/);
   });
 });
