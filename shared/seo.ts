@@ -15,8 +15,8 @@
    - 제목은 학습자가 영어로 검색하는 말(searchTitle) + 브랜드
    ============================================================ */
 import { APPS, type AppInfo } from "./apps";
-import { docHtml } from "./doc";
-import { categoryOf, moreIn, NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, sameCategory, type Note } from "./notes";
+import { docHtml, headings } from "./doc";
+import { categoryOf, moreIn, neighbors, NOTE_UI, NOTES, NOTES_TITLE, notesForApp, paginate, RELATED_NOTES, sameCategory, TOC_MIN, type Note } from "./notes";
 import { NOT_FOUND, pageBySlug, PAGES, type SitePage } from "./pages";
 import { SITE, type SiteConfig } from "./site";
 
@@ -146,7 +146,49 @@ export function headTags(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = A
       meta("name", "twitter:image:alt", m.image.alt),
     );
   }
+  // 블로그 목록 · 글: RSS 피드 (#119)
+  if (slug === "notes" || slug.startsWith("notes/"))
+    tags.push({ tag: "link", attrs: { rel: "alternate", type: "application/rss+xml", title: `${NOTES_TITLE.en} | ${c.name}`, href: `${c.url}${FEED_PATH}` } });
   return tags;
+}
+
+/* ---------- RSS 피드 /notes/feed.xml (#119) ---------- */
+export const FEED_PATH = "/notes/feed.xml";
+const xml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+/** 날짜(YYYY-MM-DD, 서울)를 RSS 날짜로 — 빌드할 때마다 바뀌는 값(지금 시각)은 넣지 않는다 */
+const rfc822 = (d: string) => new Date(`${d}T00:00:00+09:00`).toUTCString();
+
+/** 글을 더하면 저절로 들어간다. 최신순 */
+export function rssXml(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
+  const list = pageMeta("notes", c, apps);
+  const items = NOTES.map((n) => {
+    const url = pageMeta(`notes/${n.slug}`, c, apps).url;
+    return [
+      `    <item>`,
+      `      <title>${xml(n.title.en)}</title>`,
+      `      <link>${url}</link>`,
+      `      <guid isPermaLink="true">${url}</guid>`,
+      `      <pubDate>${rfc822(n.added)}</pubDate>`,
+      `      <category>${xml(categoryOf(n).en)}</category>`,
+      `      <description>${xml(n.summary.en)}</description>`,
+      `    </item>`,
+    ].join("\n");
+  });
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">`,
+    `  <channel>`,
+    `    <title>${xml(`${NOTES_TITLE.en} | ${c.name}`)}</title>`,
+    `    <link>${list.url}</link>`,
+    `    <description>${xml(list.description)}</description>`,
+    `    <language>en</language>`,
+    `    <atom:link href="${c.url}${FEED_PATH}" rel="self" type="application/rss+xml" />`,
+    ...(NOTES[0] ? [`    <pubDate>${rfc822(NOTES[0].updated ?? NOTES[0].added)}</pubDate>`] : []),
+    ...items,
+    `  </channel>`,
+    `</rss>`,
+    ``,
+  ].join("\n");
 }
 
 /**
@@ -381,6 +423,10 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
   if (p.kind === "note") {
     const n = p.note!;
     const more = sameCategory(n);
+    const toc = headings(n.blocks);
+    const { older, newer } = neighbors(n);
+    const side = (x: Note | undefined, l: { en: string; ko: string }) =>
+      x ? `<li class="${li}">${esc(l.en)} · ${ko(l.ko)}: <a class="${link}" href="/notes/${x.slug}/">${esc(x.title.en)}</a></li>` : "";
     const practice = n.apps
       .map((s) => apps.find((a) => a.slug === s))
       .filter((a): a is AppInfo => !!a)
@@ -390,10 +436,14 @@ function pageHtml(p: SitePage, c: SiteConfig, apps: AppInfo[]): string {
       `<main data-prerender class="${wrap}">` +
       `<p><a class="${link}" href="/notes/">${esc(NOTES_TITLE.en)} · ${ko(NOTES_TITLE.ko)}</a></p>` +
       title +
-      `<p class="mt-2 text-muted">${esc(categoryOf(n).en)} · ${ko(categoryOf(n).ko)} · ${esc(n.added)} · Youjin</p>` +
+      `<p class="mt-2 text-muted">${esc(categoryOf(n).en)} · ${ko(categoryOf(n).ko)} · ${esc(n.added)} · Youjin${n.updated ? ` · ${NOTE_UI.updated} ${esc(n.updated)}` : ""}</p>` +
+      (toc.length >= TOC_MIN
+        ? `<nav><h2 class="${h2}">${esc(NOTE_UI.toc.en)} · ${ko(NOTE_UI.toc.ko)}</h2><ol>${toc.map((h) => `<li class="${li}"><a class="${link}" href="#${esc(h.id)}">${esc(h.en)}</a></li>`).join("")}</ol></nav>`
+        : "") +
       docHtml(n.blocks, "en") +
       (more.length ? `<h2 class="${h2}">${esc(moreIn(n).en)} · ${ko(moreIn(n).ko)}</h2><ul>${more.map((x) => noteLink(x, "en")).join("")}</ul>` : "") +
       (practice ? `<h2 class="${h2}">Practice in the app · ${ko("앱에서 연습하기")}</h2><ul>${practice}</ul>` : "") +
+      (older || newer ? `<ul class="mt-6">${side(older, NOTE_UI.older)}${side(newer, NOTE_UI.newer)}</ul>` : "") +
       home +
       `</main>`
     );

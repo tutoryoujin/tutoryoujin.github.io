@@ -1,9 +1,9 @@
 /* 글 /notes/ (#50) — 글을 더하면 목록 · 주소 · 검색 메타 · 앱 링크에 저절로 들어가는지 */
 import { describe, expect, it } from "vitest";
 import { APPS } from "../apps";
-import { docHtml } from "../doc";
-import { jsonLd, llmsTxt, pageMeta, prerenderHtml, sitemapXml } from "../seo";
-import { CATEGORIES, categoryOf, moreIn, noteBySlug, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate, sameCategory } from "./index";
+import { docHtml, headingId, headings } from "../doc";
+import { FEED_PATH, headTags, jsonLd, llmsTxt, pageMeta, prerenderHtml, rssXml, sitemapXml } from "../seo";
+import { CATEGORIES, categoryOf, moreIn, neighbors, noteBySlug, NOTE_UI, TOC_MIN, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate, sameCategory } from "./index";
 
 const HANJA = /[一-鿿]/;
 
@@ -176,5 +176,51 @@ describe("분류 (#116)", () => {
         for (const x of more) expect(html).toContain(`href="/notes/${x.slug}/"`);
       } else expect(html).not.toContain(moreIn(n).en);
     }
+  });
+});
+
+describe("글 페이지 다듬기 (#119)", () => {
+  it("소제목 id: 영어 소문자 낱말, 글 안에서 겹치지 않는다", () => {
+    expect(headingId({ en: "AM, PM, and “around”" })).toBe("am-pm-and-around");
+    expect(headingId({ id: "keep-me", en: "New title" })).toBe("keep-me");
+    for (const n of NOTES) {
+      const ids = headings(n.blocks).map((h) => h.id);
+      for (const id of ids) expect(id, n.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+      expect(new Set(ids).size, n.slug).toBe(ids.length);
+    }
+  });
+  it("목차: 소제목이 넉넉한 글은 정적 본문에도 목차 · 같은 id", () => {
+    for (const n of NOTES) {
+      const html = prerenderHtml(`notes/${n.slug}`);
+      const toc = headings(n.blocks);
+      if (toc.length >= TOC_MIN) for (const h of toc) {
+        expect(html).toContain(`href="#${h.id}"`);
+        expect(html).toContain(`<h2 id="${h.id}"`);
+      }
+      else expect(html).not.toContain(NOTE_UI.toc.en);
+    }
+  });
+  it("이전 · 다음 글: 날짜순으로 이어진다", () => {
+    NOTES.forEach((n, i) => {
+      const { newer, older } = neighbors(n);
+      expect(newer).toBe(NOTES[i - 1]);
+      expect(older).toBe(NOTES[i + 1]);
+    });
+  });
+  it("RSS: 모든 글 · 자기 주소 · 날짜는 글 날짜 (빌드마다 바뀌지 않는다)", () => {
+    const x = rssXml();
+    expect(x.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
+    expect(x).toContain(`<atom:link href="https://tutoryoujin.github.io${FEED_PATH}" rel="self"`);
+    for (const n of NOTES) expect(x).toContain(`<guid isPermaLink="true">https://tutoryoujin.github.io/notes/${n.slug}/</guid>`);
+    expect(x).toContain("<pubDate>Thu, 19 Nov 2026 15:00:00 GMT</pubDate>"); // 수능 글 2026-11-20 서울 0시
+    expect(x).not.toContain("lastBuildDate");
+    expect(rssXml()).toBe(x);
+  });
+  it("블로그 페이지에만 피드 링크", () => {
+    const feed = (slug: string) => headTags(slug).some((t) => t.attrs?.type === "application/rss+xml");
+    expect(feed("notes")).toBe(true);
+    for (const n of NOTES) expect(feed(`notes/${n.slug}`)).toBe(true);
+    expect(feed("")).toBe(false);
+    expect(feed("korean-clock")).toBe(false);
   });
 });

@@ -32,6 +32,21 @@ export const moreIn = (n: Note) => {
   return { en: `More in ${c.en}`, ko: `${c.ko} 글 더 보기` };
 };
 
+/** 이전 글(더 오래된) · 다음 글(더 새로운) — 모든 글 날짜순 (#119). 같은 분류는 「More in …」이 맡는다 */
+export const neighbors = (n: Note) => {
+  const i = NOTES.findIndex((x) => x.slug === n.slug);
+  return { newer: i > 0 ? NOTES[i - 1] : undefined, older: NOTES[i + 1] as Note | undefined };
+};
+/** 소제목이 이만큼 이상이면 글 위에 목차 */
+export const TOC_MIN = 4;
+/** 목차 · 이전/다음 · 고친 날 — 화면 · 정적 본문이 같은 말 */
+export const NOTE_UI = {
+  toc: { en: "In this post", ko: "이 글의 차례" },
+  older: { en: "Older post", ko: "이전 글" },
+  newer: { en: "Newer post", ko: "다음 글" },
+  updated: "Updated",
+};
+
 /** 이 앱과 관련된 글 */
 export const notesForApp = (app: string) => NOTES.filter((n) => n.apps.includes(app));
 

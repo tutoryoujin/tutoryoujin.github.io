@@ -7,7 +7,7 @@ import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite";
 import { analyticsScript } from "./shared/analytics";
 import { NOTES } from "./shared/notes";
 import { NOT_FOUND } from "./shared/pages";
-import { headTags, jsonLdText, llmsTxt, pageLang, PRERENDER_HIDE, PRERENDER_SHOW, prerenderHtml, robotsTxt, sitemapXml } from "./shared/seo";
+import { headTags, jsonLdText, llmsTxt, pageLang, PRERENDER_HIDE, PRERENDER_SHOW, prerenderHtml, robotsTxt, rssXml, sitemapXml } from "./shared/seo";
 import { THEME_BOOT } from "./shared/ui/theme";
 
 // 앱 하나 = apps/<slug>/index.html 하나. 폴더만 만들면 빌드에 들어간다.
@@ -129,6 +129,7 @@ const siteHead: Plugin = {
     this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemapXml() });
     this.emitFile({ type: "asset", fileName: "robots.txt", source: robotsTxt() });
     this.emitFile({ type: "asset", fileName: "llms.txt", source: llmsTxt() });
+    this.emitFile({ type: "asset", fileName: "notes/feed.xml", source: rssXml() });
   },
 };
 

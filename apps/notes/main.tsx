@@ -3,8 +3,8 @@
    글마다 HTML 은 빌드가 따로 만든다 (vite.config.ts notesPages) — 메타 · 정적 본문이 글마다 다르다.
    글 원본은 shared/notes/ */
 import { appBySlug } from "@yj/apps";
-import { docText } from "@yj/doc";
-import { categoryOf, moreIn, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, sameCategory, type Note } from "@yj/notes";
+import { docText, headings } from "@yj/doc";
+import { categoryOf, moreIn, neighbors, NOTE_UI, noteBySlug, NOTES, NOTES_NAV, NOTES_TITLE, pageList, paginate, sameCategory, TOC_MIN, type Note } from "@yj/notes";
 import { pageMeta } from "@yj/seo";
 import { cn, Doc, Ieung, mount, SitePage, SiteNavLink, SiteTitle } from "@yj/ui";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -218,6 +218,8 @@ function Article({ n }: { n: Note }) {
   const apps = n.apps.map(appBySlug);
   const cat = categoryOf(n);
   const more = sameCategory(n);
+  const toc = headings(n.blocks);
+  const { older, newer } = neighbors(n);
   return (
     <SitePage nav={nav(false)} title={pageMeta(`notes/${n.slug}`).title}>
       <a href="/notes/" className={cn("mb-4 inline-flex min-h-11 items-center gap-1.5 rounded-full font-bold text-muted no-underline hover:text-ink", focus)}>
@@ -238,8 +240,32 @@ function Article({ n }: { n: Note }) {
             <span>
               <time dateTime={n.added}>{n.added}</time> · Youjin
             </span>
+            {n.updated && (
+              <span>
+                · {NOTE_UI.updated} <time dateTime={n.updated}>{n.updated}</time>
+              </span>
+            )}
           </p>
         </SiteTitle>
+        {toc.length >= TOC_MIN && (
+          <nav className="mt-6 rounded-lg border-2 border-ink bg-surface px-5 py-4" aria-labelledby="toc">
+            <h2 id="toc" className="font-display text-[1.15rem]">
+              {NOTE_UI.toc.en}{" "}
+              <span className="font-app text-[0.8rem] font-bold text-muted" lang="ko">
+                {NOTE_UI.toc.ko}
+              </span>
+            </h2>
+            <ol className="mt-1 list-decimal pl-6 font-bold marker:text-muted">
+              {toc.map((h) => (
+                <li key={h.id}>
+                  <a href={`#${h.id}`} className={cn("inline-flex min-h-11 items-center text-ink underline-offset-4 hover:underline", focus)}>
+                    {h.en}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
         <Doc blocks={n.blocks} lead="en" widgets={WIDGETS} />
       </article>
       {more.length > 0 && (
@@ -297,7 +323,37 @@ function Article({ n }: { n: Note }) {
           </ul>
         </section>
       )}
+      {(older || newer) && (
+        <nav className="mt-12 grid gap-3 min-[440px]:grid-cols-2" aria-label="Older and newer posts / 이전 글 · 다음 글">
+          {older && <Neighbor n={older} dir="older" />}
+          {newer && <Neighbor n={newer} dir="newer" />}
+        </nav>
+      )}
     </SitePage>
+  );
+}
+
+/** 이전 글 · 다음 글 카드 (#119). 다음 글은 넓은 화면에서 늘 오른쪽 칸 */
+function Neighbor({ n, dir }: { n: Note; dir: "older" | "newer" }) {
+  const label = NOTE_UI[dir];
+  const newer = dir === "newer";
+  return (
+    <a
+      href={`/notes/${n.slug}/`}
+      className={cn(
+        "flex min-h-11 flex-col rounded-lg border-2 border-ink bg-surface px-4 py-3 text-ink no-underline",
+        newer && "min-[440px]:col-start-2 min-[440px]:text-right",
+        lift,
+        focus,
+      )}
+    >
+      <span className="text-[0.85rem] font-bold text-muted">
+        {!newer && "← "}
+        {label.en} <span lang="ko">{label.ko}</span>
+        {newer && " →"}
+      </span>
+      <span className="mt-0.5 leading-[1.3] font-extrabold">{n.title.en}</span>
+    </a>
   );
 }
 

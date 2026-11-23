@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ordered, type Block, type Lead, type Prose } from "../doc";
+import { headingId, ordered, type Block, type Lead, type Prose } from "../doc";
 import { Bubble } from "./Bubble";
 import { ClockFace } from "./ClockFace";
 import { cn } from "./cn";
@@ -59,7 +59,7 @@ function DocBlock({ b, lead, widgets }: { b: Block; lead: Lead; widgets: Record<
   switch (b.t) {
     case "h":
       return (
-        <h2 className="mt-10 mb-1 font-display text-[1.45rem] leading-[1.25] font-extrabold">
+        <h2 id={headingId(b)} className="mt-10 mb-1 scroll-mt-20 font-display text-[1.45rem] leading-[1.25] font-extrabold">
           <Two b={b} lead={lead} smallClass="font-app text-[0.7em] font-bold" />
         </h2>
       );
