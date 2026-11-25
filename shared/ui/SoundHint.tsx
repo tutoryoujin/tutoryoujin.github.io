@@ -41,11 +41,11 @@ export function SoundHint() {
   return (
     <div className="fixed inset-x-0 bottom-[calc(--spacing(3)+env(safe-area-inset-bottom,0px))] z-20 mx-auto w-full max-w-(--shell-width) px-4" role="status">
       <div className="relative rounded-md border-2 border-ink bg-surface">
-        <Note tone="gray" className="mt-0 pr-13" ko="소리가 안 들리면 아이폰의 무음 모드를 꺼 주세요." en="No sound? Turn off Silent mode on your iPhone." />
+        <Note tone="gray" className="mt-0 pr-13" en="No sound? Turn off Silent mode on your iPhone." />
         <button
           type="button"
           className="absolute top-0 right-0 grid size-11 place-items-center rounded-sm text-[1.2rem] text-muted"
-          aria-label="닫기 / Close"
+          aria-label="Close / 닫기"
           onClick={close}
         >
           ✕

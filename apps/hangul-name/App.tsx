@@ -175,7 +175,7 @@ export function App() {
   return (
     <Page
       app="hangul-name"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
@@ -190,15 +190,16 @@ export function App() {
             ). Names from US Social Security baby-name data.
           </>
         ),
-        ko: "이름 발음은 CMU 발음 사전에서, 이름 목록은 미국 사회보장국 출생 이름 통계에서 왔어요.",
       }}
     >
       {/* 이름 가게 — 영수증이 나오는 기계 */}
-      <section className="relative z-[2] rounded-t-[24px] rounded-b-[12px] bg-(--hn-machine-bg) px-4 pt-4 text-(--hn-machine-ink)" aria-label="한글 이름 가게 / Hangul Name Shop">
+      <section className="relative z-[2] rounded-t-[24px] rounded-b-[12px] bg-(--hn-machine-bg) px-4 pt-4 text-(--hn-machine-ink)" aria-label="Hangul Name Shop / 한글 이름 가게">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1 leading-[1.15]">
-            <h2 className="font-display text-[1.6rem] font-extrabold">한글 이름 가게</h2>
-            <p className="text-[0.72rem] font-bold tracking-[0.12em] opacity-80">HANGUL NAME SHOP</p>
+            <h2 className="font-display text-[1.6rem] font-extrabold">Hangul Name Shop</h2>
+            <p className="text-[0.85rem] font-bold opacity-80" lang="ko">
+              한글 이름 가게
+            </p>
           </div>
           <span className="block size-16 shrink-0 [&_svg]:size-full">
             <Ieung mood={mood} />
@@ -208,7 +209,7 @@ export function App() {
         <form className="mt-3" onSubmit={onSubmit} autoComplete="off">
           <label htmlFor="hn-name" className="block leading-[1.25]">
             <span className="block font-bold">Type your name in English letters.</span>
-            <span className="text-[0.75rem] font-bold opacity-80">영어 알파벳으로 이름을 넣어 주세요.</span>
+            <span className="text-[0.75rem] font-bold opacity-80" lang="ko">영어 알파벳으로 이름을 넣어 주세요.</span>
           </label>
           <div className="mt-2 flex gap-2">
             <input
@@ -249,7 +250,9 @@ export function App() {
           {status && (
             <>
               <span className="block font-bold">{status.en}</span>
-              <span className="text-[0.75rem] font-bold opacity-80">{status.ko}</span>
+              <span className="text-[0.75rem] font-bold opacity-80" lang="ko">
+                {status.ko}
+              </span>
             </>
           )}
         </p>
@@ -264,7 +267,7 @@ export function App() {
         ) : (
           <p className="rounded-b-md border-2 border-t-0 border-dashed border-line px-4 py-6 text-center leading-[1.3]">
             <span className="block font-bold">Your receipt prints here.</span>
-            <span className="text-[0.78rem] font-bold text-muted">영수증이 여기로 나와요.</span>
+            <span className="text-[0.78rem] font-bold text-muted" lang="ko">영수증이 여기로 나와요.</span>
           </p>
         )}
       </div>
@@ -358,9 +361,8 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
         <Box>
           <p className="text-center leading-[1.3]">
             <span className="block font-bold">This name is written more than one way. Listen, then pick the one closest to how you say it.</span>
-            <span className="text-[0.78rem] font-bold text-muted">쓰는 법이 여러 가지예요. 듣고 골라 보세요.</span>
           </p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2" role="radiogroup" aria-label="표기 고르기 / Pick a spelling">
+          <div className="mt-3 flex flex-wrap justify-center gap-2" role="radiogroup" aria-label="Pick a spelling / 표기 고르기">
             {options.map((o) => (
               <button
                 key={o.text}
@@ -375,7 +377,7 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
                   {o.text}
                 </span>
                 <span className="text-[0.7rem] font-bold">
-                  {STAMP[o.status].ko} · {STAMP[o.status].en}
+                  {STAMP[o.status].en} · <span lang="ko">{STAMP[o.status].ko}</span>
                 </span>
               </button>
             ))}
@@ -387,20 +389,20 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
         <div className="grid grid-cols-2 gap-2">
           {canSpeak && (
             <>
-              <Btn className="mt-0" ko="🔊 이름 듣기" en="Hear your name" onClick={() => speak(text)} />
-              <Btn className="mt-0" variant="ghost" ko="🔊 문장 듣기" en="Hear the sentence" onClick={() => speak(intro.sentence)} />
+              <Btn className="mt-0" ko="이름 듣기" en="🔊 Hear your name" onClick={() => speak(text)} />
+              <Btn className="mt-0" variant="ghost" ko="문장 듣기" en="🔊 Hear the sentence" onClick={() => speak(intro.sentence)} />
             </>
           )}
-          <Btn className="mt-0" variant="ghost" ko={copied ? "복사했어요" : "📋 복사"} en={copied ? "Copied!" : "Copy name"} onClick={() => void copy()} />
-          <Btn className="mt-0" variant="ghost" ko="💾 저장" en={saving ? "Making the image…" : "Save image"} onClick={() => void save()} disabled={saving} aria-busy={saving} />
-          <Btn className="mt-0" variant="ghost" ko="✏️ 고치기" en="Edit spelling" onClick={openEdit} />
-          <Btn className="mt-0" variant="ghost" ko="📤 공유" en="Share" onClick={() => void share()} />
+          <Btn className="mt-0" variant="ghost" ko={copied ? "복사했어요" : "복사"} en={copied ? "Copied!" : "📋 Copy name"} onClick={() => void copy()} />
+          <Btn className="mt-0" variant="ghost" ko="저장" en={saving ? "Making the image…" : "💾 Save image"} onClick={() => void save()} disabled={saving} aria-busy={saving} />
+          <Btn className="mt-0" variant="ghost" ko="고치기" en="✏️ Edit spelling" onClick={openEdit} />
+          <Btn className="mt-0" variant="ghost" ko="공유" en="📤 Share" onClick={() => void share()} />
         </div>
         {editing && (
           <form className="mt-3 rounded-md border-2 border-line bg-bg p-3" onSubmit={applyEdit}>
             <label htmlFor="hn-fix" className="block leading-[1.25]">
               <span className="block font-bold">Type the Hangul spelling you want.</span>
-              <span className="text-[0.75rem] font-bold text-muted">원하는 한글 표기를 넣어 주세요. ({issued.input})</span>
+              <span className="text-[0.75rem] font-bold text-muted" lang="ko">원하는 한글 표기를 넣어 주세요. ({issued.input})</span>
             </label>
             <input
               id="hn-fix"
@@ -418,7 +420,7 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
             {draftBad && (
               <p className="mt-1.5 leading-[1.25]" role="alert">
                 <span className="block font-bold">Use Hangul blocks only (up to {FIX_MAX}), like 안.</span>
-                <span className="text-[0.75rem] font-bold text-muted">한글 글자만 넣어 주세요. ({FIX_MAX}자까지)</span>
+                <span className="text-[0.75rem] font-bold text-muted" lang="ko">한글 글자만 넣어 주세요. ({FIX_MAX}자까지)</span>
               </p>
             )}
             <div className="mt-2 grid grid-cols-2 gap-2">
@@ -430,7 +432,6 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
         {voice === false && (
           <Note
             tone="gray"
-            ko="이 기기에서는 한국어 소리가 안 나올 수 있어요."
             en={canSpeak ? "No Korean voice on this device, so Listen may sound wrong. Add a Korean voice in your device’s speech settings, or try another browser." : "This browser can’t read text aloud. Try Safari or Chrome to hear your name."}
           />
         )}
@@ -438,7 +439,7 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
           {note && (
             <>
               <span className="block font-bold">{note.en}</span>
-              <span className="text-[0.75rem] font-bold text-muted">{note.ko}</span>
+              <span className="text-[0.75rem] font-bold text-muted" lang="ko">{note.ko}</span>
             </>
           )}
         </p>
@@ -446,16 +447,15 @@ function After({ issued, options, onPick, onEdit }: { issued: Issued; options: O
           <figure className="mt-3">
             <figcaption className="mb-2 text-center leading-[1.25]">
               <span className="block font-bold">Long-press the image to save it.</span>
-              <span className="text-[0.75rem] font-bold text-muted">그림을 길게 눌러 저장하세요.</span>
+              <span className="text-[0.75rem] font-bold text-muted" lang="ko">그림을 길게 눌러 저장하세요.</span>
             </figcaption>
-            <img className="w-full rounded-md shadow-card" src={preview} alt={`${text} — 한글 이름 영수증 / Hangul name receipt`} />
+            <img className="w-full rounded-md shadow-card" src={preview} alt={`${text} — Hangul name receipt / 한글 이름 영수증`} />
           </figure>
         )}
 
         <Note
           tone="pink"
           className="mt-3.5"
-          ko={intro.reason.ko}
           en={intro.reason.en}
           ex={
             <>

@@ -70,7 +70,7 @@ export function Receipt({ issued, revealed, printing }: { issued: Issued; reveal
         "relative flex flex-col gap-1.5 bg-(--hn-paper) px-4 pt-5 pb-5 text-[0.85rem] leading-normal text-(--hn-paper-ink)",
         printing && "motion-safe:animate-[hn-print_1.5s_steps(22,end)_both]",
       )}
-      aria-label="한글 이름 영수증 / Your Hangul name receipt"
+      aria-label="Your Hangul name receipt / 한글 이름 영수증"
     >
       <div className="text-center leading-[1.15]">
         <div className={cn(ko, "text-[1.5rem]")}>한글 이름 영수증</div>

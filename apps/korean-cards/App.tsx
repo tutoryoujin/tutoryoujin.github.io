@@ -65,7 +65,7 @@ export function App() {
 
   useEffect(() => {
     // 홈은 빌드가 넣은 검색 제목 그대로 — 문구는 shared/seo.ts 한 곳에서 (#51)
-    document.title = screenTitle("korean-cards", deck ? deck.title.ko : credits ? "이미지 출처" : undefined);
+    document.title = screenTitle("korean-cards", deck ? deck.title.ko : credits ? "Image credits" : undefined);
     if (pending) return;
     if (!deck && !credits && route !== "/") history.replaceState(null, "", "#/");
     window.scrollTo(0, 0);

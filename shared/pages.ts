@@ -86,9 +86,7 @@ export const NOT_FOUND = {
   slug: "404",
   en: "Page not found",
   ko: "페이지를 찾을 수 없어요",
-  lead: {
-    en: "The address may be old or mistyped. Try one of these.",
-    ko: "주소가 바뀌었거나 잘못 적혔을 수 있어요. 여기서 골라 보세요.",
-  },
+  /** 설명 문장이라 영어만 (#102) */
+  lead: "The address may be old or mistyped. Try one of these.",
   description: "This page doesn’t exist. Find free apps for learning Korean and the Korean Learning Blog. 페이지를 찾을 수 없어요.",
 };

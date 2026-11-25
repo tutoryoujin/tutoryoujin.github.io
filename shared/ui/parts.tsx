@@ -3,9 +3,10 @@ import { cn } from "./cn";
 import { canSpeak, speak } from "./speech";
 
 /* ============================================================
-   작은 부품들. 모두 "한국어 먼저, 영어는 아래 더 작게" 를 지킨다.
-   ko / en 을 따로 받는 이유가 그것이다 — 한 문자열로 받으면
-   영어를 빼먹기 쉽다.
+   작은 부품들. 언어 규칙은 #102 —
+   - 짧은 라벨(버튼 · 탭 · 제목)은 영어가 크고 한국어가 아래 작게. ko / en 을 따로 받는다
+   - 긴 설명(Note)은 영어만. 문장 안에 필요한 한국어 낱말은 그대로
+   - 배우는 한국어(Seg 알약 · 예문)는 한국어가 크게
    ============================================================ */
 
 /** 악센트 8쌍 — 이 밖의 색은 만들지 않는다 */
@@ -40,7 +41,8 @@ export const Box = ({ children, className, labelledBy, ...rest }: { children: Re
  * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant · tone 으로.
  */
 export function Btn(props: {
-  ko: ReactNode;
+  /** 아래 작은 한국어 줄. 없으면 영어 한 줄 (이응 앱, #102) */
+  ko?: ReactNode;
   en: ReactNode;
   onClick?: () => void;
   /** 폼 안에서 제출 버튼으로 쓸 때 "submit" */
@@ -69,8 +71,14 @@ export function Btn(props: {
         props.className,
       )}
     >
-      <span className="font-display text-[1.1rem]">{props.ko}</span>
-      <span className="text-[0.75rem] font-bold opacity-80">{props.en}</span>
+      <span className="font-display text-[1.1rem]" lang="en">
+        {props.en}
+      </span>
+      {props.ko && (
+        <span className="text-[0.75rem] font-bold opacity-80" lang="ko">
+          {props.ko}
+        </span>
+      )}
     </button>
   );
 }
@@ -78,7 +86,7 @@ export function Btn(props: {
 /** 🔊 들어 보기. TTS 가 없는 브라우저에서는 그리지 않는다 */
 export function ListenBtn({ text, variant, className }: { text: string; variant?: "ghost"; className?: string }) {
   if (!canSpeak) return null;
-  return <Btn ko="🔊 들어 보기" en="Listen" variant={variant} className={className} onClick={() => speak(text)} />;
+  return <Btn ko="들어 보기" en="🔊 Listen" variant={variant} className={className} onClick={() => speak(text)} />;
 }
 
 /**
@@ -97,18 +105,25 @@ export function Seg({ tone, caption, en, children, className }: { tone: Tone; ca
 }
 export const Segments = ({ children }: { children: ReactNode }) => <div className="flex flex-wrap justify-center gap-2">{children}</div>;
 
-/** ✨ 알아 두기. ex 는 예시 한 줄 */
-/** accent 는 왼쪽 띠 색. 악센트 쌍이 아닌 색(달력의 special 등)일 때 CSS 변수 이름으로 */
-export function Note({ ko, en, ex, tone, accent, className }: { ko: ReactNode; en: ReactNode; ex?: ReactNode; tone?: Tone; accent?: string; className?: string }) {
+/**
+ * ✨ 알아 두기 — 설명이라 영어만 (#102). 필요한 한국어 낱말은 en 문장 안에 그대로.
+ * ex 는 예시 한 줄(배우는 한국어). accent 는 왼쪽 띠 색 — 악센트 쌍이 아닌 색(달력의 special 등)일 때 CSS 변수 이름으로
+ */
+export function Note({ en, ex, tone, accent, className }: { en: ReactNode; ex?: ReactNode; tone?: Tone; accent?: string; className?: string }) {
   const bar = accent ?? (tone ? `--${tone}-ink` : "--primary");
   return (
     <div
       className={cn("mt-3 rounded-md border-l-4 bg-bg px-3 py-2.5 text-[0.92rem] leading-normal", className)}
       style={{ borderLeftColor: `var(${bar})` }}
     >
-      <span className="block font-display text-[1rem]">✨ {ko}</span>
-      <span className="block text-[0.85rem] font-bold text-muted">{en}</span>
-      {ex && <span className="mt-1.5 block font-display">{ex}</span>}
+      <span className="block font-bold" lang="en">
+        ✨ {en}
+      </span>
+      {ex && (
+        <span className="mt-1.5 block font-display" lang="ko">
+          {ex}
+        </span>
+      )}
     </div>
   );
 }
@@ -176,8 +191,12 @@ export function Tabs<K extends string>({ tabs, value, onChange }: { tabs: TabDef
           tabIndex={t.key === value ? 0 : -1}
           onClick={() => onChange(t.key)}
         >
-          <span className="font-display text-[1rem]">{t.ko}</span>
-          <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-80">{t.en}</span>
+          <span className="font-display text-[1rem]" lang="en">
+            {t.en}
+          </span>
+          <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-80" lang="ko">
+            {t.ko}
+          </span>
         </button>
       ))}
     </div>
@@ -201,7 +220,7 @@ export function TabPanel<K extends string>({ tab, value, children, className }: 
       className={cn("flex flex-col gap-3.5", className)}
     >
       <h2 className="sr-only">
-        {tab.ko} · {tab.en}
+        {tab.en} · <span lang="ko">{tab.ko}</span>
       </h2>
       {children}
     </section>

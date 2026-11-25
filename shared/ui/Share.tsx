@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { track } from "../analytics";
-import type { Bi, Lead } from "../doc";
+import type { Bi } from "../doc";
 import { cn } from "./cn";
 import { Btn } from "./parts";
 
@@ -38,21 +38,19 @@ export async function shareLink(data: { title: string; text: string; url: string
 const LABEL = { sheet: { ko: "공유하기", en: "Share" }, copy: { ko: "링크 복사", en: "Copy link" } };
 
 /**
- * 공유 버튼 + 결과 한 줄. lead = 어느 말이 크게 (앱은 "ko", 블로그 같은 앱 밖 페이지는 "en")
+ * 공유 버튼 + 결과 한 줄. 짧은 라벨이라 영어가 크고 한국어가 작게 (#102)
  * where = 분석 이벤트에 붙는 자리 이름 (분석이 꺼져 있으면 아무 일도 안 한다)
  */
 export function Share({
   title,
   text,
   url,
-  lead = "ko",
   where,
   className,
 }: {
   title: string;
   text: string;
   url?: string;
-  lead?: Lead;
   where: string;
   className?: string;
 }) {
@@ -67,15 +65,16 @@ export function Share({
     if (how === "copied") setNote({ ko: "링크를 복사했어요.", en: "Link copied." });
     else if (how === "manual") setNote({ ko: "링크를 길게 눌러 복사해 주세요.", en: `Copy this link: ${u}` });
   };
-  const [big, small] = lead === "en" ? [label.en, label.ko] : [label.ko, label.en];
-  const [nBig, nSmall] = note ? (lead === "en" ? [note.en, note.ko] : [note.ko, note.en]) : [];
   return (
     <div className={className}>
-      <Btn variant="ghost" ko={`🔗 ${big}`} en={small} onClick={go} />
+      <Btn variant="ghost" ko={label.ko} en={`🔗 ${label.en}`} onClick={go} />
       <p className={cn("mt-2 min-h-[1.5em] text-center text-[0.9rem] font-bold break-all", !note && "sr-only")} aria-live="polite">
         {note && (
           <>
-            {nBig} <span className="font-semibold text-muted">{nSmall}</span>
+            {note.en}{" "}
+            <span className="font-semibold text-muted" lang="ko">
+              {note.ko}
+            </span>
           </>
         )}
       </p>

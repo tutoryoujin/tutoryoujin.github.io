@@ -13,6 +13,7 @@
    쉽게 그린 그림이다 — 정확한 해부도가 아니라 공기가 어디로 가는지 보여 주는 것.
    공기 점은 SVG animateMotion (Safari 까지 같은 모양). 움직임 줄이기면 점을 길 위에 멈춰 둔다.
    ============================================================ */
+import { cn } from "@yj/ui";
 import { useEffect, useState } from "react";
 
 export type MouthMode = "a" | "ng" | "k";
@@ -59,20 +60,21 @@ export function Mouth({ mode }: { mode: MouthMode }) {
       </g>
 
       {/* 나가는 곳 */}
-      <text x="292" y="45" className={label}>
-        👃 코
-      </text>
-      <text x="292" y="58" className={labelEn}>
+      {/* 오른쪽 끝 자리가 좁다 (292 → 330) — 글자는 작게, 이모지는 아래 줄에 */}
+      <text x="292" y="45" className={cn(label, "text-[11px]")}>
         nose
       </text>
-      <text x="292" y="122" className={label}>
-        👄 입
+      <text x="292" y="58" className={labelEn}>
+        👃
       </text>
-      <text x="292" y="135" className={labelEn}>
+      <text x="292" y="122" className={cn(label, "text-[11px]")}>
         mouth
       </text>
+      <text x="292" y="135" className={labelEn}>
+        👄
+      </text>
       <text x="80" y="226" className={label}>
-        ↑ 목 <tspan className={labelEn}>throat · air comes up</tspan>
+        ↑ throat <tspan className={labelEn}>· air comes up</tspan>
       </text>
 
       {/* 혀 — 아래로 내려가면 입 길이 열린다 */}
@@ -83,7 +85,7 @@ export function Mouth({ mode }: { mode: MouthMode }) {
         <g className={move} style={{ transform: `translateY(${m.tongue}px)` }}>
           <path d="M72 230 V150 Q74 96 112 96 Q150 96 196 128 Q226 146 262 150 L262 230 Z" className="fill-(--pink-bg) stroke-(--pink-ink)" strokeWidth="2" />
           <text x="160" y="160" textAnchor="middle" className="fill-(--pink-ink) font-display text-[12px]">
-            혀 <tspan className="text-[9px] font-extrabold">tongue</tspan>
+            tongue
           </text>
         </g>
       </g>
@@ -114,7 +116,7 @@ export function Mouth({ mode }: { mode: MouthMode }) {
         <g className="fill-(--ie-g-ink)">
           <rect x="44" y="90" width="24" height="5" rx="2" />
           <text x="80" y="52" className="font-display text-[15px]">
-            딱! 멈춤 <tspan className="text-[9px] font-extrabold">stop</tspan>
+            Stop!
           </text>
         </g>
       )}
@@ -123,7 +125,7 @@ export function Mouth({ mode }: { mode: MouthMode }) {
 }
 
 const ARIA: Record<MouthMode, string> = {
-  a: "아: 혀가 내려가 입이 열리고, 공기가 입으로 나가요 / a: tongue down, air goes out the mouth",
-  ng: "앙: 혀 뒤가 입을 막고, 공기가 코로 계속 흘러요 / ng: back of the tongue closes the mouth, air keeps flowing through the nose",
-  k: "악: 입도 코도 막혀 공기가 딱 멈춰요 / k: mouth and nose both closed, the air stops",
+  a: "아 [a]: tongue down, air goes out the mouth",
+  ng: "앙 [ng]: back of the tongue closes the mouth, air keeps flowing through the nose",
+  k: "악 [k]: mouth and nose both closed, the air stops",
 };

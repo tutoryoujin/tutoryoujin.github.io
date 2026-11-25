@@ -1,5 +1,5 @@
 import { useId, useState, type ReactNode } from "react";
-import { Box, Btn, cn, Ieung, ListenBtn, Note, Page, Quiz, TabPanel, Tabs, canSpeak, speak, useHashTab, type Choice, type Question } from "@yj/ui";
+import { Box, Btn, cn, Ieung, Note, Page, Quiz, TabPanel, Tabs, canSpeak, speak, useHashTab, type Choice, type Question } from "@yj/ui";
 import { tabsOf } from "@yj/apps";
 import { compose, decompose, shapeOf } from "@yj/korean/hangul";
 import { ieungSeats, linked, MOVES, NG_WORDS, PAIRS, SILENT_WORDS, STAYS, SWITCH_VOWELS, type Seat } from "./data";
@@ -17,22 +17,22 @@ import "./ieung.css";
 const TABS = tabsOf("ieung", ["switch", "ng", "link", "quiz"] as const);
 const [SWITCH_TAB, NG_TAB, LINK_TAB, QUIZ_TAB] = TABS;
 
-const titleKo = "block font-display text-[1.3rem] leading-[1.3]";
-const titleEn = "block text-[0.82rem] font-bold text-muted";
+/* 언어 규칙 (#102) — 제목 · 라벨은 영어가 크고 한국어가 아래 작게, 설명 문장은 영어만(say) */
+const titleBig = "block font-display text-[1.3rem] leading-[1.3]";
+const say = "block font-bold";
 
 export function App() {
   const [tab, setTab] = useHashTab(TABS);
   return (
     <Page
       app="ieung"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
             Audio uses your browser’s built-in voice, so it may sound a little different on each device.
           </>
         ),
-        ko: "소리는 기기의 브라우저 목소리예요. 기기마다 조금씩 다르게 들릴 수 있어요.",
       }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
@@ -55,34 +55,32 @@ export function App() {
 
 /* ---------- 작은 부품 ---------- */
 
-/** 상자 제목 — 탭 h2 아래라 h3 */
-const Title = ({ ko, en, id }: { ko: ReactNode; en: ReactNode; id: string }) => (
+/** 상자 제목 — 탭 h2 아래라 h3. 이 앱의 상자 제목은 영어만 (#102, 주인이 정함) */
+const Title = ({ en, id }: { en: ReactNode; id: string }) => (
   <h3 id={id} className="mb-3 text-center font-normal">
-    <span className={titleKo}>{ko}</span>
-    <span className={titleEn}>{en}</span>
+    <span className={titleBig}>{en}</span>
   </h3>
 );
 
 /** 제목 있는 상자 — <section aria-labelledby> + h3 */
-function TitledBox({ ko, en, children }: { ko: ReactNode; en: ReactNode; children: ReactNode }) {
+function TitledBox({ en, children }: { en: ReactNode; children: ReactNode }) {
   const id = useId();
   return (
     <Box labelledBy={id}>
-      <Title id={id} ko={ko} en={en} />
+      <Title id={id} en={en} />
       {children}
     </Box>
   );
 }
 
-/** 표시 알약 — 아이콘 + 한국어 + 영어. 색만으로 알리지 않는다 */
-const Badge = ({ tone, icon, ko, en, className }: { tone: string; icon: string; ko: string; en: string; className?: string }) => (
+/** 표시 알약 — 아이콘 + 영어. 색만으로 알리지 않는다 */
+const Badge = ({ tone, icon, en, className }: { tone: string; icon: string; en: string; className?: string }) => (
   <span
     className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.85rem] font-extrabold leading-[1.2]", className)}
     style={{ background: `var(--${tone}-bg)`, color: `var(--${tone}-ink)` }}
   >
     <span aria-hidden="true">{icon}</span>
-    <span className="font-display text-[1rem] font-extrabold">{ko}</span>
-    <span>· {en}</span>
+    <span className="font-display text-[1rem] font-extrabold">{en}</span>
   </span>
 );
 
@@ -184,9 +182,9 @@ function SwitchTab() {
 
   return (
     <>
-      <TitledBox ko="ㅇ을 위아래로 옮겨 보세요" en="Move ㅇ up and down — same letter, two jobs">
+      <TitledBox en="Move ㅇ up and down — same letter, two jobs">
 
-        <div className="mb-3 grid grid-cols-6 gap-1.5" role="radiogroup" aria-label="모음 / Vowel">
+        <div className="mb-3 grid grid-cols-6 gap-1.5" role="radiogroup" aria-label="Vowel">
           {SWITCH_VOWELS.map((x, i) => (
             <button
               key={x.v}
@@ -202,9 +200,9 @@ function SwitchTab() {
         </div>
 
         <Stage vowel={v} rom={rom} seat={seat} onMove={move} />
-        <p className="mt-2 text-center text-[0.75rem] font-bold text-muted">이응이를 눌러 보세요 · Tap ㅇ to make it jump</p>
+        <p className="mt-2 text-center text-[0.75rem] font-bold text-muted">Tap ㅇ to make it jump</p>
 
-        <div className="mt-3 grid grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="ㅇ의 자리 / Where ㅇ sits">
+        <div className="mt-3 grid grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="Where ㅇ sits">
           {(["cho", "jong"] as const).map((s) => (
             <button
               key={s}
@@ -217,8 +215,8 @@ function SwitchTab() {
                 s === "cho" ? "aria-checked:bg-(--ie-silent-bg) aria-checked:text-(--ie-silent-ink)" : "aria-checked:bg-(--ie-ng-bg) aria-checked:text-(--ie-ng-ink)",
               )}
             >
-              <span className="font-display text-[1rem]">{s === "cho" ? "⬆ 첫자리" : "⬇ 받침"}</span>
-              <span className="text-[0.66rem] font-bold text-muted group-aria-checked:text-current">{s === "cho" ? "Top · first" : "Bottom · final"}</span>
+              <span className="font-display text-[1rem]">{s === "cho" ? "⬆ Top" : "⬇ Bottom"}</span>
+              <span className="text-[0.66rem] font-bold text-muted group-aria-checked:text-current">{s === "cho" ? "first sound" : "final (batchim)"}</span>
             </button>
           ))}
         </div>
@@ -230,27 +228,25 @@ function SwitchTab() {
           <span className="text-[1.1rem] font-extrabold text-muted">[{sound}]</span>
         </div>
         <div className="mt-3">
-          {top ? <Badge tone="ie-silent" icon="🤫" ko="빈 자리" en="silent" /> : <Badge tone="ie-ng" icon="👃" ko="코로 울려요" en="ng" />}
+          {top ? <Badge tone="ie-silent" icon="🤫" en="Silent" /> : <Badge tone="ie-ng" icon="👃" en="ng" />}
         </div>
         <p className="mt-3 leading-[1.4]">
           {top ? (
             <>
-              <span className="block font-display text-[1.05rem]">첫자리 ㅇ은 소리가 없어요. 모음 소리만 나요.</span>
-              <span className={titleEn}>At the top, ㅇ is silent — you only hear the vowel.</span>
+              <span className={say}>At the top, ㅇ is silent — you only hear the vowel.</span>
             </>
           ) : (
             <>
-              <span className="block font-display text-[1.05rem]">받침 ㅇ은 [ng] 소리예요. 끝까지 코로 울려요.</span>
-              <span className={titleEn}>At the bottom, ㅇ is the ng in singer — keep humming through your nose.</span>
+              <span className={say}>At the bottom, ㅇ is the ng in singer — keep humming through your nose.</span>
             </>
           )}
         </p>
-        <ListenBtn text={syl} />
+        {canSpeak && <Btn en="🔊 Listen" onClick={() => speak(syl)} />}
       </Box>
 
-      <TitledBox ko="단어로 들어 보세요" en="Hear it in words · tap to listen">
-        <WordList ko="🤫 첫자리 ㅇ" en="Silent ㅇ at the top" words={SILENT_WORDS} tone="ie-silent" />
-        <WordList ko="👃 받침 ㅇ" en="ng at the bottom" words={NG_WORDS} tone="ie-ng" className="mt-4" />
+      <TitledBox en="Hear it in words">
+        <WordList en="🤫 Silent ㅇ at the top" words={SILENT_WORDS} tone="ie-silent" />
+        <WordList en="👃 ng at the bottom" words={NG_WORDS} tone="ie-ng" className="mt-4" />
       </TitledBox>
 
       <Box labelledBy={whyId}>
@@ -258,33 +254,24 @@ function SwitchTab() {
           <div className="w-14 shrink-0 [&_svg]:h-auto [&_svg]:w-full">
             <Ieung mood="wink" />
           </div>
-          <Title id={whyId} ko="ㅇ의 두 얼굴" en="Why does ㅇ sometimes make no sound?" />
+          <Title id={whyId} en="Why does ㅇ sometimes make no sound?" />
         </div>
         <ul className="flex flex-col gap-2.5 leading-normal">
-          <li>
-            <span className="block font-display">한글 글자 한 칸은 늘 자음으로 시작해요. 모음 소리로 시작하는 글자는 소리 없는 ㅇ이 자리만 채워요.</span>
-            <span className={titleEn}>Every Hangul block starts with a consonant. When a syllable starts with a vowel sound, a silent ㅇ just holds the seat.</span>
-          </li>
-          <li>
-            <span className="block font-display">받침 자리의 ㅇ은 소리가 있어요. 영어 singer 의 ng 소리예요.</span>
-            <span className={titleEn}>At the bottom, as a final consonant (batchim), ㅇ does have a sound: the ng in singer, not finger.</span>
-          </li>
-          <li>
-            <span className="block font-display">그래서 ‘앙’에는 ㅇ이 두 개 있지만 소리는 하나예요.</span>
-            <span className={titleEn}>So 앙 has two ㅇs, but only one of them makes a sound.</span>
-          </li>
+          <li className={say}>Every Hangul block starts with a consonant. When a syllable starts with a vowel sound, a silent ㅇ just holds the seat.</li>
+          <li className={say}>At the bottom, as a final consonant (batchim), ㅇ does have a sound: the ng in singer, not finger.</li>
+          <li className={say}>So 앙 has two ㅇs, but only one of them makes a sound.</li>
         </ul>
       </Box>
     </>
   );
 }
 
-function WordList({ ko, en, words, tone, className }: { ko: string; en: string; words: { ko: string; en: string }[]; tone: string; className?: string }) {
+function WordList({ en, words, tone, className }: { en: string; words: { ko: string; en: string }[]; tone: string; className?: string }) {
   return (
     <div className={className}>
       {/* 상자(h3) 안 소제목 */}
       <h4 className="mb-2 leading-[1.2]">
-        <span className="font-display">{ko}</span> <span className="text-[0.78rem] font-bold text-muted">{en}</span>
+        <span className="font-display">{en}</span>
       </h4>
       <ul className="grid grid-cols-2 gap-1.5 min-[440px]:grid-cols-3">
         {words.map((w) => (
@@ -327,10 +314,10 @@ function Marked({ word, tone }: { word: string; tone: string }) {
 
 /* ---------- ng ≠ g ---------- */
 
-const MOUTH_MODES: { k: MouthMode; syl: string; tone: string; ko: string; en: string; say: { ko: string; en: string } }[] = [
-  { k: "a", syl: "아", tone: "ie-vowel", ko: "모음", en: "vowel a", say: { ko: "입이 열려 있어서 공기가 입으로 나가요.", en: "Tongue down, mouth open — the air goes out through your mouth." } },
-  { k: "ng", syl: "앙", tone: "ie-ng", ko: "ㅇ 받침", en: "ng", say: { ko: "혀 뒤가 입을 막아요. 공기는 코로 끝까지 흘러요.", en: "The back of your tongue closes the mouth, but the air keeps flowing out your nose." } },
-  { k: "k", syl: "악", tone: "ie-g", ko: "ㄱ 받침", en: "k", say: { ko: "입도 코도 막혀서 공기가 딱 멈춰요.", en: "Mouth and nose both close — the air stops dead." } },
+const MOUTH_MODES: { k: MouthMode; syl: string; tone: string; en: string; say: string }[] = [
+  { k: "a", syl: "아", tone: "ie-vowel", en: "vowel a", say: "Tongue down, mouth open — the air goes out through your mouth." },
+  { k: "ng", syl: "앙", tone: "ie-ng", en: "ng", say: "The back of your tongue closes the mouth, but the air keeps flowing out your nose." },
+  { k: "k", syl: "악", tone: "ie-g", en: "k", say: "Mouth and nose both close — the air stops dead." },
 ];
 
 function CompareTab() {
@@ -338,8 +325,8 @@ function CompareTab() {
   const cur = MOUTH_MODES.find((x) => x.k === mode)!;
   return (
     <>
-      <TitledBox ko="ㅇ 받침은 끝까지 코로 울려요. 혀 뒤로 막고 끊는 건 ㄱ이에요." en="ㅇ at the bottom is a hum through your nose, never a hard g. Stopping with a click is ㄱ.">
-        <div className="mb-2 grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="소리 고르기 / Pick a sound">
+      <TitledBox en="ㅇ at the bottom is a hum through your nose, never a hard g. Stopping with a click is ㄱ.">
+        <div className="mb-2 grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="Pick a sound">
           {MOUTH_MODES.map((x) => (
             <button
               key={x.k}
@@ -355,20 +342,19 @@ function CompareTab() {
             >
               <span className="font-display text-[1.4rem]">{x.syl}</span>
               <span className="text-[0.68rem] font-extrabold">
-                {x.ko} · {x.en}
+                {x.en}
               </span>
             </button>
           ))}
         </div>
         <Mouth mode={mode} />
         <p className="mt-2 text-center leading-[1.35]" aria-live="polite">
-          <span className="block font-display text-[1.05rem]">{cur.say.ko}</span>
-          <span className={titleEn}>{cur.say.en}</span>
+          <span className={say}>{cur.say}</span>
         </p>
-        <Note tone="ie-g" ko="영어 철자에 속지 마세요: singer 의 ng ⭕ / finger 의 ngg ❌" en="Say it like singer ⭕, not finger ❌ — no g at the end." />
+        <Note tone="ie-g" en="Say it like singer ⭕, not finger ❌ — no g at the end." />
       </TitledBox>
 
-      <TitledBox ko="짝으로 번갈아 들어 보세요" en="Listen to the pairs back and forth">
+      <TitledBox en="Listen to the pairs back and forth">
         <ul className="flex flex-col gap-2">
           {PAIRS.map((p) => (
             <li key={p.ng.ko} className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1.5">
@@ -377,7 +363,7 @@ function CompareTab() {
                 type="button"
                 className="grid min-w-11 place-items-center rounded-md border border-line bg-bg px-1 text-[1.1rem] font-extrabold"
                 onClick={() => speak(`${p.ng.ko}. ${p.g.ko}. ${p.ng.ko}. ${p.g.ko}.`)}
-                aria-label={`${p.ng.ko}, ${p.g.ko} 번갈아 듣기 / Listen to both`}
+                aria-label={`Listen to both: ${p.ng.ko}, ${p.g.ko}`}
               >
                 <span aria-hidden="true">⇄</span>
               </button>
@@ -385,10 +371,9 @@ function CompareTab() {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-center text-[0.75rem] font-bold text-muted">⇄ 를 누르면 둘을 번갈아 들려줘요 · Tap ⇄ to hear both, one after the other</p>
+        <p className="mt-2 text-center text-[0.75rem] font-bold text-muted">Tap ⇄ to hear both, one after the other.</p>
         <Note
           tone="gray"
-          ko="브라우저 목소리로는 차이가 작게 들릴 수 있어요. 소리 끝이 코로 이어지는지, 딱 멈추는지 들어 보세요."
           en="Browser voices can make the difference sound small. Listen to the end: does it hum on, or stop dead?"
         />
       </TitledBox>
@@ -423,11 +408,8 @@ function PairSide({ w, kind, onPlay }: { w: { ko: string; en: string; rom: strin
 function LinkTab() {
   return (
     <>
-      <TitledBox ko="ㅇ 받침은 다음 글자로 안 넘어가요" en="ㅇ at the bottom stays put — it never slides into the next syllable">
-        <p className="mb-2 leading-[1.3]">
-          <span className="block font-display">다른 받침은 뒤에 ㅇ이 오면 넘어가요.</span>
-          <span className={titleEn}>Other final consonants slide over when the next syllable starts with ㅇ.</span>
-        </p>
+      <TitledBox en="ㅇ at the bottom stays put — it never slides into the next syllable">
+        <p className={cn("mb-2 leading-[1.3]", say)}>Other final consonants slide over when the next syllable starts with ㅇ.</p>
         <ul className="grid grid-cols-2 gap-2">
           {MOVES.map((w) => (
             <li key={w.ko}>
@@ -440,7 +422,7 @@ function LinkTab() {
             </li>
           ))}
         </ul>
-        <Note tone="ie-ng" ko="ㅇ 받침은 그대로 있어요. g 소리가 새로 생기지 않아요." en="ㅇ stays where it is. No g sound appears." />
+        <Note tone="ie-ng" en="ㅇ stays where it is. No g sound appears." />
       </TitledBox>
 
       {STAYS.map((w) => (
@@ -482,7 +464,9 @@ function ReadBtn({ ok, text }: { ok: boolean; text: string }) {
       <span className="font-display text-[1.3rem]">
         {ok ? "⭕" : "❌"} [{text}]
       </span>
-      <span className="text-[0.72rem] font-extrabold">{ok ? "맞는 소리 · right 🔊" : "g 가 생겼어요 · wrong 🔊"}</span>
+      <span className="text-[0.72rem] font-extrabold">
+        {ok ? "Right 🔊" : "A g crept in 🔊"}
+      </span>
     </button>
   );
 }
@@ -495,13 +479,13 @@ function QuizTab() {
   const [mode, setMode] = useState<QuizMode>("seat");
   return (
     <>
-      <div className="grid grid-cols-2 gap-1 rounded-full border border-line bg-surface p-1" role="radiogroup" aria-label="퀴즈 고르기 / Pick a quiz">
+      <div className="grid grid-cols-2 gap-1 rounded-full border border-line bg-surface p-1" role="radiogroup" aria-label="Pick a quiz">
         {(
           [
-            ["seat", "소리가 날까?", "Silent or ng?"],
-            ["listen", "듣기: ㅇ? ㄱ?", "Listening: ng or k?"],
+            ["seat", "Silent or ng?"],
+            ["listen", "Listening: ng or k?"],
           ] as const
-        ).map(([k, ko, en]) => (
+        ).map(([k, en]) => (
           <button
             key={k}
             type="button"
@@ -510,26 +494,25 @@ function QuizTab() {
             onClick={() => setMode(k)}
             className="group flex min-h-11 flex-col items-center justify-center rounded-full leading-[1.1] aria-checked:bg-primary aria-checked:text-primary-ink"
           >
-            <span className="font-display text-[1rem]">{ko}</span>
-            <span className="text-[0.66rem] font-bold text-muted group-aria-checked:text-current">{en}</span>
+            <span className="font-display text-[1rem]">{en}</span>
           </button>
         ))}
       </div>
       {mode === "seat" ? (
-        <Quiz key="seat" make={makeSeatQuestion} listen={false} label={{ ko: "이 ㅇ은 소리가 날까?", en: "Does this ㅇ make a sound?" }} />
+        <Quiz key="seat" make={makeSeatQuestion} listen={false} label={{ en: "Does this ㅇ make a sound?" }} />
       ) : canSpeak ? (
-        <Quiz key="listen" make={makeListenQuestion} label={{ ko: "들리는 건 ㅇ 받침? ㄱ 받침?", en: "Do you hear ㅇ (ng) or ㄱ (k) at the end?" }} />
+        <Quiz key="listen" make={makeListenQuestion} label={{ en: "Do you hear ㅇ (ng) or ㄱ (k) at the end?" }} />
       ) : (
         <Box>
-          <Note tone="gray" className="mt-0" ko="이 브라우저는 소리를 낼 수 없어요." en="This browser can’t play speech, so the listening quiz is off." />
+          <Note tone="gray" className="mt-0" en="This browser can’t play speech, so the listening quiz is off." />
         </Box>
       )}
     </>
   );
 }
 
-const SILENT = "🤫 소리 없음 · silent";
-const NG = "👃 [ng] 소리 · ng";
+const SILENT = "🤫 Silent";
+const NG = "👃 ng";
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
 /** 모든 단어의 ㅇ 하나하나 — 첫자리 · 받침으로 나눠 둔다 */
@@ -544,10 +527,10 @@ function makeSeatQuestion(): Question {
   const d = decompose(syl)!;
   const top = t.seat === "cho";
   // 문제에서는 색을 입히지 않는다 — 색이 답을 알려 주면 안 된다. 고른 ㅇ 에만 테
-  const cell = (jamo: string, mine: boolean): Cell => ({ jamo, ring: mine, caption: mine ? "이 ㅇ · this one" : undefined });
+  const cell = (jamo: string, mine: boolean): Cell => ({ jamo, ring: mine, caption: mine ? "This one" : undefined });
   const why: Choice["why"] = top
-    ? { ko: "첫자리 ㅇ은 자리만 채워요. 모음 소리만 나요.", en: "At the top, ㅇ just holds the seat — only the vowel sounds." }
-    : { ko: "받침 ㅇ은 [ng] 소리예요. 코로 울려요.", en: "At the bottom, ㅇ is ng — hum it through your nose." };
+    ? "At the top, ㅇ just holds the seat — only the vowel sounds."
+    : "At the bottom, ㅇ is ng — hum it through your nose.";
   return {
     id: `${t.word}-${t.i}-${t.seat}`,
     prompt: (
@@ -564,7 +547,7 @@ function makeSeatQuestion(): Question {
     ),
     answer: top ? SILENT : NG,
     wrong: [{ text: top ? NG : SILENT, why }],
-    review: `${t.word} · ${syl} ${top ? "⬆ 첫자리" : "⬇ 받침"}`,
+    review: `${t.word} · ${syl} ${top ? "⬆ top" : "⬇ bottom"}`,
     right: top ? "" : `[${t.word}]`,
   };
 }
@@ -580,7 +563,7 @@ function makeListenQuestion(index: number): Question {
     id: `${p.ng.ko}-${isNg ? "ng" : "g"}`,
     prompt: (
       <div className="mt-1 mb-3">
-        <Btn ko="🔊 들어 보기" en="Play the sound" onClick={() => speak(ans.ko)} />
+        <Btn en="🔊 Play the sound" onClick={() => speak(ans.ko)} />
       </div>
     ),
     answer: ans.ko,
@@ -588,8 +571,8 @@ function makeListenQuestion(index: number): Question {
       {
         text: other.ko,
         why: isNg
-          ? { ko: "끝까지 코로 울리면 ㅇ 받침이에요.", en: "If the end keeps humming through your nose, it’s ㅇ (ng)." }
-          : { ko: "딱 끊기면 ㄱ 받침이에요.", en: "If it stops short, it’s ㄱ (k)." },
+          ? "If the end keeps humming through your nose, it’s ㅇ (ng)."
+          : "If it stops short, it’s ㄱ (k).",
       },
     ],
     review: `${p.ng.ko} / ${p.g.ko}`,

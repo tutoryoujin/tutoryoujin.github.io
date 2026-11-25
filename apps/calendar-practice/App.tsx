@@ -57,7 +57,7 @@ export function App() {
   return (
     <Page
       app="calendar-practice"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
@@ -65,7 +65,6 @@ export function App() {
             are not included.
           </>
         ),
-        ko: "공휴일은 양력 고정 공휴일만 표시해요. 설날·추석·부처님오신날 같은 음력 공휴일과 대체공휴일은 빠져 있어요.",
       }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
@@ -137,7 +136,7 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
     <>
       <Box labelledBy={titleId}>
         <div className={monthHead}>
-          <button className={navBtn} type="button" aria-label="이전 달 / Previous month" onClick={() => shift(-1)}>
+          <button className={navBtn} type="button" aria-label="Previous month / 이전 달" onClick={() => shift(-1)}>
             ‹
           </button>
           {/* 상자 제목 — 탭 h2 아래라 h3 */}
@@ -149,7 +148,7 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
               {readYear(y)} {readMonth(m)}
             </span>
           </h3>
-          <button className={navBtn} type="button" aria-label="다음 달 / Next month" onClick={() => shift(1)}>
+          <button className={navBtn} type="button" aria-label="Next month / 다음 달" onClick={() => shift(1)}>
             ›
           </button>
         </div>
@@ -170,8 +169,10 @@ function CalendarTab({ today, view, setView }: { today: Date; view: View; setVie
             setSelected(today);
           }}
         >
-          <span className="font-display">오늘로 가기</span>
-          <span className="text-[0.75rem] font-bold text-muted">Go to today</span>
+          <span className="font-display">Go to today</span>
+          <span className="text-[0.75rem] font-bold text-muted" lang="ko">
+            오늘로 가기
+          </span>
         </button>
       </Box>
       <DayPanel today={today} date={selected} />
@@ -225,7 +226,7 @@ function DayPanel({ today, date }: { today: Date; date: Date }) {
         </div>
       )}
       {/* 6월·10월 메모 — special 은 악센트 쌍이 아니라 달력 전용 색이다 */}
-      {special && <Note accent="--special" ko={special[0]} en={special[1]} />}
+      {special && <Note accent="--special" en={special} />}
       <ListenBtn text={`${readYear(y)} ${readMonth(m)} ${readDay(d)} ${weekKo}`} />
     </Box>
   );
@@ -243,14 +244,14 @@ function YearTab({ today, open }: { today: Date; open: (y: number, m: number) =>
     <>
       <Box labelledBy={titleId}>
         <div className={monthHead}>
-          <button className={navBtn} type="button" aria-label="이전 해 / Previous year" onClick={() => setYear(year - 1)}>
+          <button className={navBtn} type="button" aria-label="Previous year / 이전 해" onClick={() => setYear(year - 1)}>
             ‹
           </button>
           <h3 id={titleId} className={monthTitle}>
             <span className={titleDigits}>{year}년</span>
             <span className={titleReading}>{readYear(year)}</span>
           </h3>
-          <button className={navBtn} type="button" aria-label="다음 해 / Next year" onClick={() => setYear(year + 1)}>
+          <button className={navBtn} type="button" aria-label="Next year / 다음 해" onClick={() => setYear(year + 1)}>
             ›
           </button>
         </div>
@@ -259,7 +260,7 @@ function YearTab({ today, open }: { today: Date; open: (y: number, m: number) =>
             {picked}월 · {MONTH_EN[picked - 1]}
           </div>
           <div className={cn("my-1 font-display text-[2.6rem] leading-[1.1]", special && "text-cal-month-ink")}>{readMonth(picked)}</div>
-          {special && <Note accent="--special" className="text-left" ko={special[0]} en={special[1]} />}
+          {special && <Note accent="--special" className="text-left" en={special} />}
           <div className="grid grid-cols-2 gap-2">
             <ListenBtn text={readMonth(picked)} className={pickBtn} />
             <Btn className={pickBtn} variant="ghost" ko="이 달 달력 보기" en="Open this month" onClick={() => open(year, picked)} />

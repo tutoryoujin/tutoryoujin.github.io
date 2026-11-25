@@ -87,12 +87,12 @@ function Pager({ page, pages, go }: { page: number; pages: number; go: (p: numbe
   );
   const prev = (
     <>
-      <span aria-hidden="true">←</span>&nbsp;Prev<span className="ml-1 text-[0.78rem] font-semibold text-muted">이전</span>
+      <span aria-hidden="true">←</span>&nbsp;Prev<span className="ml-1 text-[0.78rem] font-semibold text-muted" lang="ko">이전</span>
     </>
   );
   const next = (
     <>
-      Next<span className="ml-1 text-[0.78rem] font-semibold text-muted">다음</span>&nbsp;<span aria-hidden="true">→</span>
+      Next<span className="ml-1 text-[0.78rem] font-semibold text-muted" lang="ko">다음</span>&nbsp;<span aria-hidden="true">→</span>
     </>
   );
   return (
@@ -166,9 +166,6 @@ function List() {
           <SiteTitle big={NOTES_TITLE.en} small={NOTES_TITLE.ko} lead="en">
             <p className="mt-3 font-bold">
               Short posts on the Korean you’ll actually run into.
-              <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
-                한국어를 배우다 궁금해지는 것들을 짧게 풀어요.
-              </span>
             </p>
           </SiteTitle>
         </div>
@@ -203,9 +200,6 @@ function List() {
           </div>
           <p>
             No posts match yet. Try another word.
-            <span className="block text-[0.9rem] font-semibold text-muted" lang="ko">
-              찾는 글이 아직 없어요. 다른 말로 찾아보세요.
-            </span>
           </p>
         </div>
       )}
@@ -266,7 +260,7 @@ function Article({ n }: { n: Note }) {
           </nav>
         )}
         <Doc blocks={n.blocks} lead="en" widgets={WIDGETS} />
-        <Share lead="en" where="note" title={n.title.en} text={n.summary.en} className="mx-auto mt-10 max-w-80" />
+        <Share where="note" title={n.title.en} text={n.summary.en} className="mx-auto mt-10 max-w-80" />
       </article>
       {apps.length > 0 && (
         <section className="mt-12" aria-labelledby="practice">

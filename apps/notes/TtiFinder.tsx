@@ -47,16 +47,14 @@ export function TtiFinder() {
                 {year} · Year of the {t.en}
               </span>
               <span className="mt-1 block text-[0.8rem] font-semibold">
-                Born before Seollal in Jan/Feb? Then you’re a {prev.en}.
-                <br />
-                <span lang="ko">1·2월 설날 전에 태어났다면 {ttiName(prev)}예요.</span>
+                Born before Seollal in Jan/Feb? Then you’re a {prev.en} ({ttiName(prev)}).
               </span>
             </span>
             {canSpeak && (
               <button
                 type="button"
                 className="grid size-11 flex-none place-items-center rounded-full border border-line bg-surface text-[1.1rem]"
-                aria-label={`들어 보기 / Listen: ${say}`}
+                aria-label={`Listen / 들어 보기: ${say}`}
                 onClick={() => speak(say)}
               >
                 <span aria-hidden="true">🔊</span>
@@ -66,9 +64,6 @@ export function TtiFinder() {
         ) : (
           <p className="text-[0.9rem] font-bold text-muted">
             Type a four-digit year, like 1995.
-            <span className="block font-semibold" lang="ko">
-              네 자리로 넣어 보세요.
-            </span>
           </p>
         )}
       </div>

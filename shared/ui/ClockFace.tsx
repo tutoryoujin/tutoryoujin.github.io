@@ -153,7 +153,7 @@ export function ClockFace({ t, onChange, label }: Props) {
       )}
       viewBox="0 0 300 300"
       role={live ? "group" : "img"}
-      aria-label={label ?? (live ? "시계 — 바늘을 끌어서 돌려요 / Drag the hands" : "시계 / Clock")}
+      aria-label={label ?? (live ? "Clock — drag the hands / 시계 — 바늘을 끌어서 돌려요" : "Clock / 시계")}
       onPointerDown={down}
       onPointerMove={(e) => drag && moveTo(drag, e)}
       onPointerUp={() => setDrag(null)}
@@ -166,8 +166,8 @@ export function ClockFace({ t, onChange, label }: Props) {
       {stem("min", MIN_LEN, minDeg)}
       <circle className="fill-ink" cx={C} cy={C} r={7} />
       {/* 퀴즈 시계에는 손잡이 글자를 두지 않는다 — 어느 바늘이 시인지 읽는 것도 연습이다 */}
-      {live && knob("hour", HOUR_LEN, hourDeg, "시", "시침 / Hour hand", readHour(h))}
-      {live && knob("min", MIN_LEN, minDeg, "분", "분침 / Minute hand", m ? readMin(m) : "정각")}
+      {live && knob("hour", HOUR_LEN, hourDeg, "시", "Hour hand / 시침", readHour(h))}
+      {live && knob("min", MIN_LEN, minDeg, "분", "Minute hand / 분침", m ? readMin(m) : "정각")}
     </svg>
   );
 }

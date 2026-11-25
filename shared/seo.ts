@@ -51,15 +51,13 @@ export type PageMeta = { url: string; title: string; description: string; image?
 
 
 /**
- * 페이지 언어 — <html lang> · 구조화 데이터 inLanguage 의 첫 말 (#95).
- * 앱 밖 페이지(홈 · 블로그 · 처방침 · 404)는 화면이 영어 먼저라 "en", 한국어 줄에는 lang="ko" 를 붙인다.
- * 앱은 화면이 한국어 먼저라 "ko" 그대로 — 앱 안 순서 규칙은 #92 에서 정한다.
+ * 페이지 언어 — <html lang> · 구조화 데이터 inLanguage 의 첫 말 (#95 · #102).
+ * 모든 페이지(앱 포함)가 영어 먼저라 "en". 한국어 줄 · 배우는 한국어에는 lang="ko" 를 붙인다.
  * 글꼴(한글은 어느 쪽이든 한글 글꼴) · 발음(speak() 가 ko-KR 을 직접 정한다)은 lang 에 기대지 않는다
  */
-export function pageLang(slug: string, apps: AppInfo[] = APPS): "en" | "ko" {
-  return apps.some((a) => a.slug === slug) ? "ko" : "en";
-}
-const inLanguage = (slug: string, apps: AppInfo[]) => (pageLang(slug, apps) === "en" ? ["en", "ko"] : ["ko", "en"]);
+export const pageLang = (): "en" => "en";
+/** 구조화 데이터 inLanguage — 모든 페이지 영어 먼저 + 한국어 */
+const IN_LANGUAGE = ["en", "ko"];
 const findApp = (slug: string, apps: AppInfo[]) => {
   const a = apps.find((x) => x.slug === slug);
   if (!a) throw new Error(`shared/apps.ts 에 없는 앱이에요: ${slug}`);
@@ -228,7 +226,7 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
           url: home,
           name: c.name,
           description: HOME.description,
-          inLanguage: inLanguage(slug, apps),
+          inLanguage: IN_LANGUAGE,
           publisher: author,
         },
         { "@type": "Person", ...author, url: home, ...AUTHOR },
@@ -256,7 +254,7 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
             description: p.description,
             datePublished: p.note!.added,
             dateModified: p.updated,
-            inLanguage: inLanguage(slug, apps),
+            inLanguage: IN_LANGUAGE,
             ...(m.image && { image: m.image.url }),
             author,
             publisher: author,
@@ -270,7 +268,7 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
               url: m.url,
               name: `${p.ko} (${p.en})`,
               description: p.description,
-              inLanguage: inLanguage(slug, apps),
+              inLanguage: IN_LANGUAGE,
               isPartOf: site,
               author,
               mainEntity: {
@@ -278,7 +276,7 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
                 itemListElement: NOTES.map((n, i) => ({ "@type": "ListItem", position: i + 1, url: pageMeta(`notes/${n.slug}`, c, apps).url, name: n.title.en })),
               },
             }
-          : { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: inLanguage(slug, apps), isPartOf: site, author };
+          : { "@type": "WebPage", "@id": m.url + "#page", url: m.url, name: `${p.en} (${p.ko})`, description: p.description, dateModified: p.updated, inLanguage: IN_LANGUAGE, isPartOf: site, author };
     const name = (x: { ko: string; en: string }) => (p.lead === "en" ? x.en : x.ko);
     const trail: [string, string][] = p.kind === "note" ? [[name(NOTES_TITLE), list], [name(p), m.url]] : [[name(p), m.url]];
     return { "@context": "https://schema.org", "@graph": [main, breadcrumb(c, trail)] };
@@ -298,7 +296,7 @@ export function jsonLd(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APP
         operatingSystem: "Any (web browser)",
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        inLanguage: inLanguage(slug, apps),
+        inLanguage: IN_LANGUAGE,
         learningResourceType: "Interactive resource",
         educationalLevel: "Beginner",
         teaches: a.learn.map((l) => l.en),
@@ -342,17 +340,16 @@ const link = "text-primary underline";
 const ko = (t: string, cls = "") => `<span lang="ko"${cls ? ` class="${cls}"` : ""}>${esc(t)}</span>`;
 
 export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[] = APPS): string {
+  // 모든 페이지가 영어 먼저 (#84 · #102) — 앱 이름 · 한 줄 소개도 영어가 앞
   const appLink = (a: AppInfo) =>
-    `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.ko)} · ${esc(a.en)}</a> — ${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></li>`;
+    `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.en)} · ${ko(a.ko)}</a> — ${esc(a.about.en)} ${ko(a.about.ko, "text-muted")}</li>`;
   if (!slug) {
-    // 홈 화면과 같게 — 제목은 「Korean with Youjin」, 설명 · 앱 이름은 영어가 앞 (#84)
-    const appLinkEn = (a: AppInfo) =>
-      `<li class="${li}"><a class="${link}" href="/${a.slug}/">${esc(a.en)} · ${ko(a.ko)}</a> — ${esc(a.about.en)} ${ko(a.about.ko, "text-muted")}</li>`;
+    // 홈 화면과 같게 — 제목은 「Korean with Youjin」
     return (
       `<main data-prerender class="${wrap}">` +
       `<h1 class="${h1}">${esc(HOME_TITLE)}<span class="${sub}">${esc(HOME.searchTitle)}</span></h1>` +
       `<p class="mt-2">${esc(HOME.description)}</p>` +
-      `<h2 class="${h2}">All apps · ${ko("모든 앱")}</h2><ul>${apps.map(appLinkEn).join("")}</ul>` +
+      `<h2 class="${h2}">All apps · ${ko("모든 앱")}</h2><ul>${apps.map(appLink).join("")}</ul>` +
       `<p class="mt-6"><a class="${link}" href="/notes/">${esc(NOTES_TITLE.en)} · ${ko(NOTES_TITLE.ko)}</a></p>` +
       `</main>`
     );
@@ -365,7 +362,7 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
   /* h2 는 화면과 같게 (#101) — 탭 이름 h2 (shared/apps.ts tabs, 화면은 <TabPanel>) + 앱 아래 「같이 읽어 보세요」.
      배우는 것은 그 탭 h2 아래에. 탭이 없는 줄은 첫머리 목록에.
      화면에 h2 로 없는 묶음(배우는 것 · 다른 앱)에는 h2 를 달지 않는다 — 다른 앱은 헤더 메뉴처럼 nav 로 */
-  const learnLi = (l: AppInfo["learn"][number]) => `<li class="${li}">${esc(l.ko)} <span class="text-muted">— ${esc(l.en)}</span></li>`;
+  const learnLi = (l: AppInfo["learn"][number]) => `<li class="${li}">${esc(l.en)} <span class="text-muted">— ${ko(l.ko)}</span></li>`;
   const tabs = a.tabs ?? [];
   const loose = a.learn.filter((l) => !tabs.some((t) => t.key === l.tab));
   const notes = notesForApp(a.slug);
@@ -373,16 +370,16 @@ export function prerenderHtml(slug: string, c: SiteConfig = SITE, apps: AppInfo[
     `<main data-prerender class="${wrap}">` +
     // 헤더와 같게 영어 이름이 크고, 한국어 이름 + with Youjin 이 아래 (#100)
     `<h1 class="${h1}"><span lang="en">${esc(a.en)}</span><span class="${sub}"><span lang="ko">${esc(a.ko)}</span> with Youjin — ${esc(a.searchTitle)}</span></h1>` +
-    `<p class="mt-2">${esc(a.about.ko)} <span class="text-muted">${esc(a.about.en)}</span></p>` +
+    `<p class="mt-2">${esc(a.about.en)} ${ko(a.about.ko, "text-muted")}</p>` +
     `<p class="mt-1 text-muted">${esc(a.description)}</p>` +
     (loose.length ? `<ul class="mt-2">${loose.map(learnLi).join("")}</ul>` : "") +
     tabs
-      .map((t) => `<section><h2 class="${h2}">${esc(t.ko)} · ${esc(t.en)}</h2><ul>${a.learn.filter((l) => l.tab === t.key).map(learnLi).join("")}</ul></section>`)
+      .map((t) => `<section><h2 class="${h2}">${esc(t.en)} · ${ko(t.ko)}</h2><ul>${a.learn.filter((l) => l.tab === t.key).map(learnLi).join("")}</ul></section>`)
       .join("") +
     // 화면과 같게 영어 먼저 (#100)
     (notes.length ? `<h2 class="${h2}">${esc(RELATED_NOTES.en)} · ${ko(RELATED_NOTES.ko)}</h2><ul>${notes.map((n) => noteLink(n, "en")).join("")}</ul>` : "") +
-    `<nav class="mt-6" aria-label="다른 앱 / More apps"><ul>${others.map(appLink).join("")}` +
-    `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — 모든 앱 · All apps</a></li></ul></nav>` +
+    `<nav class="mt-6" aria-label="More apps / 다른 앱"><ul>${others.map(appLink).join("")}` +
+    `<li class="${li}"><a class="${link}" href="/">${esc(c.name)} — All apps · ${ko("모든 앱")}</a></li></ul></nav>` +
     `</main>`
   );
 }
@@ -399,7 +396,7 @@ function notFoundHtml(apps: AppInfo[]): string {
   return (
     `<main data-prerender class="${wrap}">` +
     `<h1 class="${h1}">${esc(NOT_FOUND.en)}<span class="${sub}" lang="ko">${esc(NOT_FOUND.ko)}</span></h1>` +
-    `<p class="mt-2">${esc(NOT_FOUND.lead.en)} ${ko(NOT_FOUND.lead.ko, "text-muted")}</p>` +
+    `<p class="mt-2">${esc(NOT_FOUND.lead)}</p>` +
     `<ul class="mt-4">` +
     `<li class="${li}"><a class="${link}" href="/">${esc(HOME_TITLE)} — Home · ${ko("첫 화면")}</a></li>` +
     `<li class="${li}"><a class="${link}" href="/notes/">${esc(NOTES_TITLE.en)} · ${ko(NOTES_TITLE.ko)}</a></li>` +
@@ -463,8 +460,8 @@ export function llmsTxt(c: SiteConfig = SITE, apps: AppInfo[] = APPS) {
     ``,
     `> ${HOME.description}`,
     ``,
-    // 화면 순서와 맞게 (#84 · #94): 홈 · 블로그 · 처방침은 영어 먼저, 앱 안에서 배우는 한국어는 크게
-    `Free, no sign-up web apps for beginners learning Korean. The home page and blog lead with English, with Korean below. Inside the apps, the Korean you practice is shown large, with English alongside. Made by ${AUTHOR.name}, a Korean teacher in Seoul.`,
+    // 화면 순서와 맞게 (#102): 설명은 영어, 짧은 라벨은 영어 + 한국어, 배우는 한국어는 크게
+    `Free, no sign-up web apps for beginners learning Korean. Explanations are in English, with short Korean labels alongside. The Korean you practice is shown large, with English below. Made by ${AUTHOR.name}, a Korean teacher in Seoul.`,
     ``,
     `## Apps`,
     ``,

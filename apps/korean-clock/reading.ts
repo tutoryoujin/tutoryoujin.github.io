@@ -4,7 +4,7 @@
    - 분은 한자어
    - 30분은 ‘반’이라고도 한다
    ============================================================ */
-import { josa, native, nativeCounter, sino } from "@yj/korean/numbers";
+import { native, nativeCounter, sino } from "@yj/korean/numbers";
 import { readHour, readMin, readTime, wrapDay } from "@yj/korean/time";
 import type { Choice } from "@yj/ui";
 
@@ -25,21 +25,18 @@ export function wrongChoices(h: number, m: number, pickExtra = (xs: Choice[]) =>
   const core: Choice[] = [
     {
       text: `${sino(h)} 시 ${min}`,
-      why: { ko: `시는 고유어로 읽어요. ${sino(h)} 시가 아니라 ${readHour(h)}!`, en: "Hours use native Korean numbers: 한, 두, 세…" },
+      why: `Hours use native Korean numbers (한, 두, 세…): ${readHour(h)}, not ${sino(h)} 시.`,
     },
     {
       text: `${readHour(h)} ${native(m)} 분`,
-      why: { ko: `분은 한자어로 읽어요. ${native(m)} 분이 아니라 ${min}!`, en: "Minutes use Sino-Korean numbers: 일, 이, 삼…" },
+      why: `Minutes use Sino-Korean numbers (일, 이, 삼…): ${min}, not ${native(m)} 분.`,
     },
   ];
   const extra: Choice[] = [];
   if (contracted(h))
     extra.push({
       text: `${native(h)} 시 ${min}`,
-      why: {
-        ko: `${josa(native(h), "은", "는")} 시 앞에서 ${josa(nativeCounter(h), "이", "가")} 돼요.`,
-        en: `${native(h)} becomes ${nativeCounter(h)} before 시.`,
-      },
+      why: `${native(h)} becomes ${nativeCounter(h)} before 시.`,
     });
   // 바늘을 바꿔 읽음: 긴 바늘을 시로, 짧은 바늘을 분으로
   const sh = m / 5 || 12,
@@ -47,14 +44,14 @@ export function wrongChoices(h: number, m: number, pickExtra = (xs: Choice[]) =>
   if (Number.isInteger(sh) && !(sh === h && sm === m))
     extra.push({
       text: readTime(sh, sm),
-      why: { ko: "짧은 바늘이 시, 긴 바늘이 분이에요.", en: "The short hand is the hour, the long hand is the minutes." },
+      why: "The short hand is the hour, the long hand is the minutes.",
     });
   // 40분이 넘으면 시침이 다음 숫자에 가까워서 한 시간 앞서 읽기 쉽다
   const next = (h % 12) + 1;
   if (m >= 40)
     extra.push({
       text: `${readHour(next)} ${min}`,
-      why: { ko: `짧은 바늘이 아직 ${next}에 닿지 않았어요.`, en: `The hour hand hasn't reached ${next} yet.` },
+      why: `The hour hand hasn't reached ${next} yet.`,
     });
   return extra.length ? [...core, pickExtra(extra)] : core;
 }

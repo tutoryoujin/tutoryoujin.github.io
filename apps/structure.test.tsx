@@ -90,7 +90,7 @@ describe("앱 본문 구조 (#101)", () => {
           a.tabs!.forEach((t, i) => {
             const p = panels[i];
             const h2 = p.querySelector("h2");
-            expect(norm(h2?.textContent ?? null)).toBe(norm(`${t.ko}${t.en}`));
+            expect(norm(h2?.textContent ?? null)).toBe(norm(`${t.en}${t.ko}`));
             // 탭 단추와 이어져 있다
             const btn = el.querySelector(`#${p.getAttribute("aria-labelledby")}`);
             expect(btn?.getAttribute("aria-controls")).toBe(p.id);

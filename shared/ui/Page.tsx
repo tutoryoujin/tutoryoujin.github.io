@@ -31,8 +31,8 @@ type Props = {
   mainClass?: string;
 };
 export type NavLink = { href: string; ko: string; en: string; active?: boolean };
-/** 꼬리말 고지. ko 가 없으면 영어만 (출처 같은 법적 문구, #92) */
-export type Legal = { en: ReactNode; ko?: ReactNode };
+/** 꼬리말 고지 — 설명 문장이라 영어만 (#102) */
+export type Legal = { en: ReactNode };
 
 /* 브랜드 마크는 레트로 이응이 그대로 — 동그라미 바탕 없이 선 채로 선다.
    정사각 칸 + 정사각 symbol viewBox 라 preserveAspectRatio 가 손댈 일이 없다. */
@@ -143,12 +143,7 @@ export function Footer({ children, legal }: { children?: ReactNode; legal?: Lega
         {children}
         {legal && (
           <p className="text-[0.74rem] sm:col-span-full">
-            <span lang="en">{legal.en}</span>
-            {legal.ko && (
-              <span className="mt-0.5 block text-[0.9em]" lang="ko">
-                {legal.ko}
-              </span>
-            )}
+            {legal.en}
           </p>
         )}
         {/* 위에 브랜드·문구가 있을 때만 구분선. 없으면 footer 의 윗선과 겹쳐 두 줄이 된다 (첫 화면) */}

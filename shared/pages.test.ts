@@ -54,30 +54,27 @@ describe("개인정보 처리방침", () => {
     expect(text(ON)).toContain("Kit");
     expect(text(ON)).toMatch(/unsubscribe/);
   });
-  it("모든 문단이 영어 · 한국어 둘 다", () => {
+  it("본문은 영어만 — 한국어 병기 없음 (#102)", () => {
     for (const b of privacyBlocks(ON)) {
       const items = b.t === "quiz" ? b.items.map((i) => i.q) : "items" in b ? b.items : b.t === "widget" ? [] : [b];
       for (const i of items) {
         expect(i.en, JSON.stringify(i)).toMatch(/[A-Za-z]/);
-        expect(i.ko, JSON.stringify(i)).toMatch(/[가-힣]/);
+        expect("ko" in i, JSON.stringify(i)).toBe(false);
       }
     }
   });
-  it("정적 본문은 화면과 같은 글 — 영어가 앞", () => {
+  it("정적 본문은 화면과 같은 글", () => {
     const html = docHtml(privacyBlocks(OFF), "en");
     expect(html).toContain("No sign-up, no accounts, no cookies.");
-    expect(html.indexOf("No sign-up")).toBeLessThan(html.indexOf("가입도"));
+    expect(html).not.toContain("가입도");
     expect(prerenderHtml("privacy")).toContain("No sign-up");
   });
 });
 
 describe("영어로 검색하는 학습자 (#95)", () => {
   const attr = (slug: string, key: string) => headTags(slug).find((t) => t.attrs?.property === key || t.attrs?.name === key)?.attrs?.content;
-  it("앱 밖 페이지는 lang en, 앱은 ko (앱 안 순서는 #92)", () => {
-    expect(pageLang("")).toBe("en");
-    expect(pageLang(NOT_FOUND.slug)).toBe("en");
-    for (const p of PAGES) expect(pageLang(p.slug), p.slug).toBe("en");
-    for (const a of APPS) expect(pageLang(a.slug), a.slug).toBe("ko");
+  it("모든 페이지(앱 포함)는 lang en (#102)", () => {
+    expect(pageLang()).toBe("en");
   });
   it("og:locale 은 모든 페이지 en_US, 한국어는 alternate", () => {
     for (const slug of ["", ...APPS.map((a) => a.slug), ...PAGES.map((p) => p.slug)]) {
@@ -85,21 +82,26 @@ describe("영어로 검색하는 학습자 (#95)", () => {
       expect(attr(slug, "og:locale:alternate"), slug).toBe("ko_KR");
     }
   });
-  it("구조화 데이터 inLanguage 는 페이지 언어가 먼저", () => {
+  it("구조화 데이터 inLanguage 는 모든 페이지 영어가 먼저 (#102)", () => {
     const lang = (slug: string) => (jsonLd(slug) as { "@graph": { inLanguage?: string[] }[] })["@graph"][0].inLanguage;
-    expect(lang("")).toEqual(["en", "ko"]);
-    for (const p of PAGES) expect(lang(p.slug), p.slug).toEqual(["en", "ko"]);
-    for (const a of APPS) expect(lang(a.slug), a.slug).toEqual(["ko", "en"]);
+    for (const slug of ["", ...PAGES.map((p) => p.slug), ...APPS.map((a) => a.slug)]) expect(lang(slug), slug).toEqual(["en", "ko"]);
   });
   it("영어 먼저인 정적 본문의 한국어 줄에는 lang=ko", () => {
-    for (const slug of ["", NOT_FOUND.slug, ...PAGES.map((p) => p.slug)]) expect(prerenderHtml(slug), slug).toContain(`lang="ko"`);
+    for (const slug of ["", NOT_FOUND.slug, ...PAGES.map((p) => p.slug), ...APPS.map((a) => a.slug)]) expect(prerenderHtml(slug), slug).toContain(`lang="ko"`);
+  });
+  it("앱 정적 본문도 영어 먼저 — 한 줄 소개 · 배우는 것 (#102)", () => {
+    for (const a of APPS) {
+      const html = prerenderHtml(a.slug);
+      expect(html, a.slug).toContain(`${a.about.en.replace(/&/g, "&amp;")} <span lang="ko"`);
+      for (const l of a.learn) expect(html, `${a.slug}: ${l.en}`).toContain(`<span class="text-muted">— <span lang="ko">`);
+    }
   });
   it("홈 정적 본문 h1 은 화면과 같은 「Korean with Youjin」(#84)", () => {
     expect(prerenderHtml("")).toMatch(/<h1[^>]*>Korean with Youjin</);
   });
-  it("llms.txt 는 화면 순서를 맞게 적는다 — 「Every screen shows Korean first」가 아니다", () => {
+  it("llms.txt 는 화면 순서를 맞게 적는다 — 설명은 영어, 배우는 한국어는 크게 (#102)", () => {
     expect(llmsTxt()).not.toContain("Every screen shows Korean first");
-    expect(llmsTxt()).toContain("lead with English");
+    expect(llmsTxt()).toContain("Explanations are in English");
   });
   it("sitemap lastmod 는 고친 날을 아는 페이지에만", () => {
     const xml = sitemapXml();

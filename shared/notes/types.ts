@@ -10,7 +10,7 @@ export type Note = {
   added: string;
   /** 고친 날 */
   updated?: string;
-  /** 화면 제목 — 질문 꼴. 한국어 먼저 */
+  /** 화면 제목 — 질문 꼴. 영어가 크고 한국어가 아래 (#94 · #102) */
   title: Bi;
   /** 검색 결과 제목 앞부분 — 학습자가 영어로 검색하는 말 */
   searchTitle: string;

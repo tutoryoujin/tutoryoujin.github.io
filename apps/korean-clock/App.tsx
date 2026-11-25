@@ -15,14 +15,13 @@ export function App() {
   return (
     <Page
       app="korean-clock"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
             Made for reading practice — the hands move in 1-minute steps, and seconds are left out.
           </>
         ),
-        ko: "읽기 연습용이라 바늘은 1분 단위로 움직여요. 초는 다루지 않아요.",
       }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
@@ -50,7 +49,7 @@ function ClockTab() {
   return (
     <>
       <Box>
-        <div className="mx-auto mb-2 grid max-w-55 grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="오전 오후 / AM PM">
+        <div className="mx-auto mb-2 grid max-w-55 grid-cols-2 gap-1 rounded-full border border-line bg-bg p-1" role="radiogroup" aria-label="AM PM / 오전 오후">
           {[false, true].map((isPm) => (
             <button
               key={String(isPm)}
@@ -68,10 +67,7 @@ function ClockTab() {
         <div className="mx-auto w-[min(100%,320px)]">
           <ClockFace t={t} onChange={setT} />
         </div>
-        <p className="mt-1.5 text-center leading-[1.3]">
-          <span className="block font-display">바늘을 끌어서 돌려 보세요</span>
-          <span className="text-[0.75rem] font-bold text-muted">Drag a hand to turn it</span>
-        </p>
+        <p className="mt-1.5 text-center leading-[1.3] font-bold">Drag a hand to turn it</p>
         <div className="mt-3 grid grid-cols-4 gap-1.5">
           {[-5, -1, 1, 5].map((d) => (
             <button key={d} className="min-h-11 rounded-md border border-line bg-bg text-[1rem] font-extrabold motion-safe:active:scale-[0.97]" type="button" onClick={() => step(d)}>
@@ -112,11 +108,10 @@ function ClockTab() {
         {contracted(h) && (
           <Note
             tone="clk-hour"
-            ko={`${native(h)} + 시 → ${readHour(h)}`}
             en={`${native(h)} gets shorter before 시: ${nativeCounter(h)}.`}
           />
         )}
-        {m === 30 && <Note tone="clk-min" ko={`${readHour(h)} 반이라고도 해요.`} en="You can also say 반 — half past." />}
+        {m === 30 && <Note tone="clk-min" en="You can also say 반 — half past." />}
         <ListenBtn text={`${ampm} ${readTime(h, m)}`} />
         <Btn
           variant="ghost"
@@ -140,8 +135,9 @@ const ruleSpan = "font-display text-[1rem]";
 const ruleEm = "text-[0.75rem] font-bold not-italic";
 // 상자 제목(h3, #101). 크기는 예전 h2 의 브라우저 기본(1.5em) 그대로 — 영어 줄의 줄 높이가 여기서 나온다
 const secTitle = "mb-2.5 text-[1.5em] font-normal leading-[1.2]";
-const secKo = "block font-display text-[1.2rem]";
-const secEn = "text-[0.75rem] font-bold text-muted";
+/* 상자 제목 — 영어가 크고(묻는 말 「몇 시예요?」는 배우는 한국어라 그대로), 아래 작은 줄은 안내 */
+const secBig = "block font-display text-[1.2rem]";
+const secSmall = "text-[0.75rem] font-bold text-muted";
 const row =
   "grid min-h-13 w-full grid-cols-[auto_1fr] items-center gap-x-2 rounded-md border border-line bg-bg px-2.5 py-1.5 text-left";
 const num = "min-w-[2.6em] text-[0.8rem] font-extrabold text-muted";
@@ -154,8 +150,10 @@ function RuleTab() {
     <>
       <Box labelledBy={ruleId}>
         <h3 id={ruleId} className="mb-3 text-center leading-[1.35]">
-          <span className="block font-display text-[1.4rem]">시는 고유어, 분은 한자어</span>
-          <span className="text-[0.82rem] font-bold text-muted">Hours use native Korean numbers. Minutes use Sino-Korean numbers.</span>
+          <span className="block font-display text-[1.4rem]">Hours are native Korean, minutes are Sino-Korean</span>
+          <span className="text-[0.82rem] font-bold text-muted" lang="ko">
+            시는 고유어, 분은 한자어
+          </span>
         </h3>
         <div className="grid grid-cols-2 gap-2.5">
           <div className={cn(rule, "bg-(--clk-hour-bg) text-(--clk-hour-ink)")}>
@@ -175,8 +173,10 @@ function RuleTab() {
 
       <Box labelledBy={hourId}>
         <h3 id={hourId} className={secTitle}>
-          <span className={secKo}>시 — 몇 시예요?</span>
-          <span className={secEn}>Hours · tap to listen</span>
+          <span className={secBig}>
+            Hours — <span lang="ko">몇 시예요?</span>
+          </span>
+          <span className={secSmall}>Tap to listen</span>
         </h3>
         <ul className="grid grid-cols-2 gap-1.5">
           {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
@@ -195,7 +195,6 @@ function RuleTab() {
         </ul>
         <Note
           tone="clk-hour"
-          ko="하나·둘·셋·넷은 시 앞에서 짧아져요."
           en="1, 2, 3 and 4 get shorter before 시 — and so do 11 and 12."
           ex="하나 → 한 · 둘 → 두 · 셋 → 세 · 넷 → 네 · 열하나 → 열한 · 열둘 → 열두"
         />
@@ -203,8 +202,10 @@ function RuleTab() {
 
       <Box labelledBy={minId}>
         <h3 id={minId} className={secTitle}>
-          <span className={secKo}>분 — 몇 분이에요?</span>
-          <span className={secEn}>Minutes · tap to listen</span>
+          <span className={secBig}>
+            Minutes — <span lang="ko">몇 분이에요?</span>
+          </span>
+          <span className={secSmall}>Tap to listen</span>
         </h3>
         <ul className="grid grid-cols-2 gap-1.5">
           {MINUTES.map((m) => (
@@ -218,7 +219,6 @@ function RuleTab() {
         </ul>
         <Note
           tone="clk-min"
-          ko="30분은 ‘반’이라고도 해요."
           en="You can say 반 (half) for 30 minutes."
           ex="세 시 삼십 분 = 세 시 반 · half past three"
         />

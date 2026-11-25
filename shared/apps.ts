@@ -37,7 +37,7 @@ export type AppInfo = {
   tagline: { ko: string; en: string };
   /**
    * 검색·공유 카드 설명 (meta description · og · twitter).
-   * 영어 먼저 + 한국어 한 줄 — 학습자는 영어로 검색한다. 화면 문구는 그대로 한국어 먼저.
+   * 영어 먼저 + 한국어 한 줄 — 학습자는 영어로 검색한다. 화면도 영어 먼저 (#102).
    */
   description: string;
   /** 검색 결과 제목 앞부분. 학습자가 영어로 검색하는 말 — "How to Tell Time in Korean" */
