@@ -63,12 +63,12 @@ export function Stage({ vowel, rom, seat, onMove }: { vowel: string; rom: string
         className={cn(cell, top ? "bg-(--ie-silent-bg) text-(--ie-silent-ink)" : "border-2 border-dashed border-line bg-bg text-muted")}
         style={at(L.cho)}
         onClick={() => move("cho")}
-        aria-label="ㅇ을 첫자리로 / Move ㅇ to the top"
+        aria-label="Move ㅇ to the top / ㅇ을 첫자리로"
       >
         <span className={cn("font-display text-[3rem] leading-none transition-opacity duration-300", top ? "opacity-0" : "opacity-40")} aria-hidden="true">
           ㅇ
         </span>
-        <span className="absolute bottom-2 text-[0.68rem] font-extrabold">{top ? "🤫 silent" : "자리만 · seat only"}</span>
+        <span className="absolute bottom-2 text-[0.68rem] font-extrabold">{top ? "🤫 silent" : "Seat only · 자리만"}</span>
       </button>
 
       {/* 모음 */}
@@ -83,12 +83,14 @@ export function Stage({ vowel, rom, seat, onMove }: { vowel: string; rom: string
         className={cn(cell, top ? "border-2 border-dashed border-line bg-bg text-muted" : "bg-(--ie-ng-bg) text-(--ie-ng-ink)")}
         style={at(L.jong)}
         onClick={() => move("jong")}
-        aria-label="ㅇ을 받침으로 / Move ㅇ to the bottom"
+        aria-label="Move ㅇ to the bottom / ㅇ을 받침으로"
       >
         {top && (
           <span className="leading-[1.2]">
-            <span className="block font-display text-[1rem]">⬇ 받침 자리</span>
-            <span className="text-[0.68rem] font-extrabold">tap to drop ㅇ here</span>
+            <span className="block font-display text-[1rem]">⬇ Tap to drop ㅇ here</span>
+            <span className="text-[0.68rem] font-extrabold" lang="ko">
+              받침 자리
+            </span>
           </span>
         )}
         {!top && <span className="absolute right-3 bottom-2 font-display text-[1.2rem] leading-none motion-safe:animate-[ie-hum_1.2s_ease-in-out_infinite]">👃 ng~</span>}
@@ -113,7 +115,7 @@ export function Stage({ vowel, rom, seat, onMove }: { vowel: string; rom: string
         className="absolute transition-[left,top] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none"
         style={{ left: mx, top: my, width: MASCOT, height: MASCOT }}
         onClick={() => move(top ? "jong" : "cho")}
-        aria-label={top ? "이응이를 받침으로 / Drop ㅇ to the bottom" : "이응이를 첫자리로 / Jump ㅇ back to the top"}
+        aria-label={top ? "Drop ㅇ to the bottom / 이응이를 받침으로" : "Jump ㅇ back to the top / 이응이를 첫자리로"}
       >
         <span key={hops} className="block size-full motion-safe:animate-[ie-hop_0.5s_cubic-bezier(0.3,0.7,0.4,1)] [&_svg]:h-auto [&_svg]:w-full">
           {/* 첫자리는 소리 없이 졸고, 받침에서는 마이크를 들고 ng 소리를 낸다 (#111) */}

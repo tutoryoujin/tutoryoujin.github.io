@@ -11,8 +11,8 @@
    배우는 한국어(ex 예문 · cards 낱말 · ieung 말풍선)는 늘 한국어 + 영어.
 
    한 블록은 늘 한국어(ko)와 영어(en)를 따로 받는다. 어느 쪽을 크게 둘지는 lead 로.
-   - "ko" — 한국어가 크고 영어가 아래 muted (글 /notes/ · 앱과 같은 규칙)
-   - "en" — 영어가 크고 한국어가 아래 muted (처방침처럼 학습자가 내용을 읽어야 하는 페이지, #84 · #57)
+   - "ko" — 한국어가 크고 영어가 아래 muted (지금 쓰는 페이지 없음 — 모든 페이지 영어 먼저, #102)
+   - "en" — 영어가 크고 한국어가 아래 muted (블로그 · 처방침, #84 · #102)
    ============================================================ */
 
 import type { Mood, Scene } from "./ui/ieung-data";
@@ -24,7 +24,7 @@ export type Prose = { ko?: string; en: string };
 export type Example = Bi & { clock?: number; also?: string };
 /** 글 안 퀴즈 문제 하나 (#120). q = 묻는 말, clock = 문제 그림 시계(자정부터 센 분), answer = 정답(한국어),
  *  wrong = 학생들이 실제로 하는 실수 + 고르면 보여 줄 이유 */
-export type QuizItem = { q: Prose; clock?: number; answer: string; wrong: { text: string; why?: Bi }[] };
+export type QuizItem = { q: Prose; clock?: number; answer: string; wrong: { text: string; why?: string }[] };
 export type Lead = "ko" | "en";
 
 export type Block =

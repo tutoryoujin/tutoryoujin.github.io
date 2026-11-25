@@ -40,7 +40,7 @@ export function SiteHeader({ wide, children }: { wide?: boolean; children?: Reac
             Korean <WithYoujin />
           </span>
         </a>
-        <nav className="flex shrink-0 items-center gap-1.5" aria-label="메뉴 / Menu">
+        <nav className="flex shrink-0 items-center gap-1.5" aria-label="Menu / 메뉴">
           {children}
           <ThemeToggle />
         </nav>

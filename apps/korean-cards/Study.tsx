@@ -15,8 +15,9 @@ const btn =
   "flex min-h-17 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-[20px] border-2 border-ink bg-surface px-2 py-2.5 text-ink " +
   "transition-transform duration-80 ease-[ease] focus-visible:outline-offset-3 active:scale-97 disabled:cursor-default disabled:opacity-40";
 const known = "border-primary bg-primary text-primary-ink";
-const btnKo = "text-[1.15rem] leading-[1.2] font-bold";
-const btnEn = "text-[0.78rem] leading-[1.2] font-bold opacity-75";
+/* 버튼 — 영어가 크고 한국어가 아래 작게 (#102) */
+const btnBig = "text-[1.15rem] leading-[1.2] font-bold";
+const btnSmall = "text-[0.78rem] leading-[1.2] font-bold opacity-75";
 
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -148,7 +149,7 @@ export function Study({ deck }: { deck: Deck }) {
           <a
             className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface text-[1.2rem] font-extrabold text-ink no-underline focus-visible:outline-offset-3"
             href="#/"
-            aria-label="홈 / Home"
+            aria-label="Home / 홈"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M15 5l-7 7 7 7" />
@@ -163,17 +164,22 @@ export function Study({ deck }: { deck: Deck }) {
           className="inline-flex min-h-10 shrink-0 cursor-pointer flex-col items-center justify-center rounded-full border border-line bg-surface px-3.5 py-1 leading-[1.1] text-muted no-underline focus-visible:outline-offset-3"
           type="button"
           onClick={() => {
-            if (confirm("진행 상황을 지우고 처음부터 시작할까요?\nClear your progress and start from the beginning?")) restart();
+            if (confirm("Clear your progress and start from the beginning?\n진행 상황을 지우고 처음부터 시작할까요?")) restart();
           }}
         >
-          <span className="text-[0.9rem] font-bold text-ink">처음부터</span>
-          <span className="text-[0.68rem] font-bold">From the start</span>
+          <span className="text-[0.9rem] font-bold text-ink">Start over</span>
+          <span className="text-[0.68rem] font-bold" lang="ko">
+            처음부터
+          </span>
         </button>
       </header>
 
       <div className="flex items-center gap-2.5 text-[0.85rem] font-bold text-muted" aria-live="polite">
         <span className="rounded-full border border-line bg-surface px-2.5 py-0.75 font-bold whitespace-nowrap text-ink">
-          {state.round}회차 <span className="ml-0.5 text-[0.72rem] font-bold text-muted">Round {state.round}</span>
+          Round {state.round}{" "}
+          <span className="ml-0.5 text-[0.72rem] font-bold text-muted" lang="ko">
+            {state.round}회차
+          </span>
         </span>
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line" aria-hidden="true">
           <i
@@ -192,25 +198,31 @@ export function Study({ deck }: { deck: Deck }) {
         ) : state.missed.length === 0 ? (
           <section className={panel}>
             <div className={mascot}>
-              <span className={cn(pop, "block focus-visible:rounded-sm")} role="button" tabIndex={0} aria-label="다시 축하하기 / Celebrate again" onClick={celebrate} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && celebrate()}>
+              <span className={cn(pop, "block focus-visible:rounded-sm")} role="button" tabIndex={0} aria-label="Celebrate again / 다시 축하하기" onClick={celebrate} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && celebrate()}>
                 <Ieung scene="dance" />
               </span>
             </div>
-            <h2 className="mb-1 text-[1.8rem] font-bold">모두 외웠어요!</h2>
-            <p className="mb-3.5 text-[0.9rem] leading-[1.5] font-bold text-muted">You memorized them all!</p>
+            <h2 className="mb-1 font-display text-[1.8rem]">You memorized them all!</h2>
+            <p className="mb-3.5 text-[0.9rem] leading-[1.5] font-bold text-muted" lang="ko">
+              모두 외웠어요!
+            </p>
             <p className={panelP}>
-              {state.round}회차 만에 {deck.unit.ko} {total}개를 다 외웠어요.
-              <span className="mt-1 block text-[0.88rem] font-bold opacity-85">
-                You memorized all {total} {deck.unit.en} in {state.round} {state.round === 1 ? "round" : "rounds"}.
+              You memorized all {total} {deck.unit.en} in {state.round} {state.round === 1 ? "round" : "rounds"}.
+              <span className="mt-1 block text-[0.88rem] font-bold opacity-85" lang="ko">
+                {state.round}회차 만에 {deck.unit.ko} {total}개를 다 외웠어요.
               </span>
             </p>
             <button className={cn(btn, known, "w-full")} type="button" onClick={restart}>
-              <span className={btnKo}>처음부터 다시 하기</span>
-              <span className={btnEn}>Start again from the beginning</span>
+              <span className={btnBig}>Start again from the beginning</span>
+              <span className={btnSmall} lang="ko">
+                처음부터 다시 하기
+              </span>
             </button>
             <a className={cn(btn, "mt-2.5 w-full")} href="#/">
-              <span className={btnKo}>다른 카드 보러 가기</span>
-              <span className={btnEn}>Try another deck</span>
+              <span className={btnBig}>Try another deck</span>
+              <span className={btnSmall} lang="ko">
+                다른 카드 보러 가기
+              </span>
             </a>
             <Subscribe source="korean-cards" className="mt-6 rounded-none border-t border-line px-0 pt-6 pb-0 shadow-none" />
           </section>
@@ -219,12 +231,14 @@ export function Study({ deck }: { deck: Deck }) {
             <div className={mascot}>
               <Ieung scene="study" />
             </div>
-            <h2 className="mb-1 text-[1.8rem] font-bold">{state.round}회차 끝!</h2>
-            <p className="mb-3.5 text-[0.9rem] leading-[1.5] font-bold text-muted">Round {state.round} done!</p>
+            <h2 className="mb-1 font-display text-[1.8rem]">Round {state.round} done!</h2>
+            <p className="mb-3.5 text-[0.9rem] leading-[1.5] font-bold text-muted" lang="ko">
+              {state.round}회차 끝!
+            </p>
             <p className={panelP}>
-              이번에 {state.learnedThisRound}개를 외웠어요. 아직 {state.missed.length}개가 남았어요.
-              <span className="mt-1 block text-[0.88rem] font-bold opacity-85">
-                You memorized {state.learnedThisRound} this time. {state.missed.length} still left.
+              You memorized {state.learnedThisRound} this time. {state.missed.length} still left.
+              <span className="mt-1 block text-[0.88rem] font-bold opacity-85" lang="ko">
+                이번에 {state.learnedThisRound}개를 외웠어요. 아직 {state.missed.length}개가 남았어요.
               </span>
             </p>
             <div className="-mt-1.5 mb-5.5 flex flex-wrap justify-center gap-1.5">
@@ -247,8 +261,10 @@ export function Study({ deck }: { deck: Deck }) {
                 commit({ queue: shuffle(state.missed), index: 0, round: state.round + 1, missed: [], learnedThisRound: 0, phase: "card", cards: state.cards })
               }
             >
-              <span className={btnKo}>남은 {state.missed.length}개 다시 보기</span>
-              <span className={btnEn}>Review the {state.missed.length} left</span>
+              <span className={btnBig}>Review the {state.missed.length} left</span>
+              <span className={btnSmall} lang="ko">
+                남은 {state.missed.length}개 다시 보기
+              </span>
             </button>
           </section>
         )}
@@ -257,12 +273,16 @@ export function Study({ deck }: { deck: Deck }) {
       <div className="relative z-2 grid grid-cols-2 gap-2.5" style={{ visibility: onCard ? "visible" : "hidden" }}>
         <Reaction r={reaction} />
         <button className={btn} type="button" disabled={!onCard} onClick={() => answer(false)}>
-          <span className={btnKo}>못 외웠어요</span>
-          <span className={btnEn}>Not memorized</span>
+          <span className={btnBig}>Not memorized</span>
+          <span className={btnSmall} lang="ko">
+            못 외웠어요
+          </span>
         </button>
         <button className={cn(btn, known)} type="button" disabled={!onCard} onClick={() => answer(true)}>
-          <span className={btnKo}>외웠어요</span>
-          <span className={btnEn}>Memorized</span>
+          <span className={btnBig}>Memorized</span>
+          <span className={btnSmall} lang="ko">
+            외웠어요
+          </span>
         </button>
       </div>
     </div>
@@ -392,7 +412,7 @@ function FlashCard({ deck, state, leaving, onAnswer, flipRef }: CardProps) {
         leaving === "right" && "[transform:translateX(110%)_rotate(12deg)] opacity-0",
       )}
       type="button"
-      aria-label={`${c.ko}, 탭해서 뒤집기 / tap to flip`}
+      aria-label={`${c.ko} — tap to flip / 탭해서 뒤집기`}
       onClick={() => {
         if (drag.current.suppress) {
           drag.current.suppress = false;
@@ -408,10 +428,16 @@ function FlashCard({ deck, state, leaving, onAnswer, flipRef }: CardProps) {
       {/* 라벨은 미는 방향의 반대편에 붙인다 — 카드가 빠져나가는 쪽에 두면
           엄지에 가리고 화면 밖으로 밀려나서 안 보인다. */}
       <div ref={miss} className={cn(swipeTag, "right-4 rotate-8 text-bad-ink")} aria-hidden="true">
-        못 외웠어요<small className={swipeSmall}>Not memorized</small>
+        Not memorized
+        <small className={swipeSmall} lang="ko">
+          못 외웠어요
+        </small>
       </div>
       <div ref={know} className={cn(swipeTag, "left-4 -rotate-8 text-primary")} aria-hidden="true">
-        외웠어요<small className={swipeSmall}>Memorized</small>
+        Memorized
+        <small className={swipeSmall} lang="ko">
+          외웠어요
+        </small>
       </div>
       <div
         className={cn(
@@ -438,8 +464,6 @@ function FlashCard({ deck, state, leaving, onAnswer, flipRef }: CardProps) {
             {c.ko}
           </div>
           <div className="absolute inset-x-0 bottom-4 text-[0.78rem] leading-[1.4] font-bold opacity-70">
-            탭해서 뒤집기, 옆으로 밀어서 넘기기
-            <br />
             Tap to flip, swipe to move on
           </div>
         </div>

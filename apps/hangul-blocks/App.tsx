@@ -66,7 +66,6 @@ function VoiceNote() {
   return (
     <Note
       tone="gray"
-      ko="이 기기에는 한국어 목소리가 없어요. 소리가 안 나거나 어색할 수 있어요."
       en="This device has no Korean voice, so sounds may be missing or odd."
     />
   );
@@ -83,12 +82,16 @@ const TONE_CLASS: Record<string, string> = {
 
 /* ---------- 이 앱의 모양 ---------- */
 const section = "flex flex-col gap-3";
-/** 한국어 줄 */
-const ko = "font-display";
-/** 영어 줄 */
-const en = "text-[0.75rem] font-bold text-muted";
-/** 파스텔 위의 영어 줄 — muted 를 쓰지 않는다, 대비가 모자란다 */
-const enOnTone = "text-[0.75rem] font-bold opacity-85";
+/* 언어 규칙 (#102) — 라벨은 영어가 크고(big) 한국어가 아래 작게(small), 안내 문장은 영어만(say).
+   자모 이름 · 글자처럼 배우는 한국어는 한국어가 크다 */
+/** 큰 줄 — 라벨의 영어, 또는 배우는 한국어 */
+const big = "font-display";
+/** 작은 줄 — 라벨의 한국어 */
+const small = "text-[0.75rem] font-bold text-muted";
+/** 파스텔 위의 작은 줄 — muted 를 쓰지 않는다, 대비가 모자란다 */
+const smallOnTone = "text-[0.75rem] font-bold opacity-85";
+/** 안내 문장 — 영어만 */
+const say = "font-bold";
 /**
  * 무대 — 블록 + 보통 글꼴 글자. 폰에서도 나란히, 작게 — 고르는 버튼과 한 화면에 같이 보이게 (iPhone SE 667px 기준).
  * overflow-hidden: 떨어지는 칸이 상자 밖으로 보이지 않게
@@ -111,7 +114,10 @@ const chip = "inline-flex items-baseline gap-1.5 rounded-full px-3 py-1";
 /** 패널 안 소제목 — 탭 h2 아래라 h3 */
 const Title = ({ k, e }: { k: ReactNode; e: ReactNode }) => (
   <h3 className={title}>
-    <span className={ko}>{k}</span> <span className={en}>{e}</span>
+    <span className={big}>{e}</span>{" "}
+    <span className={small} lang="ko">
+      {k}
+    </span>
   </h3>
 );
 
@@ -220,8 +226,10 @@ function BuildTab() {
             </>
           ) : (
             <span className={lines}>
-              <span className={cn(ko, "text-[1.1rem]")}>{cho ? "모음을 골라요" : "자음부터 골라요"}</span>
-              <span className={en}>{cho ? "Now pick a vowel" : "Start with a consonant"}</span>
+              <span className={cn(big, "text-[1.1rem]")}>{cho ? "Now pick a vowel" : "Start with a consonant"}</span>
+              <span className={small} lang="ko">
+                {cho ? "모음을 골라요" : "자음부터 골라요"}
+              </span>
             </span>
           )}
         </div>
@@ -236,11 +244,13 @@ function BuildTab() {
               bevel,
               TONE_CLASS["blk-add"],
             )}
-            aria-label={`알아 두기 ${notes.length}개 보기 · ${notes.length} notes`}
+            aria-label={`${notes.length} notes · 알아 두기 ${notes.length}개 보기`}
             onClick={() => notesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
           >
-            <span className="font-display text-[0.85rem]">알아 두기 {notes.length}</span>
-            <span className="text-[0.62rem] font-bold opacity-85">Notes</span>
+            <span className="font-display text-[0.85rem]">Notes {notes.length}</span>
+            <span className="text-[0.62rem] font-bold opacity-85" lang="ko">
+              알아 두기
+            </span>
           </button>
         )}
       </div>
@@ -259,17 +269,19 @@ function BuildTab() {
               )}
               disabled={!parts[r]}
               onClick={() => remove(r)}
-              aria-label={parts[r] ? `${ROLE_NAME[r].ko} ${ch} 빼기 · remove` : ROLE_NAME[r].ko}
+              aria-label={parts[r] ? `Remove ${ch} (${ROLE_NAME[r].en}) · ${ROLE_NAME[r].ko} 빼기` : `${ROLE_NAME[r].en} · ${ROLE_NAME[r].ko}`}
             >
-              <small className="font-display text-[0.75rem]">{ROLE_NAME[r].ko}</small>
+              <small className="font-display text-[0.75rem]">{isGhost ? "Seat filler" : ROLE_NAME[r].en}</small>
               <b className={cn("font-display text-[1.4rem] font-extrabold", isGhost && "opacity-55")}>{ch ?? "—"}</b>
-              <em className="text-[0.62rem] font-bold not-italic">{isGhost ? "빈자리 · seat filler" : ROLE_NAME[r].en}</em>
+              <em className="text-[0.62rem] font-bold not-italic" lang="ko">
+                {isGhost ? "빈자리" : ROLE_NAME[r].ko}
+              </em>
             </button>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="자모 · Letters">
+      <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="Letters · 자모">
         {kbTabs.map((k) => (
           <button
             key={k.key}
@@ -284,9 +296,9 @@ function BuildTab() {
             )}
             onClick={() => setKb(k.key)}
           >
-            <span className="font-display text-[1rem]">{k.ko}</span>
-            <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85">
-              {k.en}
+            <span className="font-display text-[1rem]">{k.en}</span>
+            <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85" lang="ko">
+              {k.ko}
             </span>
           </button>
         ))}
@@ -343,7 +355,7 @@ function BuildTab() {
             ))}
       </div>
 
-      {msg && <Note tone="bad" ko={msg.ko} en={msg.en} />}
+      {msg && <Note tone="bad" en={msg.en} />}
 
       <div className="grid grid-cols-2 gap-2">
         {syl ? <ListenBtn text={syl} className="mt-0" /> : <span />}
@@ -357,22 +369,10 @@ function BuildTab() {
           </p>
         )}
         {notes}
-        <p className={tip}>
-          <span className={ko}>모음 앞이면 첫 자음, 모음 뒤면 받침이 돼요.</span>
-          <span className={en}>Before the vowel: first consonant. After it: bottom letter.</span>
-        </p>
-        <p className={tip}>
-          <span className={ko}>받침 뒤에 + 자음을 누르면 겹받침이 돼요. (ㄹ + ㄱ → ㄺ)</span>
-          <span className={en}>Tap a + key after the bottom letter to make a double bottom letter.</span>
-        </p>
-        <p className={tip}>
-          <span className={ko}>모음 뒤에 + 모음을 누르면 두 모음이 합쳐져요. (ㅗ + ㅏ → ㅘ)</span>
-          <span className={en}>Tap a + vowel after the vowel to join the two vowels.</span>
-        </p>
-        <p className={tip}>
-          <span className={ko}>블록이나 위의 자리를 누르면 그 자모가 빠져요.</span>
-          <span className={en}>Tap the block or a slot above to take that letter out.</span>
-        </p>
+        <p className={cn(tip, say)}>Before the vowel: first consonant. After it: bottom letter.</p>
+        <p className={cn(tip, say)}>Tap a + key after the bottom letter to make a double bottom letter. (ㄹ + ㄱ → ㄺ)</p>
+        <p className={cn(tip, say)}>Tap a + vowel after the vowel to join the two vowels. (ㅗ + ㅏ → ㅘ)</p>
+        <p className={cn(tip, say)}>Tap the block or a slot above to take that letter out.</p>
       </div>
     </>
   );
@@ -419,14 +419,16 @@ function BuildBlock({ parts, ghost, onPick }: { parts: Parts; ghost: boolean; on
  */
 function ShapeHint({ jung }: { jung: string }) {
   const s = shapeOf(jung);
-  const [k, e] = s === "tall" ? ["→ 오른쪽", "right"] : s === "flat" ? ["↓ 아래", "below"] : ["↓ 아래 + → 오른쪽", "below + right"];
+  const [k, e] = s === "tall" ? ["오른쪽", "→ right"] : s === "flat" ? ["아래", "↓ below"] : ["아래 + 오른쪽", "↓ below + → right"];
   return (
     <span
       className="pointer-events-none absolute right-0 bottom-2 flex w-1/2 justify-center motion-safe:animate-[blk-hint_2.2s_ease_0.35s_both]"
       aria-hidden="true"
     >
       <span className={cn(chip, "py-0.5 whitespace-nowrap", TONE_CLASS["blk-jung"])}>
-        <span className={cn(ko, "text-[0.85rem]")}>{k}</span> <span className={enOnTone}>{e}</span>
+        <span className={cn(big, "text-[0.85rem]")}>{e}</span> <span className={smallOnTone} lang="ko">
+          {k}
+        </span>
       </span>
     </span>
   );
@@ -435,28 +437,16 @@ function ShapeHint({ jung }: { jung: string }) {
 /** 교재의 말: 세우면 오른쪽, 눕히면 아래. 교재의 모양 번호(1~4번)는 교재를 모르면 뜻이 없어서 보여 주지 않는다 */
 function ShapeLine({ jung, jong }: { jung: string; jong: string | null }) {
   const s = shapeOf(jung);
+  // 설명이라 영어만 (#102)
   const where =
-    s === "mixed"
-      ? { ko: "두 모음: 하나는 아래, 하나는 오른쪽", en: "Two vowels: one below, one on the right" }
-      : s === "tall"
-        ? { ko: "세로 모음 → 오른쪽", en: "Long line standing up → goes RIGHT" }
-        : { ko: "가로 모음 → 아래", en: "Long line lying down → goes BELOW" };
+    s === "mixed" ? "Two vowels: one below, one on the right" : s === "tall" ? "Long line standing up → goes RIGHT" : "Long line lying down → goes BELOW";
   return (
-    <span className={lines}>
-      <span className={ko}>
-        {where.ko}
-        {jong && ", 받침은 맨 아래"}
-      </span>
-      <span className={en}>
-        {where.en}
-        {jong && "; the bottom letter goes at the bottom"}
-      </span>
+    <span className={say}>
+      {where}
+      {jong && "; the bottom letter (batchim) goes at the bottom"}
     </span>
   );
 }
-
-/** 조사만 — 자모(ㄱ)는 이름(기역)으로 받침을 본다 */
-const tail = (word: string, a: string, b: string) => josa(word, a, b).slice(word.length);
 
 /** 교재에서 짚어 주는 것들 — 지금 만든 글자에 해당하는 것만 */
 function buildNotes(parts: Parts, syl: string | null, ghost: boolean): ReactNode[] {
@@ -467,14 +457,13 @@ function buildNotes(parts: Parts, syl: string | null, ghost: boolean): ReactNode
     notes.push(
       <Note
         key="ghost"
-        ko="모든 칸은 자음으로 시작해요. 소리가 없을 때는 ㅇ이 자리만 채워요."
         en="Every block starts with a consonant. With no sound, a silent ㅇ just fills the seat."
       />,
     );
   else if (parts.cho === "ㅇ" && jung)
-    notes.push(<Note key="o-top" ko="맨 위의 ㅇ은 소리가 없어요." en="ㅇ at the start has no sound." />);
+    notes.push(<Note key="o-top" en="ㅇ at the start has no sound." />);
   if (jong === "ㅇ")
-    notes.push(<Note key="o-bottom" ko="받침 ㅇ은 ng 소리예요." en="At the bottom, ㅇ sounds like ng — as in singer, not finger." />);
+    notes.push(<Note key="o-bottom" en="At the bottom, ㅇ sounds like ng — as in singer, not finger." />);
 
   const read = syl && readJong(syl);
   if (syl && jong && read) {
@@ -484,12 +473,11 @@ function buildNotes(parts: Parts, syl: string | null, ghost: boolean): ReactNode
       <Note
         key="double"
         tone="blk-jong"
-        ko={`겹받침은 둘 중 하나만 읽어요. ${josa(syl, "은", "는")} ${read}${tail(CONSONANTS[read].ko, "을", "를")} 읽어서 [${said}]${tail(said, "이에요", "예요")}.`}
         en={`Two bottom letters (${f} + ${b}), but only one is read: ${syl} sounds like [${said}].`}
       />,
     );
     if (syl === "밟")
-      notes.push(<Note key="balp" tone="gray" ko="밟은 예외예요. 넓[널]처럼 ㄹ을 읽지 않아요." en="밟 is an exception: unlike 넓 [널], it is read with ㅂ." />);
+      notes.push(<Note key="balp" tone="gray" en="밟 is an exception: unlike 넓 [널], it is read with ㅂ." />);
   } else if (syl && jong) {
     const said = soundOf(syl);
     if (said !== syl)
@@ -497,20 +485,19 @@ function buildNotes(parts: Parts, syl: string | null, ghost: boolean): ReactNode
         <Note
           key="sound"
           tone="blk-jong"
-          ko={`받침 소리는 일곱 개뿐이에요. ${josa(syl, "은", "는")} [${said}]${josa(said, "으로", "로").slice(said.length)} 읽어요.`}
           en={`Only 7 sounds at the bottom: ${syl} sounds like [${said}].`}
         />,
       );
   }
 
-  if (jung === "ㅐ" || jung === "ㅔ") notes.push(<Note key="ae" ko="ㅐ와 ㅔ는 소리가 같아요." en="ㅐ and ㅔ sound the same." />);
-  if (jung === "ㅒ" || jung === "ㅖ") notes.push(<Note key="yae" ko="ㅒ와 ㅖ는 소리가 같아요." en="ㅒ and ㅖ sound the same." />);
+  if (jung === "ㅐ" || jung === "ㅔ") notes.push(<Note key="ae" en="ㅐ and ㅔ sound the same." />);
+  if (jung === "ㅒ" || jung === "ㅖ") notes.push(<Note key="yae" en="ㅒ and ㅖ sound the same." />);
   if (jung === "ㅚ" || jung === "ㅙ" || jung === "ㅞ")
-    notes.push(<Note key="oe" ko="ㅚ · ㅙ · ㅞ는 소리가 거의 같아요." en="ㅚ, ㅙ and ㅞ sound almost the same." />);
+    notes.push(<Note key="oe" en="ㅚ, ㅙ and ㅞ sound almost the same." />);
   if (jung && jung in MIXED_PARTS) {
     const [a, b] = MIXED_PARTS[jung];
     notes.push(
-      <Note key="mixed" ko={`${a} + ${b} = ${jung}. 두 모음이지만 한 박자예요.`} en={`${a} + ${b} = ${jung}. Two vowels, but one beat.`} />,
+      <Note key="mixed" en={`${a} + ${b} = ${jung}. Two vowels, but one beat.`} />,
     );
   }
 
@@ -519,7 +506,6 @@ function buildNotes(parts: Parts, syl: string | null, ghost: boolean): ReactNode
       <Note
         key="rare"
         tone="gray"
-        ko="잘 안 쓰는 글자예요. 목소리가 어색하게 읽을 수도 있어요."
         en="This block is rarely used, so the voice may read it oddly."
       />,
     );
@@ -546,8 +532,8 @@ const stageCells = (ch: string) => {
 };
 
 const SAY: Record<StrokePair["kind"], { off: [string, string]; on: [string, string] }> = {
-  air: { off: ["바람 없음", "no air · plain"], on: ["바람 있음", "with air · aspirated"] },
-  y: { off: ["그냥 소리", "plain"], on: ["앞에 y", "y in front"] },
+  air: { off: ["바람 없음", "No air · plain"], on: ["바람 있음", "With air · aspirated"] },
+  y: { off: ["그냥 소리", "Plain"], on: ["앞에 y", "Y in front"] },
 };
 
 function AirTab() {
@@ -585,7 +571,7 @@ function AirTab() {
     { key: "y", ko: "모음", en: "A y sound in front", list: Y_PAIRS, offset: AIR_PAIRS.length, cols: "grid-cols-6" },
   ];
   const shown = groups.find((x) => x.key === g)!;
-  const say = SAY[p.kind];
+  const sound = SAY[p.kind];
 
   return (
     <>
@@ -596,10 +582,10 @@ function AirTab() {
         <div className={glyph}>
           <span className={sylClass}>{ch}</span>
           <span className={lines}>
-            <span className={ko}>
+            <span className={big}>
               {info.ko} · {info.en}
             </span>
-            <span className={en}>
+            <span className={small}>
               {p.kind === "air" ? (on ? "With a puff of air (aspirated)" : "No puff of air (plain)") : on ? "A y sound in front" : "No y sound"}
             </span>
           </span>
@@ -608,15 +594,21 @@ function AirTab() {
 
       <div className="flex justify-center gap-2">
         <span className={cn(chip, "py-0.5", TONE_CLASS[baseTone])}>
-          <span className={ko}>원래 칸</span> <span className={enOnTone}>Kept</span>
+          <span className={big}>Kept</span>{" "}
+          <span className={smallOnTone} lang="ko">
+            원래 칸
+          </span>
         </span>
         <span className={cn(chip, "py-0.5", TONE_CLASS["blk-add"])}>
-          <span className={ko}>더한 칸</span> <span className={enOnTone}>Added</span>
+          <span className={big}>Added</span>{" "}
+          <span className={smallOnTone} lang="ko">
+            더한 칸
+          </span>
         </span>
       </div>
 
       {/* 자음 · 모음 — 만들기의 키보드처럼 한 번에 한 줄만. 짝 고르기 → 「획 하나 더」 가 붙어 있어서 엄지가 덜 움직인다 */}
-      <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="짝 · Pairs">
+      <div className="grid grid-cols-2 rounded-full border border-line bg-surface p-1" role="tablist" aria-label="Pairs · 짝">
         {groups.map((x) => (
           <button
             key={x.key}
@@ -634,12 +626,14 @@ function AirTab() {
               pick(x.offset);
             }}
           >
-            <span className="font-display text-[1rem]">{x.ko}</span>
-            <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85">{x.en}</span>
+            <span className="font-display text-[1rem]">{x.en}</span>
+            <span className="text-[0.68rem] font-bold text-muted group-aria-selected:text-current group-aria-selected:opacity-85" lang="ko">
+              {x.ko}
+            </span>
           </button>
         ))}
       </div>
-      <div className={cn("grid gap-1.5", shown.cols)} role="radiogroup" aria-label={`${shown.ko} · ${shown.en}`}>
+      <div className={cn("grid gap-1.5", shown.cols)} role="radiogroup" aria-label={`${shown.en} · ${shown.ko}`}>
         {shown.list.map((q, n) => (
           <button
             key={q.plain}
@@ -659,20 +653,18 @@ function AirTab() {
       </div>
 
       <Btn
-        ko={on ? `↩ ${p.plain}${josa(plainName, "으로", "로").slice(plainName.length)} 돌아가기` : `➕ 획 하나 더 → ${p.more}`}
-        en={on ? `Back to ${p.plain}` : `Add one stroke → ${p.more}`}
+        ko={on ? `${p.plain}${josa(plainName, "으로", "로").slice(plainName.length)} 돌아가기` : `획 하나 더 → ${p.more}`}
+        en={on ? `↩ Back to ${p.plain}` : `➕ Add one stroke → ${p.more}`}
         className="mt-0"
         onClick={toggle}
       />
 
       {p.kind === "air" ? (
         <Note
-          ko="획 하나 더 = 바람 한 번. 이런 소리를 거센소리라고 해요. 입 모양은 그대로, 숨만 달라져요."
           en="One extra stroke = one puff of air. These are called aspirated consonants. The mouth shape does not change. Only the breath changes."
         />
       ) : (
         <Note
-          ko={`획 하나 더 = 소리 앞에 y가 붙어요. ${p.syl[0]} → ${p.syl[1]}`}
           en={`Add ONE more line → the sound gets a Y in front. ${p.syl[0]} → ${p.syl[1]}`}
         />
       )}
@@ -682,8 +674,10 @@ function AirTab() {
         {p.syl.map((s, n) => (
           <button key={s} type="button" className={cn(sayBtn, TONE_CLASS[n ? "blk-add" : baseTone])} onClick={() => speak(s)}>
             <b className={sayChar}>{s}</b>
-            <span className={ko}>{(n ? say.on : say.off)[0]}</span>
-            <span className={enOnTone}>{(n ? say.on : say.off)[1]}</span>
+            <span className={big}>{(n ? sound.on : sound.off)[1]}</span>
+            <span className={smallOnTone} lang="ko">
+              {(n ? sound.on : sound.off)[0]}
+            </span>
           </button>
         ))}
       </div>
@@ -692,7 +686,7 @@ function AirTab() {
           {p.words.map(([w, en], n) => (
             <button key={w} type="button" className={cn(sayBtn, TONE_CLASS[n ? "blk-add" : baseTone])} onClick={() => speak(w)}>
               <b className={sayChar}>{w}</b>
-              <span className={enOnTone}>{en}</span>
+              <span className={smallOnTone}>{en}</span>
             </button>
           ))}
         </div>
@@ -700,13 +694,11 @@ function AirTab() {
 
       {p.kind === "air" && (
         <Note
-          ko="손바닥을 입 앞에 대 보세요. ㅋ ㅌ ㅍ ㅊ은 바람이 느껴지고, ㄱ ㄷ ㅂ ㅈ은 안 느껴져요."
           en="Put your hand in front of your mouth. With ㅋ ㅌ ㅍ ㅊ you feel the air. With ㄱ ㄷ ㅂ ㅈ you do not."
         />
       )}
       {(p.plain === "ㅐ" || p.plain === "ㅔ") && (
         <Note
-          ko="ㅐ와 ㅔ가 소리가 같듯이, ㅒ와 ㅖ도 소리가 같아요."
           en="Just like ㅐ and ㅔ, ㅒ and ㅖ sound exactly the same."
         />
       )}
@@ -729,10 +721,7 @@ const GROUPS: { ko: string; en: string; items: string[] }[] = [
 function ChartTab() {
   return (
     <>
-      <p className={tip}>
-        <span className={ko}>누르면 이름을 읽어 줘요.</span>
-        <span className={en}>Tap a letter to hear its name.</span>
-      </p>
+      <p className={cn(tip, say)}>Tap a letter to hear its name.</p>
       {GROUPS.map((g) => (
         <div key={g.en}>
           <Title k={g.ko} e={g.en} />
@@ -766,8 +755,8 @@ function ChartTile({ ch }: { ch: string }) {
       <span className={cn("mb-1.5 w-full rounded-md pt-3 pb-3.5 font-reading text-[3rem] leading-none font-medium", TONE_CLASS[tone])}>
         {ch}
       </span>
-      <span className={cn(ko, "text-[1rem]")}>{info.ko}</span>
-      <span className={en}>{parts ? `${parts[0]} + ${parts[1]} · ${info.en}` : info.en}</span>
+      <span className={cn(big, "text-[1rem]")}>{info.ko}</span>
+      <span className={small}>{parts ? `${parts[0]} + ${parts[1]} · ${info.en}` : info.en}</span>
     </button>
   );
 }

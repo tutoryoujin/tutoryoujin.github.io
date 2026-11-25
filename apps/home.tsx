@@ -4,7 +4,8 @@
         → 표어 · 만든 사람 → From Seoul to your screen(블로그 띠) → 꼬리말
    카드 그림은 public/home/ieung/<slug>.webp (이응이 썸네일). 없는 앱은 화면 캡처(public/home/<slug>.webp)로.
    로그인 · 회원 전용 잠금은 아직 없다 (#49).
-   글 순서 (#84): 홈만 설명 글은 영어가 크고 한국어가 아래 작다 — 처음 온 사람은 아직 한글을 못 읽는다.
+   글 순서 (#84 · #102): 제목 · 라벨은 영어가 크고 한국어가 아래 작게, 설명 문장은 영어만.
+   이응이 말풍선은 배우는 한국어라 한국어가 크다.
    레트로의 겉: 남색 잉크 2px 선 · 크림 종이 · 코랄 주색. 새 색 없이 토큰만 쓴다. */
 import { APPS, CATEGORIES, type AppInfo, type Category } from "@yj/apps";
 import { readRecent, type Recent } from "@yj/recent";
@@ -222,7 +223,7 @@ function HeroBack({ app, r }: { app: AppInfo; r: Recent }) {
               <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted">{r.step ? `${r.step.en} ${r.step.ko}` : app.about.en}</span>
               {hasProgress && (
                 <span className="mt-3 flex items-center gap-3">
-                  <span className="block h-2.5 flex-1 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={r.done} aria-valuemin={0} aria-valuemax={r.total} aria-label="진도 / Progress">
+                  <span className="block h-2.5 flex-1 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={r.done} aria-valuemin={0} aria-valuemax={r.total} aria-label="Progress / 진도">
                     <span className="block h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
                   </span>
                   <b className="text-[0.9rem]">{r.done} / {r.total}</b>
@@ -330,7 +331,7 @@ function IeungStage() {
         <button
           type="button"
           onClick={poke}
-          aria-label="이응이 누르기 / Tap Ieung-i"
+          aria-label="Tap Ieung-i / 이응이 누르기"
           className="relative w-[min(78%,340px)] cursor-pointer rounded-full bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary min-[960px]:w-[min(80%,400px)]"
         >
           {/* 발밑 점묘 그림자 — 목업처럼 땅에 선 느낌 */}
@@ -510,12 +511,11 @@ function AllApps() {
         </h2>
         <p className="font-bold text-muted">
           Little tools to learn and practice Korean, all free.
-          <span className="block text-[0.85rem]" lang="ko">직접 눌러 보며 배우는 무료 도구예요.</span>
         </p>
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="분류 / Category">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Category / 분류">
           {chips.map((c) => (
             <button
               key={c.id}
@@ -661,7 +661,6 @@ function Maker() {
             {/* 워드마크의 You 를 여기서 한 번 말로 풀어 준다 (#83) */}
             <p className="leading-[1.5] font-bold">
               Spot the “You” in <span className="text-primary">You</span>jin? It’s Korean with Youjin, and Korean with you.
-              <span className="mt-1 block text-[0.9rem] font-semibold text-muted" lang="ko">Youjin 안에 You 가 있어요. 유진이랑, 그리고 여러분이랑 같이 배워요.</span>
             </p>
           </div>
         </div>
@@ -693,7 +692,6 @@ function BlogBand() {
         </h2>
         <p className="font-bold leading-[1.4] min-[900px]:border-l-2 min-[900px]:border-lavender-ink/40 min-[900px]:pl-5">
           Study tips and Korean life on the blog.
-          <span className="block text-[0.85rem]" lang="ko">블로그에 공부 팁과 한국 생활 이야기를 써요.</span>
         </p>
         <a href="/notes/" className={cn("inline-flex min-h-12 items-center gap-2.5 justify-self-start rounded-full bg-surface px-5 font-extrabold whitespace-nowrap text-ink no-underline", ink2, lift, focus)}>
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" aria-hidden="true">

@@ -11,9 +11,9 @@ import { shuffle } from "./shuffle";
 
    앱은 문제 하나를 만드는 함수만 넘긴다. 오답은 학생들이 실제로
    하는 실수로 만들고, 그 실수에 맞는 설명(why)을 붙인다.
-   고른 오답의 why 가 피드백으로 나간다.
+   고른 오답의 why 가 피드백으로 나간다. why 는 설명이라 영어만 (#102).
    ============================================================ */
-export type Choice = { text: string; why?: { ko: string; en: string } };
+export type Choice = { text: string; why?: string };
 export type Question = {
   /** 같은 판에서 같은 문제가 두 번 나오지 않게 비교하는 열쇠 */
   id: string;
@@ -39,13 +39,15 @@ type Props = {
 type Round = { q: Question; choices: Choice[]; picked: Choice | null };
 
 const scoreNum = "font-display text-[1rem] font-extrabold text-ink";
-const enLine = "block text-[0.85rem] font-bold text-muted";
+const koLine = "block text-[0.85rem] font-bold text-muted";
 
-/** 문제·결과 위의 작은 제목. 한국어 한 줄, 영어 한 줄 */
+/** 문제·결과 위의 작은 제목. 영어 한 줄, 한국어 아래 작게 (#102) */
 const QLabel = ({ ko, en }: { ko: string; en: string }) => (
   <div className="text-center text-[0.85rem] font-bold text-muted">
-    <span className="block font-display text-[1rem] text-ink">{ko}</span>
-    {en}
+    <span className="block font-display text-[1rem] text-ink" lang="en">
+      {en}
+    </span>
+    <span lang="ko">{ko}</span>
   </div>
 );
 
@@ -100,10 +102,10 @@ export function Quiz({ make, length = 10, label, listen = true }: Props) {
     <div className={boxClass}>
       <div className="mb-2.5 flex items-center justify-between text-[0.85rem] font-bold text-muted">
         <span>
-          문제 Question <b className={scoreNum}>{done + (picked ? 0 : 1)} / {length}</b>
+          Question <span lang="ko">문제</span> <b className={scoreNum}>{done + (picked ? 0 : 1)} / {length}</b>
         </span>
         <span>
-          맞힌 개수 Score <b className={scoreNum}>{score}</b>
+          Score <span lang="ko">맞힌 개수</span> <b className={scoreNum}>{score}</b>
         </span>
       </div>
       <QLabel ko={label.ko} en={label.en} />
@@ -136,26 +138,29 @@ export function Quiz({ make, length = 10, label, listen = true }: Props) {
         {picked &&
           (ok ? (
             <>
-              <span className="block font-display text-[1.2rem]">맞아요! 🎉 {q.right}</span>
-              <span className={enLine}>Correct!</span>
+              <span className="block font-display text-[1.2rem]">
+                Correct! 🎉 {q.right}
+              </span>
+              <span className={koLine} lang="ko">
+                맞아요!
+              </span>
             </>
           ) : (
             <>
-              <span className="block font-display text-[1.2rem]">아쉬워요! 정답은 ‘{q.answer}’예요.</span>
-              <span className={enLine}>Not quite — the answer is ‘{q.answer}’.</span>
-              {picked.why && (
-                <>
-                  {/* 퀴즈 피드백 — 왜 틀렸는지 */}
-                  <span className="mt-1 block font-display">{picked.why.ko}</span>
-                  <span className={enLine}>{picked.why.en}</span>
-                </>
-              )}
+              <span className="block font-display text-[1.2rem]">
+                Not quite — the answer is ‘<span lang="ko">{q.answer}</span>’.
+              </span>
+              <span className={koLine} lang="ko">
+                아쉬워요! 정답은 ‘{q.answer}’예요.
+              </span>
+              {/* 퀴즈 피드백 — 왜 틀렸는지. 설명이라 영어만 */}
+              {picked.why && <span className="mt-1.5 block font-bold">{picked.why}</span>}
             </>
           ))}
       </div>
       {picked && (
         <div ref={nextRef}>
-          {listen && canSpeak && <Btn variant="ghost" ko="🔊 들어 보기" en="Listen" onClick={() => speak(q.answer)} />}
+          {listen && canSpeak && <Btn variant="ghost" ko="들어 보기" en="🔊 Listen" onClick={() => speak(q.answer)} />}
           {done >= length ? (
             <Btn ko="결과 보기" en="See results" onClick={() => setFinished(true)} />
           ) : (
@@ -190,12 +195,16 @@ function Result({ score, length, missed, onRestart }: { score: number; length: n
         {score} / {length}
       </div>
       <div>
-        <span className="block font-display text-[1.3rem]">{ko}</span>
-        <span className="text-[0.85rem] font-bold text-muted">{en}</span>
+        <span className="block font-display text-[1.3rem]">{en}</span>
+        <span className="text-[0.85rem] font-bold text-muted" lang="ko">
+          {ko}
+        </span>
       </div>
       {missed.length > 0 && (
         <>
-          <p className="mt-4 text-[0.85rem] font-bold text-muted">틀린 문제 다시 보기 · Review</p>
+          <p className="mt-4 text-[0.85rem] font-bold text-muted">
+            Review · <span lang="ko">틀린 문제 다시 보기</span>
+          </p>
           <ul className="mt-4 grid gap-1.5 text-left">
             {missed.map((q) => (
               <li key={q.id} className="flex justify-between gap-2 rounded-sm bg-bg px-3 py-2 font-bold">

@@ -49,7 +49,7 @@ const headHtml = (slug: string) =>
       return t.tag === "title" ? `<title>${escText(t.children ?? "")}</title>` : `<${t.tag}${attrs} />`;
     })
     .join("\n    ") + `\n    <script type="application/ld+json">${jsonLdText(slug)}</script>`;
-/** <html lang> 은 index.html 에 적은 값 대신 페이지 종류로 정한다 (shared/seo.ts pageLang, #95) */
+/** <html lang> 은 index.html 에 적은 값 대신 shared/seo.ts pageLang — 모든 페이지 en (#95 · #102) */
 const HTML_LANG_RE = /<html lang="[^"]*">/;
 const HEAD = (inner: string) => `<!--yj:head-->\n    ${inner}\n    <!--/yj:head-->`;
 const ROOT = (inner: string) => `<!--yj:root-->${inner}<!--/yj:root-->`;
@@ -106,7 +106,7 @@ const siteHead: Plugin = {
     const root = '<div id="root"></div>';
     if (!html.includes(root)) throw new Error(`${ctx.filename}: <div id="root"></div> 가 없어요`);
     if (!HTML_LANG_RE.test(html)) throw new Error(`${ctx.filename}: <html lang="…"> 이 없어요`);
-    html = html.replace(HTML_LANG_RE, `<html lang="${pageLang(slug)}">`);
+    html = html.replace(HTML_LANG_RE, `<html lang="${pageLang()}">`);
     const a = analyticsScript();
     const analytics: HtmlTagDescriptor[] = a ? [{ tag: "script", attrs: { src: a.src, ...a.attrs }, injectTo: "head" }] : [];
     // 글 목록은 메타 · 정적 본문을 표시 안에 글자로 — 글마다 복사할 때 바꾼다 (notesPages)

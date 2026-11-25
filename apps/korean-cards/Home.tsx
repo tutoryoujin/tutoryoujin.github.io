@@ -12,8 +12,10 @@ import { daysAway, howtoSeen, lastDeck, markHowtoSeen, progress } from "./store"
 export function Hero({ ko, en }: { ko: string; en: string }) {
   return (
     <section className="px-0.5 pt-1">
-      <h2 className="text-[1.55rem] leading-[1.25] font-extrabold">{ko}</h2>
-      <p className="mt-1 text-[0.92rem] font-bold text-muted">{en}</p>
+      <h2 className="font-display text-[1.55rem] leading-[1.25]">{en}</h2>
+      <p className="mt-1 text-[0.92rem] font-bold text-muted" lang="ko">
+        {ko}
+      </p>
     </section>
   );
 }
@@ -42,12 +44,12 @@ function HowTo() {
   if (!shown) return null;
   const tip = TIPS[n];
   return (
-    <section className="mt-3 mb-6 flex items-center gap-3.5" aria-label="카드 쓰는 법 / How to use the cards">
+    <section className="mt-3 mb-6 flex items-center gap-3.5" aria-label="How to use the cards / 카드 쓰는 법">
       <button
         type="button"
         className="w-21 shrink-0 cursor-pointer rounded-lg bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-offset-4"
         onClick={() => (end ? setShown(false) : setN(n + 1))}
-        aria-label={end ? "이응이 누르기, 닫기 / Tap Ieung-i to close" : "이응이 누르기, 다음 말 / Tap Ieung-i for the next tip"}
+        aria-label={end ? "Tap Ieung-i to close / 이응이 누르기, 닫기" : "Tap Ieung-i for the next tip / 이응이 누르기, 다음 말"}
       >
         <span className={pokeClass} key={n}>
           <Ieung mood={tip.mood} />
@@ -57,7 +59,7 @@ function HowTo() {
         <Bubble tail="left" className="min-h-35 text-[1rem] sm:min-h-22" key={n} aria-live="polite" ko={tip.ko} en={tip.en} />
         <p className="mt-1.5 pl-1 text-[0.75rem] font-bold text-muted" aria-hidden="true">
           {n + 1} / {TIPS.length}
-          {end && " · 누르면 닫혀요 · Tap to close"}
+          {end && " · Tap to close"}
         </p>
       </div>
     </section>
@@ -106,7 +108,7 @@ export function Home() {
     <>
       <Hero ko="오늘은 어떤 카드로 공부할까요?" en="What would you like to learn today?" />
       <HowTo />
-      <nav aria-label="덱 / Decks">
+      <nav aria-label="Decks / 덱">
         {shelf().map((item) => {
           if (item.product) return <Locked key={item.info.id} item={item} />;
           const deck = peekDeck(item.info.id)!;
@@ -122,16 +124,20 @@ export function Home() {
           return (
             <a key={deck.id} className={cn(folder, TONE[deck.color], "bg-(--g-bg)")} href={`#/deck/${deck.id}`}>
               <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{deck.title.ko}</span>
-              {isLast && <span className="sr-only">마지막으로 연 덱 / Last opened</span>}
+              {isLast && <span className="sr-only">Last opened / 마지막으로 연 덱</span>}
               {/* 한글은 font-app 의 두 번째 글꼴인 Pretendard 로 떨어진다.
                   .85rem 에서는 빽빽해서, 본문보다 한 단계만 작게 둔다. */}
-              <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{meta.ko}</p>
+              {/* 상태는 영어가 크게, 덱 영어 이름 · 한국어 상태가 아래 작게 (#102) */}
+              <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">{meta.en}</p>
               <p className={gloss}>
                 {/* 덩어리째로만 줄을 바꾼다 — "Not opened / yet" 처럼 꺾이지 않게 */}
-                {[deck.title.en, ...meta.en.split(" · ")].map((t, i) => (
+                <span className="whitespace-nowrap">{deck.title.en}</span>
+                {meta.ko.split(" · ").map((t, i) => (
                   <Fragment key={i}>
-                    {i > 0 && " · "}
-                    <span className="whitespace-nowrap">{t}</span>
+                    {" · "}
+                    <span className="whitespace-nowrap" lang="ko">
+                      {t}
+                    </span>
                   </Fragment>
                 ))}
               </p>
@@ -152,15 +158,18 @@ export function Home() {
         })}
         {/* 바탕을 비우면 겹친 자리로 위 카드의 밑동이 비친다 — bg 로 덮는다 */}
         <div className={cn(folder, "border-2 border-dashed border-line bg-bg shadow-none")}>
-          <span className={cn(label, "bg-gray-bg text-gray-ink")}>곧 추가돼요</span>
-          <p className={cn(gloss, "text-muted")}>More decks coming soon</p>
+          <span className={cn(label, "bg-gray-bg text-gray-ink")}>Coming soon</span>
+          <p className={cn(gloss, "text-muted")}>
+            More decks coming soon ·{" "}
+            <span lang="ko">곧 추가돼요</span>
+          </p>
           {/* 숨은 재미 — 이응을 누르면 메롱 하고 돌아온다.
               빈 자리에서는 이응이 겉면 그림 자리를 대신한다. 입체 이응은 240x250.
               눌러 볼 수 있는 숨은 재미라 버튼이지만 버튼처럼 보이지 않게 둔다. */}
           <button
             className="absolute right-3 bottom-2 h-23 w-22 p-0 focus-visible:rounded-sm [&_svg]:size-full"
             type="button"
-            aria-label="이응 / Ieung"
+            aria-label="Ieung / 이응"
             onClick={() => {
               clearTimeout(tease.current);
               setMood("tongue");
@@ -192,12 +201,14 @@ function Locked({ item: { info, product } }: { item: ShelfItem }) {
       <span className={cn(label, "bg-(--g-ink) text-(--g-bg)")}>{info.title.ko}</span>
       <p className="mt-3 text-[0.92rem] leading-[1.45] font-bold">
         <span aria-hidden="true">🔒 </span>
-        {info.count}장 · 유료 덱{price}
+        {info.count} cards · Paid deck{price}
       </p>
       <p className={gloss}>
-        <span className="whitespace-nowrap">{info.title.en}</span> · <span className="whitespace-nowrap">{info.count} cards</span> ·{" "}
-        <span className="whitespace-nowrap">Paid deck</span>
-        <span className="sr-only"> (새 탭에서 열려요 / opens in a new tab)</span>
+        <span className="whitespace-nowrap">{info.title.en}</span> ·{" "}
+        <span className="whitespace-nowrap" lang="ko">
+          {info.count}장 · 유료 덱
+        </span>
+        <span className="sr-only"> (opens in a new tab / 새 탭에서 열려요)</span>
       </p>
       <Art src={folderArtSrc(info)} emoji={info.emoji} className={artClass} fallbackClass={artFallback} />
     </a>

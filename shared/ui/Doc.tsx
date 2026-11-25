@@ -38,7 +38,7 @@ function Listen({ ko }: { ko: string }) {
     <button
       type="button"
       className="grid size-11 flex-none place-items-center rounded-full border border-line bg-bg text-[1.1rem]"
-      aria-label={`들어 보기 / Listen: ${ko}`}
+      aria-label={`Listen / 들어 보기: ${ko}`}
       onClick={() => speak(ko)}
     >
       <span aria-hidden="true">🔊</span>

@@ -31,12 +31,7 @@ mount(
     <div className="flex items-center gap-3">
       <div className="min-w-0 flex-1">
         <SiteTitle big={NOT_FOUND.en} small={NOT_FOUND.ko} lead="en">
-          <p className="mt-3 font-bold">
-            {NOT_FOUND.lead.en}
-            <span className="mt-0.5 block text-[0.9rem] font-semibold text-muted" lang="ko">
-              {NOT_FOUND.lead.ko}
-            </span>
-          </p>
+          <p className="mt-3 font-bold">{NOT_FOUND.lead}</p>
         </SiteTitle>
       </div>
       <div className="w-24 shrink-0 min-[440px]:w-36 [&_svg]:h-auto [&_svg]:w-full">
