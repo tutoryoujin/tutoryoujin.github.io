@@ -1,5 +1,5 @@
 import { useId, useState, type ReactNode } from "react";
-import { Box, Btn, cn, Ieung, ListenBtn, Note, Page, Quiz, TabPanel, Tabs, canSpeak, speak, useHashTab, type Choice, type Question } from "@yj/ui";
+import { Box, Btn, cn, Ieung, Note, Page, Quiz, TabPanel, Tabs, canSpeak, speak, useHashTab, type Choice, type Question } from "@yj/ui";
 import { tabsOf } from "@yj/apps";
 import { compose, decompose, shapeOf } from "@yj/korean/hangul";
 import { ieungSeats, linked, MOVES, NG_WORDS, PAIRS, SILENT_WORDS, STAYS, SWITCH_VOWELS, type Seat } from "./data";
@@ -241,7 +241,7 @@ function SwitchTab() {
             </>
           )}
         </p>
-        <ListenBtn text={syl} />
+        {canSpeak && <Btn en="🔊 Listen" onClick={() => speak(syl)} />}
       </Box>
 
       <TitledBox en="Hear it in words">
