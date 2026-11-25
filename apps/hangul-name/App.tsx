@@ -175,7 +175,7 @@ export function App() {
   return (
     <Page
       app="hangul-name"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
@@ -190,7 +190,6 @@ export function App() {
             ). Names from US Social Security baby-name data.
           </>
         ),
-        ko: "이름 발음은 CMU 발음 사전에서, 이름 목록은 미국 사회보장국 출생 이름 통계에서 왔어요.",
       }}
     >
       {/* 이름 가게 — 영수증이 나오는 기계 */}

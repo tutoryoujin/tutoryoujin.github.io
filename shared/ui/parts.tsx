@@ -41,7 +41,8 @@ export const Box = ({ children, className, labelledBy, ...rest }: { children: Re
  * className 은 자리 맞춤(mt-0, min-h-13 …)에만. 색은 variant · tone 으로.
  */
 export function Btn(props: {
-  ko: ReactNode;
+  /** 아래 작은 한국어 줄. 없으면 영어 한 줄 (이응 앱, #102) */
+  ko?: ReactNode;
   en: ReactNode;
   onClick?: () => void;
   /** 폼 안에서 제출 버튼으로 쓸 때 "submit" */
@@ -73,9 +74,11 @@ export function Btn(props: {
       <span className="font-display text-[1.1rem]" lang="en">
         {props.en}
       </span>
-      <span className="text-[0.75rem] font-bold opacity-80" lang="ko">
-        {props.ko}
-      </span>
+      {props.ko && (
+        <span className="text-[0.75rem] font-bold opacity-80" lang="ko">
+          {props.ko}
+        </span>
+      )}
     </button>
   );
 }

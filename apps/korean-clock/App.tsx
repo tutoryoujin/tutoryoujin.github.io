@@ -15,14 +15,13 @@ export function App() {
   return (
     <Page
       app="korean-clock"
-      // 꼬리말은 영어가 크고 한국어가 아래 (#100)
+      // 꼬리말 고지는 영어만 (#100 · #102)
       legal={{
         en: (
           <>
             Made for reading practice — the hands move in 1-minute steps, and seconds are left out.
           </>
         ),
-        ko: "읽기 연습용이라 바늘은 1분 단위로 움직여요. 초는 다루지 않아요.",
       }}
     >
       <Tabs tabs={TABS} value={tab} onChange={setTab} />

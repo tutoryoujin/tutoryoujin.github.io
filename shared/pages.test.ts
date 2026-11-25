@@ -54,19 +54,19 @@ describe("개인정보 처리방침", () => {
     expect(text(ON)).toContain("Kit");
     expect(text(ON)).toMatch(/unsubscribe/);
   });
-  it("모든 문단이 영어 · 한국어 둘 다", () => {
+  it("본문은 영어만 — 한국어 병기 없음 (#102)", () => {
     for (const b of privacyBlocks(ON)) {
       const items = b.t === "quiz" ? b.items.map((i) => i.q) : "items" in b ? b.items : b.t === "widget" ? [] : [b];
       for (const i of items) {
         expect(i.en, JSON.stringify(i)).toMatch(/[A-Za-z]/);
-        expect(i.ko, JSON.stringify(i)).toMatch(/[가-힣]/);
+        expect("ko" in i, JSON.stringify(i)).toBe(false);
       }
     }
   });
-  it("정적 본문은 화면과 같은 글 — 영어가 앞", () => {
+  it("정적 본문은 화면과 같은 글", () => {
     const html = docHtml(privacyBlocks(OFF), "en");
     expect(html).toContain("No sign-up, no accounts, no cookies.");
-    expect(html.indexOf("No sign-up")).toBeLessThan(html.indexOf("가입도"));
+    expect(html).not.toContain("가입도");
     expect(prerenderHtml("privacy")).toContain("No sign-up");
   });
 });

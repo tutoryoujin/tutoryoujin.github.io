@@ -31,7 +31,8 @@ type Props = {
   /** 몇 번째 문제인지(0부터)와 이미 나온 id 들을 받아 새 문제를 만든다 */
   make: (index: number, seen: string[]) => Question;
   length?: number;
-  label: { ko: string; en: string };
+  /** ko 가 없으면 영어 한 줄 (이응 앱, #102) */
+  label: { ko?: string; en: string };
   /** 답을 고른 뒤 🔊 들어 보기 — 답이 한국어 낱말이 아니면 끈다 (#113) */
   listen?: boolean;
 };
@@ -42,12 +43,12 @@ const scoreNum = "font-display text-[1rem] font-extrabold text-ink";
 const koLine = "block text-[0.85rem] font-bold text-muted";
 
 /** 문제·결과 위의 작은 제목. 영어 한 줄, 한국어 아래 작게 (#102) */
-const QLabel = ({ ko, en }: { ko: string; en: string }) => (
+const QLabel = ({ ko, en }: { ko?: string; en: string }) => (
   <div className="text-center text-[0.85rem] font-bold text-muted">
     <span className="block font-display text-[1rem] text-ink" lang="en">
       {en}
     </span>
-    <span lang="ko">{ko}</span>
+    {ko && <span lang="ko">{ko}</span>}
   </div>
 );
 

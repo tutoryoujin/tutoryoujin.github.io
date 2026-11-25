@@ -60,25 +60,21 @@ export function Mouth({ mode }: { mode: MouthMode }) {
       </g>
 
       {/* 나가는 곳 */}
-      {/* 오른쪽 끝 자리가 좁다 (292 → 330) — 영어는 작게, 이모지는 한국어 줄에 */}
+      {/* 오른쪽 끝 자리가 좁다 (292 → 330) — 글자는 작게, 이모지는 아래 줄에 */}
       <text x="292" y="45" className={cn(label, "text-[11px]")}>
         nose
       </text>
-      <text x="292" y="58" className={labelEn} lang="ko">
-        👃 코
+      <text x="292" y="58" className={labelEn}>
+        👃
       </text>
       <text x="292" y="122" className={cn(label, "text-[11px]")}>
         mouth
       </text>
-      <text x="292" y="135" className={labelEn} lang="ko">
-        👄 입
+      <text x="292" y="135" className={labelEn}>
+        👄
       </text>
       <text x="80" y="226" className={label}>
-        ↑ throat{" "}
-        <tspan className={labelEn} lang="ko">
-          목
-        </tspan>{" "}
-        <tspan className={labelEn}>· air comes up</tspan>
+        ↑ throat <tspan className={labelEn}>· air comes up</tspan>
       </text>
 
       {/* 혀 — 아래로 내려가면 입 길이 열린다 */}
@@ -89,10 +85,7 @@ export function Mouth({ mode }: { mode: MouthMode }) {
         <g className={move} style={{ transform: `translateY(${m.tongue}px)` }}>
           <path d="M72 230 V150 Q74 96 112 96 Q150 96 196 128 Q226 146 262 150 L262 230 Z" className="fill-(--pink-bg) stroke-(--pink-ink)" strokeWidth="2" />
           <text x="160" y="160" textAnchor="middle" className="fill-(--pink-ink) font-display text-[12px]">
-            tongue{" "}
-            <tspan className="text-[9px] font-extrabold" lang="ko">
-              혀
-            </tspan>
+            tongue
           </text>
         </g>
       </g>
@@ -123,10 +116,7 @@ export function Mouth({ mode }: { mode: MouthMode }) {
         <g className="fill-(--ie-g-ink)">
           <rect x="44" y="90" width="24" height="5" rx="2" />
           <text x="80" y="52" className="font-display text-[15px]">
-            Stop!{" "}
-            <tspan className="text-[9px] font-extrabold" lang="ko">
-              딱! 멈춤
-            </tspan>
+            Stop!
           </text>
         </g>
       )}
