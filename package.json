@@ -12,7 +12,8 @@
     "tokens:check": "node scripts/build-tokens.mjs --check",
     "check:classes": "node scripts/check-classes.mjs",
     "new": "node scripts/new-app.mjs",
-    "names": "vite-node tools/hangul-name/build.ts"
+    "names": "vite-node tools/hangul-name/build.ts",
+    "audio:hangul:script": "vite-node tools/hangul-blocks/recording-script.ts"
   },
   "dependencies": {
     "react": "18.3.1",
