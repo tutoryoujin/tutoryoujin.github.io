@@ -11,6 +11,7 @@
    ============================================================ */
 import { koreanSuneungExam } from "./korean-suneung-exam";
 import { koreanZodiacTti } from "./korean-zodiac-tti";
+import { todaysDateInKorean } from "./todays-date-in-korean";
 import type { Note } from "./types";
 import { whatTimeIsItInKorean } from "./what-time-is-it-in-korean";
 
@@ -19,7 +20,7 @@ export { CATEGORIES, categoryBySlug, type Category, type CategorySlug } from "./
 import { categoryBySlug } from "./categories";
 
 /** 최신순 */
-export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam, whatTimeIsItInKorean].sort((a, b) => b.added.localeCompare(a.added));
+export const NOTES: Note[] = [koreanZodiacTti, koreanSuneungExam, whatTimeIsItInKorean, todaysDateInKorean].sort((a, b) => b.added.localeCompare(a.added));
 
 export const noteBySlug = (slug: string) => NOTES.find((n) => n.slug === slug);
 /** 글의 분류 */

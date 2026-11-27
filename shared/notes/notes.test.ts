@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { APPS } from "../apps";
 import { docHtml, headingId, headings } from "../doc";
 import { FEED_PATH, headTags, jsonLd, llmsTxt, pageMeta, prerenderHtml, rssXml, sitemapXml } from "../seo";
+import { readMonth } from "../korean/date";
 import { CATEGORIES, categoryOf, moreIn, neighbors, noteBySlug, NOTE_UI, TOC_MIN, NOTES, NOTES_PER_PAGE, NOTES_TITLE, notesForApp, pageList, paginate, sameCategory } from "./index";
 
 const HANJA = /[一-鿿]/;
@@ -138,6 +139,37 @@ describe("글: 지금 몇 시예요? (#114)", () => {
   it("시 카드 12장 — 짧아지는 것만 표시", () => {
     for (const s of ["한 시", "두 시", "세 시", "네 시", "열한 시", "열두 시", "하나 → 한", "열둘 → 열두"]) expect(html).toContain(s);
     expect(html).not.toContain("다섯 → 다섯");
+  });
+});
+
+describe("글: 오늘 며칠이에요? (#115)", () => {
+  // 예문은 shared/korean/date.ts 로 만든다 — 달력 앱과 같은 읽기인지 글자로 한 번 더
+  const n = noteBySlug("todays-date-in-korean")!;
+  const html = docHtml(n.blocks, "en");
+  it.each([
+    "오늘 며칠이에요?",
+    "오늘 몇 월 며칠이에요?",
+    "삼월 일 일이에요.",
+    "오월 오 일이에요.",
+    "유월 육 일이에요.",
+    "시월 십 일이에요.",
+    "유월 십 일이에요.",
+    "이천이십육 년 십일월 이십칠 일이에요.",
+    "금요일이에요.",
+    "오늘은 십일월 이십칠 일 금요일이에요.",
+  ])("%s", (s) => expect(html).toContain(s));
+  it("달 카드 12장 — 유월 · 시월만 바뀜 표시", () => {
+    const months = n.blocks.flatMap((b) => (b.t === "cards" && b.items[0].mark === "1월" ? b.items : []));
+    expect(months.map((c) => c.ko)).toEqual(Array.from({ length: 12 }, (_, i) => readMonth(i + 1)));
+    expect(months.filter((c) => c.sub).map((c) => c.sub)).toEqual(["육월 → 유월", "십월 → 시월"]);
+  });
+  it("틀린 읽기 · 철자는 바른 쪽으로만 나온다", () => {
+    const learn = n.blocks.flatMap((b) => (b.t === "ex" ? b.items.map((i) => i.ko) : [])).join(" ");
+    for (const w of ["육월", "십월", "몇 일", "몇일"]) expect(learn).not.toContain(w);
+  });
+  it("요일 일곱 — 2026-11-27 은 금요일", () => {
+    expect(new Date(2026, 10, 27).getDay()).toBe(5);
+    for (const s of ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"]) expect(html).toContain(s);
   });
 });
 

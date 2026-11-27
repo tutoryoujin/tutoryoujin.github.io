@@ -1,24 +1,13 @@
 /* ============================================================
-   날짜 읽기 규칙
+   날짜 읽기 규칙 — 읽기 자체는 shared/korean/date.ts (블로그 글과 같이 쓴다, #115)
    - 연·월·일은 모두 한자어 숫자 (일, 이, 삼 …)
    - 예외: 6월 → 유월, 10월 → 시월
    ============================================================ */
-import { native, sino } from "@yj/korean/numbers";
+import { readDay, readMonth, readYear, RELATIVE, WEEK } from "@yj/korean/date";
+import { native } from "@yj/korean/numbers";
 import type { Choice } from "@yj/ui";
 
-export const readYear = (y: number) => sino(y) + " 년";
-export const readMonth = (m: number) => (m === 6 ? "유월" : m === 10 ? "시월" : sino(m) + "월");
-export const readDay = (d: number) => sino(d) + " 일";
-
-export const WEEK = [
-  ["일", "Sun", "Sunday"],
-  ["월", "Mon", "Monday"],
-  ["화", "Tue", "Tuesday"],
-  ["수", "Wed", "Wednesday"],
-  ["목", "Thu", "Thursday"],
-  ["금", "Fri", "Friday"],
-  ["토", "Sat", "Saturday"],
-] as const;
+export { readDay, readMonth, readYear, RELATIVE, WEEK };
 
 export const MONTH_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -44,14 +33,6 @@ export function holiday(y: number, m: number, d: number): [string, string] | und
   const h = HOLIDAY_TABLE[`${m}-${d}`];
   return h && (!h[2] || h[2](y)) ? [h[0], h[1]] : undefined;
 }
-
-export const RELATIVE: Record<number, [string, string]> = {
-  [-2]: ["그저께", "the day before yesterday"],
-  [-1]: ["어제", "yesterday"],
-  0: ["오늘", "today"],
-  1: ["내일", "tomorrow"],
-  2: ["모레", "the day after tomorrow"],
-};
 
 /** 6월 · 10월 읽기 알림 — 설명이라 영어만 (#102) */
 export const SPECIAL_NOTE: Record<number, string> = {
